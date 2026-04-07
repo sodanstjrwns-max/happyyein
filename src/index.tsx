@@ -49,11 +49,6 @@ body{font-family:var(--body-font);color:var(--black);background:var(--white);ove
 .loader-text{font-family:var(--accent-font);font-size:clamp(2rem,5vw,4rem);color:var(--gold);font-style:normal;font-weight:800;text-transform:uppercase;letter-spacing:8px;opacity:0;animation:loaderIn 1.2s ease forwards;}
 @keyframes loaderIn{0%{opacity:0;transform:translateY(20px);letter-spacing:15px}50%{opacity:1}100%{opacity:1;transform:translateY(0);letter-spacing:2px}}
 
-/* ========= MARQUEE ========= */
-.marquee-bar{background:var(--gold);color:var(--black);padding:10px 0;overflow:hidden;white-space:nowrap;position:relative;z-index:100;}
-.marquee-track{display:inline-flex;animation:marquee 25s linear infinite;}
-.marquee-track span{font-family:var(--display-font);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:4px;padding:0 40px;}
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* ========= NAV ========= */
 nav{position:fixed;top:0;width:100%;z-index:1000;padding:24px 0;mix-blend-mode:difference;transition:all 0.5s;}
@@ -78,7 +73,7 @@ nav.scrolled{mix-blend-mode:normal;background:rgba(10,10,10,0.92);backdrop-filte
 /* ========= HERO ========= */
 .hero{min-height:100vh;background:var(--black);color:var(--white);display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;padding:0 48px 80px;}
 .hero-bg{position:absolute;inset:0;overflow:hidden;}
-.hero-bg img{position:absolute;right:-5%;bottom:0;height:95%;object-fit:cover;opacity:0.35;filter:grayscale(30%);mask-image:linear-gradient(to left,rgba(0,0,0,0.8) 30%,transparent 80%);}
+.hero-bg img{position:absolute;right:0;bottom:0;height:100%;width:60%;object-fit:contain;object-position:right bottom;opacity:0.35;filter:grayscale(30%);mask-image:linear-gradient(to left,rgba(0,0,0,0.8) 30%,transparent 80%);}
 .hero-grain{position:absolute;inset:0;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");}
 .hero-content{position:relative;z-index:2;max-width:1600px;width:100%;margin:0 auto;}
 .hero-eyebrow{font-family:var(--display-font);font-size:0.7rem;text-transform:uppercase;letter-spacing:6px;color:var(--gold);margin-bottom:32px;display:flex;align-items:center;gap:16px;}
@@ -146,7 +141,7 @@ nav.scrolled{mix-blend-mode:normal;background:rgba(10,10,10,0.92);backdrop-filte
 .treat-card-featured{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0;min-height:500px;}
 .treat-card-featured .treat-content{padding:60px 48px;display:flex;flex-direction:column;justify-content:center;}
 .treat-card-featured .treat-img{position:relative;overflow:hidden;}
-.treat-card-featured .treat-img img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%);transition:all 0.6s;}
+.treat-card-featured .treat-img img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:grayscale(20%);transition:all 0.6s;}
 .treat-card-featured:hover .treat-img img{filter:grayscale(0%);transform:scale(1.03);}
 .treat-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px;}
 .treat-pill{padding:8px 18px;border:1px solid rgba(247,186,24,0.25);border-radius:50px;font-family:var(--display-font);font-size:0.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;transition:all 0.3s;}
@@ -160,7 +155,7 @@ nav.scrolled{mix-blend-mode:normal;background:rgba(10,10,10,0.92);backdrop-filte
 .team-card:hover{transform:translateY(-6px);box-shadow:0 40px 60px rgba(0,0,0,0.08);}
 .team-card.lead{background:var(--black);color:var(--white);}
 .team-photo{aspect-ratio:3/4;overflow:hidden;position:relative;}
-.team-photo img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s;}
+.team-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform 0.6s;}
 .team-card:hover .team-photo img{transform:scale(1.04);}
 .team-photo-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--cream),var(--white));}
 .team-card.lead .team-photo-placeholder{background:linear-gradient(135deg,#1a1a1a,#2a2a2a);}
@@ -179,7 +174,7 @@ nav.scrolled{mix-blend-mode:normal;background:rgba(10,10,10,0.92);backdrop-filte
 .exp-grid{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
 .exp-images{position:relative;overflow:hidden;}
 .exp-images-inner{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;height:100%;}
-.exp-images-inner img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%);transition:filter 0.4s;}
+.exp-images-inner img{width:100%;height:100%;object-fit:cover;object-position:center center;filter:grayscale(20%);transition:filter 0.4s;}
 .exp-images-inner img:hover{filter:grayscale(0%);}
 .exp-images-inner img:first-child{grid-column:span 2;}
 .exp-text{padding:100px 72px;display:flex;flex-direction:column;justify-content:center;}
@@ -196,7 +191,7 @@ nav.scrolled{mix-blend-mode:normal;background:rgba(10,10,10,0.92);backdrop-filte
 /* ========= PHOTO MARQUEE ========= */
 .photo-marquee{padding:80px 0;background:var(--cream);overflow:hidden;}
 .photo-track{display:flex;gap:16px;animation:photoScroll 40s linear infinite;}
-.photo-track img{height:280px;border-radius:16px;object-fit:cover;flex-shrink:0;filter:grayscale(20%);transition:filter 0.3s;}
+.photo-track img{height:280px;width:auto;border-radius:16px;object-fit:contain;flex-shrink:0;filter:grayscale(20%);transition:filter 0.3s;}
 .photo-track img:hover{filter:grayscale(0%);}
 @keyframes photoScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
@@ -289,7 +284,7 @@ footer{padding:48px;background:var(--black-light);color:var(--gray);border-top:1
   .treat-card-featured .treat-content{padding:40px 32px;}
   .team-section{padding:100px 24px;}
   .exp-text{padding:60px 24px;}
-  .photo-track img{height:200px;}
+  .photo-track img{height:200px;width:auto;}
   .location{padding:100px 24px;}
   .cta-section{padding:100px 24px;}
   .cta-inner h2{font-size:clamp(2rem,5vw,3rem);}
@@ -306,12 +301,6 @@ footer{padding:48px;background:var(--black-light);color:var(--gray);border-top:1
   <div class="loader-text">Yein Dental</div>
 </div>
 
-<!-- MARQUEE BAR -->
-<div class="marquee-bar">
-  <div class="marquee-track">
-    <span>Since 2013</span><span>Trusted by 458+ patients</span><span>Immediate Implant Specialist</span><span>City Hall Station 5min</span><span>Since 2013</span><span>Trusted by 458+ patients</span><span>Immediate Implant Specialist</span><span>City Hall Station 5min</span><span>Since 2013</span><span>Trusted by 458+ patients</span><span>Immediate Implant Specialist</span><span>City Hall Station 5min</span>
-  </div>
-</div>
 
 <!-- NAV -->
 <nav id="nav">
