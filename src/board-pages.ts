@@ -225,8 +225,7 @@ ${nav(cfg.navKey)}
   </div>
 </section>
 
-<!-- ADMIN FAB -->
-<a href="/${cfg.slug}/write" class="admin-fab" title="새 글 작성"><i class="fas fa-plus"></i></a>
+
 
 ${footer()}
 
@@ -411,11 +410,14 @@ async function loadDetail() {
       html += '<div class="board-detail-content">' + post.content + '</div>';
     }
 
-    // 관리 버튼
-    html += '<div style="margin-top:48px;display:flex;gap:12px;">';
-    html += '<a href="/' + BOARD_SLUG + '/' + postId + '/edit" class="btn btn-outline" style="font-size:0.7rem;padding:12px 28px;"><i class="fas fa-edit"></i> 수정</a>';
-    html += '<button onclick="deletePost()" class="btn btn-ghost" style="font-size:0.7rem;padding:12px 28px;border-color:rgba(255,0,0,0.3);color:rgba(255,100,100,0.8);"><i class="fas fa-trash"></i> 삭제</button>';
-    html += '</div>';
+    // 관리 버튼 (로그인된 관리자만 표시)
+    if (localStorage.getItem('admin_token')) {
+      html += '<div style="margin-top:48px;display:flex;gap:12px;">';
+      html += '<a href="/' + BOARD_SLUG + '/' + postId + '/edit" class="btn btn-outline" style="font-size:0.7rem;padding:12px 28px;"><i class="fas fa-edit"></i> 수정</a>';
+      html += '<button onclick="deletePost()" class="btn btn-ghost" style="font-size:0.7rem;padding:12px 28px;border-color:rgba(255,0,0,0.3);color:rgba(255,100,100,0.8);"><i class="fas fa-trash"></i> 삭제</button>';
+      html += '<a href="/admin" class="btn btn-ghost" style="font-size:0.7rem;padding:12px 28px;"><i class="fas fa-cog"></i> 관리자</a>';
+      html += '</div>';
+    }
 
     document.getElementById('detailWrap').innerHTML = html;
   } catch (err) {
@@ -426,9 +428,16 @@ async function loadDetail() {
 
 async function deletePost() {
   if (!confirm('정말 삭제하시겠습니까?')) return;
-  const res = await fetch('/api/boards/' + BOARD + '/' + postId, { method: 'DELETE' });
+  const token = localStorage.getItem('admin_token');
+  const res = await fetch('/api/boards/' + BOARD + '/' + postId, {
+    method: 'DELETE',
+    headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+  });
   if (res.ok) { alert('삭제되었습니다.'); location.href = '/' + BOARD_SLUG; }
-  else { alert('삭제 실패'); }
+  else {
+    const data = await res.json().catch(() => ({}));
+    alert(data.error || '삭제 실패. 관리자 로그인이 필요합니다.');
+  }
 }
 
 function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
@@ -612,12 +621,25 @@ function removeImage(idx) {
 }
 `}
 
+// ===== 관리자 인증 체크 =====
+const ADMIN_TOKEN = localStorage.getItem('admin_token');
+if (!ADMIN_TOKEN) {
+  alert('관리자 로그인이 필요합니다.');
+  location.href = '/admin/login';
+}
+
+function authHeaders(extra) {
+  const h = { 'Authorization': 'Bearer ' + ADMIN_TOKEN };
+  if (extra) Object.assign(h, extra);
+  return h;
+}
+
 // ===== 공통 업로드 함수 =====
 async function uploadFile(file) {
   const fd = new FormData();
   fd.append('file', file);
   try {
-    const res = await fetch('/api/upload', { method: 'POST', body: fd });
+    const res = await fetch('/api/upload', { method: 'POST', body: fd, headers: { 'Authorization': 'Bearer ' + ADMIN_TOKEN } });
     const data = await res.json();
     if (data.url) return data.url;
     alert('업로드 실패: ' + (data.error || ''));
@@ -654,7 +676,7 @@ async function submitPost() {
   try {
     const res = await fetch('/api/boards/' + BOARD, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ title, content, thumbnail_url, images })
     });
     const data = await res.json();
@@ -842,11 +864,23 @@ function renderPreviews() {
 function removeImage(idx) { uploadedImages.splice(idx, 1); renderPreviews(); }
 `}
 
+// ===== 관리자 인증 =====
+const ADMIN_TOKEN = localStorage.getItem('admin_token');
+if (!ADMIN_TOKEN) {
+  alert('관리자 로그인이 필요합니다.');
+  location.href = '/admin/login';
+}
+function authHeaders(extra) {
+  const h = { 'Authorization': 'Bearer ' + ADMIN_TOKEN };
+  if (extra) Object.assign(h, extra);
+  return h;
+}
+
 async function uploadFile(file) {
   const fd = new FormData();
   fd.append('file', file);
   try {
-    const res = await fetch('/api/upload', { method: 'POST', body: fd });
+    const res = await fetch('/api/upload', { method: 'POST', body: fd, headers: { 'Authorization': 'Bearer ' + ADMIN_TOKEN } });
     const data = await res.json();
     if (data.url) return data.url;
     alert('업로드 실패: ' + (data.error || ''));
@@ -894,7 +928,7 @@ async function updatePost() {
   try {
     const res = await fetch('/api/boards/' + BOARD + '/' + postId, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ title, content, thumbnail_url, images })
     });
     const data = await res.json();

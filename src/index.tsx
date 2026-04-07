@@ -4,6 +4,8 @@ import { philosophyPage, doctorsPage, experiencePage, locationPage } from './pag
 import { boardListPage, boardDetailPage, boardWritePage, boardEditPage } from './board-pages'
 import { uploadApi, imagesApi } from './api-upload'
 import boardsApi from './api-boards'
+import authApi, { requireAdmin } from './api-auth'
+import { adminLoginPage, adminDashboardPage } from './admin-pages'
 
 type Bindings = { DB: D1Database; R2: R2Bucket }
 const app = new Hono<{ Bindings: Bindings }>()
@@ -1039,10 +1041,17 @@ app.get('/treatments/:slug', (c) => {
   return c.html(html)
 })
 
+// ===== AUTH API =====
+app.route('/api/auth', authApi)
+
 // ===== BOARD API ROUTES =====
 app.route('/api/upload', uploadApi)
 app.route('/api/images', imagesApi)
 app.route('/api/boards', boardsApi)
+
+// ===== ADMIN PAGES =====
+app.get('/admin/login', (c) => c.html(adminLoginPage()))
+app.get('/admin', (c) => c.html(adminDashboardPage()))
 
 // ===== BOARD PAGE ROUTES =====
 // 비포 & 애프터

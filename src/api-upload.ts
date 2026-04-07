@@ -1,5 +1,6 @@
 // R2 이미지 업로드 & 서빙 API
 import { Hono } from 'hono'
+import { requireAdmin } from './api-auth'
 
 type Bindings = {
   R2: R2Bucket;
@@ -9,8 +10,8 @@ type Bindings = {
 // index.tsx에서 app.route('/api/upload', uploadApi)로 마운트
 export const uploadApi = new Hono<{ Bindings: Bindings }>()
 
-// POST /api/upload → POST /
-uploadApi.post('/', async (c) => {
+// POST /api/upload → POST / (관리자 인증 필요)
+uploadApi.post('/', requireAdmin, async (c) => {
   try {
     const formData = await c.req.formData()
     const file = formData.get('file') as File | null

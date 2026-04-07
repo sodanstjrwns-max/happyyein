@@ -1,5 +1,6 @@
 // 게시판 CRUD API (비포애프터, 블로그, 공지사항)
 import { Hono } from 'hono'
+import { requireAdmin } from './api-auth'
 
 type Bindings = {
   DB: D1Database;
@@ -87,9 +88,9 @@ boards.get('/:board/:id', async (c) => {
 })
 
 // ============================================================
-// POST /api/boards/:board - 게시글 작성
+// POST /api/boards/:board - 게시글 작성 (관리자 인증 필요)
 // ============================================================
-boards.post('/:board', async (c) => {
+boards.post('/:board', requireAdmin, async (c) => {
   const board = c.req.param('board')
   if (!['before-after', 'blog', 'notice'].includes(board)) {
     return c.json({ error: '잘못된 게시판입니다.' }, 400)
@@ -128,9 +129,9 @@ boards.post('/:board', async (c) => {
 })
 
 // ============================================================
-// PUT /api/boards/:board/:id - 게시글 수정
+// PUT /api/boards/:board/:id - 게시글 수정 (관리자 인증 필요)
 // ============================================================
-boards.put('/:board/:id', async (c) => {
+boards.put('/:board/:id', requireAdmin, async (c) => {
   const board = c.req.param('board')
   const id = parseInt(c.req.param('id'))
 
@@ -174,9 +175,9 @@ boards.put('/:board/:id', async (c) => {
 })
 
 // ============================================================
-// DELETE /api/boards/:board/:id - 게시글 삭제
+// DELETE /api/boards/:board/:id - 게시글 삭제 (관리자 인증 필요)
 // ============================================================
-boards.delete('/:board/:id', async (c) => {
+boards.delete('/:board/:id', requireAdmin, async (c) => {
   const board = c.req.param('board')
   const id = parseInt(c.req.param('id'))
 
