@@ -55,6 +55,10 @@ const boardCSS = `
 .board-card-body h3{font-family:var(--font-kr);font-size:1.05rem;font-weight:600;margin-bottom:10px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .board-card-meta{font-family:var(--font-mono);font-size:0.72rem;color:var(--gray);letter-spacing:1px;display:flex;gap:16px;align-items:center;}
 .board-card-meta i{font-size:0.65rem;color:var(--gold);opacity:0.6;}
+.board-card-author{display:flex;align-items:center;gap:10px;padding-top:12px;margin-top:12px;border-top:1px solid rgba(255,255,255,0.06);}
+.board-card-author img{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(247,186,24,0.3);flex-shrink:0;}
+.board-card-author .author-name{font-family:var(--font-kr);font-size:0.78rem;font-weight:500;color:var(--gray-light);}
+.board-card-author .author-role{font-family:var(--font-kr);font-size:0.62rem;color:var(--gray);font-weight:300;}
 
 /* BEFORE-AFTER CARD */
 .ba-card{background:var(--dark-card);border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);transition:all 0.5s;cursor:pointer;text-decoration:none;color:inherit;display:block;}
@@ -85,7 +89,13 @@ const boardCSS = `
 /* ===== BOARD DETAIL ===== */
 .board-detail{max-width:900px;margin:0 auto;}
 .board-detail-title{font-family:var(--font-kr);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;letter-spacing:-1px;margin-bottom:16px;line-height:1.4;}
-.board-detail-meta{font-family:var(--font-mono);font-size:0.75rem;color:var(--gray);letter-spacing:1px;margin-bottom:48px;display:flex;gap:20px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.board-detail-meta{font-family:var(--font-mono);font-size:0.75rem;color:var(--gray);letter-spacing:1px;margin-bottom:20px;display:flex;gap:20px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.06);}
+/* AUTHOR CARD (DETAIL) */
+.detail-author-card{display:flex;align-items:center;gap:16px;padding:20px 24px;background:var(--dark-card);border:1px solid rgba(247,186,24,0.1);border-radius:16px;margin-bottom:48px;}
+.detail-author-card img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid rgba(247,186,24,0.3);flex-shrink:0;}
+.detail-author-info{display:flex;flex-direction:column;gap:2px;}
+.detail-author-info .author-name{font-family:var(--font-kr);font-size:0.95rem;font-weight:600;color:var(--white);}
+.detail-author-info .author-role{font-family:var(--font-kr);font-size:0.75rem;color:var(--gold);font-weight:400;}
 .board-detail-content{font-family:var(--font-kr);font-size:1rem;line-height:2.2;color:var(--gray-light);font-weight:300;}
 .board-detail-content h2{font-size:1.6rem;font-weight:900;color:var(--gold);margin:48px 0 20px;letter-spacing:-1px;border-bottom:2px solid rgba(247,186,24,0.15);padding-bottom:12px;line-height:1.4;}
 .board-detail-content h3{font-size:1.2rem;font-weight:700;color:var(--white);margin:36px 0 16px;letter-spacing:-0.5px;line-height:1.4;}
@@ -250,6 +260,13 @@ const boardCSS = `
   .board-card-body h3{font-size:0.88rem;}
 }
 `;
+
+// ==========================================
+// 블로그 작성자 설정 (카드 + 상세페이지)
+// ==========================================
+const BLOG_AUTHORS: Record<string, { name: string; role: string; img: string }> = {
+  default: { name: '한승대 원장', role: '통합치의학과 전문의 · 대표원장', img: '/static/img/dr-han-logo.jpg' },
+}
 
 // ==========================================
 // SEO 에디터 HTML (작성/수정 공통)
@@ -503,7 +520,9 @@ async function loadPosts(page = 1) {
       return '<a href="/' + BOARD_SLUG + '/' + p.id + '" class="board-card rv">' +
         '<div class="board-card-img">' + thumb + '</div>' +
         '<div class="board-card-body"><h3>' + escHtml(p.title) + '</h3>' +
-        '<div class="board-card-meta"><span><i class="far fa-calendar-alt"></i> ' + formatDate(p.created_at) + '</span><span><i class="fas fa-eye"></i> ' + p.view_count + '</span></div></div></a>';
+        '<div class="board-card-meta"><span><i class="far fa-calendar-alt"></i> ' + formatDate(p.created_at) + '</span><span><i class="fas fa-eye"></i> ' + p.view_count + '</span></div>' +
+        '<div class="board-card-author"><img src="/static/img/dr-han-logo.jpg" alt="한승대 원장"><div><div class="author-name">한승대 원장</div><div class="author-role">통합치의학과 전문의</div></div></div>' +
+        '</div></a>';
     }).join('') + '</div>';
     `}
 
@@ -584,6 +603,11 @@ async function loadDetail() {
 
     html += '<h1 class="board-detail-title">' + escHtml(post.title) + '</h1>';
     html += '<div class="board-detail-meta"><span><i class="far fa-calendar-alt"></i> ' + formatDate(post.created_at) + '</span><span><i class="fas fa-eye"></i> ' + post.view_count + '</span></div>';
+
+    ${board === 'blog' ? `
+    // 블로그 작성자 카드
+    html += '<div class="detail-author-card"><img src="/static/img/dr-han-logo.jpg" alt="한승대 원장"><div class="detail-author-info"><span class="author-name">한승대 원장</span><span class="author-role">통합치의학과 전문의 · 대표원장</span></div></div>';
+    ` : ''}
 
     ${board === 'before-after' ? `
     // 비포애프터: 구내사진, 파노라마 전후 이미지
