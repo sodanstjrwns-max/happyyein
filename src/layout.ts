@@ -19,7 +19,11 @@ interface HeadOptions {
   ogType?: string;        // 'website' | 'article' 등
   ogImage?: string;       // 커스텀 OG 이미지 (없으면 기본 사용)
   noindex?: boolean;      // true면 noindex
-  jsonLd?: object;        // 추가 JSON-LD 구조화 데이터
+  jsonLd?: object | object[];  // 추가 JSON-LD 구조화 데이터 (단일 또는 배열)
+  keywords?: string;      // 페이지별 키워드
+  articlePublishedTime?: string; // 게시일 (article 타입)
+  articleModifiedTime?: string;  // 수정일
+  breadcrumbs?: { name: string; url: string }[]; // 브레드크럼 경로
 }
 
 export function head(opts: HeadOptions | string, descriptionLegacy?: string, pathLegacy?: string) {
@@ -78,11 +82,30 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
     "sameAs": ["https://blog.naver.com/yein2828"]
   };
 
+  // BreadcrumbList JSON-LD
+  const breadcrumbJsonLd = o.breadcrumbs && o.breadcrumbs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": o.breadcrumbs.map((bc, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": bc.name,
+      "item": bc.url.startsWith('http') ? bc.url : `${SITE.domain}${bc.url}`
+    }))
+  } : null;
+
   const jsonLdScripts = [
     `<script type="application/ld+json">${JSON.stringify(orgJsonLd)}</script>`
   ];
+  if (breadcrumbJsonLd) {
+    jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify(breadcrumbJsonLd)}</script>`);
+  }
   if (o.jsonLd) {
-    jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify(o.jsonLd)}</script>`);
+    if (Array.isArray(o.jsonLd)) {
+      o.jsonLd.forEach(ld => jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify(ld)}</script>`));
+    } else {
+      jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify(o.jsonLd)}</script>`);
+    }
   }
 
   return `<!DOCTYPE html>
@@ -115,12 +138,19 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
 <!-- Naver 검색 최적화 -->
 <meta name="naver-site-verification" content="">
 <meta property="og:article:author" content="${SITE.name}">
+${o.articlePublishedTime ? `<meta property="article:published_time" content="${o.articlePublishedTime}">` : ''}
+${o.articleModifiedTime ? `<meta property="article:modified_time" content="${o.articleModifiedTime}">` : ''}
 
 <!-- 추가 메타 -->
 <meta name="theme-color" content="#F7BA18">
 <meta name="author" content="${SITE.name}">
 <meta name="format-detection" content="telephone=yes">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
+${o.keywords ? `<meta name="keywords" content="${o.keywords}">` : ''}
+<meta name="geo.region" content="KR-11">
+<meta name="geo.placename" content="서울특별시 중구">
+<meta name="geo.position" content="${SITE.geo.lat};${SITE.geo.lng}">
+<meta name="ICBM" content="${SITE.geo.lat}, ${SITE.geo.lng}">
 <link rel="icon" type="image/png" href="/static/img/logo.png">
 
 <!-- 구조화 데이터 (JSON-LD) -->
@@ -222,8 +252,9 @@ export function footer() {
     <h2 class="rv">치료를 미루고 계셨다면,<br>지금이 <em>그때</em>입니다.</h2>
     <p class="rv rv-d1">언젠가가 아니라, 지금 치료받을 수 있는<br>신뢰할 수 있는 치과를 만들고 싶었습니다.</p>
     <div class="cta-btns rv rv-d2">
-      <a href="tel:02-756-2828" class="btn btn-gold"><i class="fas fa-phone-alt"></i> 02.756.2828</a>
-      <a href="https://blog.naver.com/yein2828" target="_blank" class="btn btn-naver"><i class="fab fa-blogger-b"></i> Naver Blog</a>
+      <a href="tel:02-756-2828" class="btn btn-gold"><i class="fas fa-phone-alt"></i> 전화예약</a>
+      <a href="https://naver.me/G0DXGZbi" target="_blank" class="btn btn-naver"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
+      <a href="https://blog.naver.com/yein2828" target="_blank" class="btn btn-ghost"><i class="fab fa-blogger-b"></i> Naver Blog</a>
     </div>
   </div>
 </section>

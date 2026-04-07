@@ -12,18 +12,25 @@ const app = new Hono<{ Bindings: Bindings }>()
 
 app.get('/', (c) => {
   const SITE_DOMAIN = 'https://yein-dental.pages.dev';
-  const mainDesc = '서울 시청역 5분, 13년간 한자리에서 쌓아온 신뢰. 발치즉시 임플란트 80%+, 보존과 전문의 직접 신경치료, 교정 전문의 협진. 행복한예인치과.';
-  const mainTitle = '행복한예인치과 | 서울 시청역 치과 - 임플란트, 보존, 심미, 교정 전문';
+  const mainDesc = '서울 시청역 5분, 13년간 한자리에서 쌓아온 신뢰의 치과. 발치즉시 임플란트 성공률 80% 이상, 보존과·교정과 전문의 협진. 수요일 야간진료. 행복한예인치과 02-756-2828.';
+  const mainTitle = '행복한예인치과 | 서울 시청역 치과 - 임플란트·보존·심미·교정 전문의 협진';
   const ogImage = `${SITE_DOMAIN}/static/img/dr-han-logo.jpg`;
+
+  // 1) Dentist + LocalBusiness 통합 스키마
   const orgJsonLd = JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "Dentist",
+    "@type": ["Dentist", "MedicalOrganization", "LocalBusiness"],
+    "@id": `${SITE_DOMAIN}/#organization`,
     "name": "행복한예인치과",
-    "alternateName": "Happy Yein Dental Clinic",
+    "alternateName": ["Happy Yein Dental Clinic", "행복한예인치과의원"],
     "url": SITE_DOMAIN,
-    "logo": `${SITE_DOMAIN}/static/img/logo.png`,
-    "image": ogImage,
-    "telephone": "02-756-2828",
+    "logo": { "@type": "ImageObject", "url": `${SITE_DOMAIN}/static/img/logo.png`, "width": 512, "height": 512 },
+    "image": [ogImage, `${SITE_DOMAIN}/static/img/dr-han-profile.jpg`],
+    "telephone": "+82-2-756-2828",
+    "email": "yein2828@naver.com",
+    "foundingDate": "2013",
+    "description": mainDesc,
+    "slogan": "내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "남대문로9길 51 효덕빌딩 3층 301호",
@@ -32,14 +39,143 @@ app.get('/', (c) => {
       "postalCode": "04530",
       "addressCountry": "KR"
     },
-    "geo": { "@type": "GeoCoordinates", "latitude": "37.566", "longitude": "126.978" },
+    "geo": { "@type": "GeoCoordinates", "latitude": 37.566, "longitude": 126.978 },
+    "hasMap": "https://maps.google.com/?cid=행복한예인치과",
     "openingHoursSpecification": [
       { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Thursday","Friday"], "opens": "09:30", "closes": "18:30" },
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "09:30", "closes": "20:00" }
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "09:30", "closes": "20:00", "description": "수요일 야간진료" }
     ],
     "priceRange": "$$",
-    "areaServed": { "@type": "City", "name": "Seoul" },
-    "sameAs": ["https://blog.naver.com/yein2828"]
+    "currenciesAccepted": "KRW",
+    "paymentAccepted": "Cash, Credit Card, Debit Card",
+    "areaServed": [
+      { "@type": "City", "name": "서울특별시" },
+      { "@type": "AdministrativeArea", "name": "중구" },
+      { "@type": "AdministrativeArea", "name": "종로구" },
+      { "@type": "AdministrativeArea", "name": "용산구" }
+    ],
+    "medicalSpecialty": ["Dentistry", "Oral Surgery", "Orthodontics", "Endodontics", "Prosthodontics"],
+    "availableService": [
+      { "@type": "MedicalProcedure", "name": "발치즉시 임플란트", "procedureType": "Surgical" },
+      { "@type": "MedicalProcedure", "name": "치아보존치료(신경치료)", "procedureType": "Noninvasive" },
+      { "@type": "MedicalProcedure", "name": "치아교정(투명교정, 설측교정)", "procedureType": "Noninvasive" },
+      { "@type": "MedicalProcedure", "name": "앞니 심미치료(라미네이트, 레진)", "procedureType": "Noninvasive" },
+      { "@type": "MedicalProcedure", "name": "일반진료(스케일링, 충치치료)", "procedureType": "Noninvasive" }
+    ],
+    "member": [
+      {
+        "@type": "Dentist",
+        "@id": `${SITE_DOMAIN}/#dr-han`,
+        "name": "한승대",
+        "jobTitle": "대표원장",
+        "description": "통합치의학과 전문의, 치의학 박사. 경희대 치의학전문대학원 졸업. NYU Implant Institute 수료.",
+        "medicalSpecialty": "Integrative Dentistry",
+        "alumniOf": [
+          { "@type": "CollegeOrUniversity", "name": "고려대학교" },
+          { "@type": "CollegeOrUniversity", "name": "경희대학교 치의학전문대학원" }
+        ],
+        "hasCredential": [
+          { "@type": "EducationalOccupationalCredential", "credentialCategory": "보건복지부 인증 통합치의학과 전문의" },
+          { "@type": "EducationalOccupationalCredential", "credentialCategory": "치의학 박사 (Ph.D.)" }
+        ]
+      },
+      {
+        "@type": "Dentist",
+        "name": "신정희",
+        "jobTitle": "보존과 전문의",
+        "description": "치과보존과 전문의, 치의학 박사. 경희대 치과보존과 레지던트 수료.",
+        "medicalSpecialty": "Endodontics"
+      },
+      {
+        "@type": "Dentist",
+        "name": "박현미",
+        "jobTitle": "교정 전문의",
+        "description": "교정과 전문의. 연세대 치의학대학원 교정과 석사. 인비절라인 투명교정 수료.",
+        "medicalSpecialty": "Orthodontics"
+      }
+    ],
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "458", "bestRating": "5" },
+    "sameAs": [
+      "https://blog.naver.com/yein2828",
+      "https://naver.me/G0DXGZbi"
+    ]
+  });
+
+  // 2) FAQPage 스키마 (AEO 핵심)
+  const faqJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "행복한예인치과는 어디에 있나요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "서울특별시 중구 남대문로9길 51 효덕빌딩 3층 301호에 위치하고 있습니다. 1호선·2호선 시청역 4번·5번 출구에서 도보 5분 거리입니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "행복한예인치과 진료시간은 어떻게 되나요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "월·화·목·금 09:30~18:30, 수요일은 야간진료로 09:30~20:00까지 진료합니다. 점심시간은 13:00~14:00이며, 토·일·공휴일은 휴진입니다. 마감 1시간 전까지 접수 가능합니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "발치즉시 임플란트란 무엇인가요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "발치즉시 임플란트는 치아를 발치하는 동시에 임플란트를 식립하는 시술입니다. 별도의 치유 기간 없이 바로 진행하여 전체 치료 기간을 크게 단축합니다. 행복한예인치과는 80% 이상의 케이스에서 즉시식립을 시행하고 있습니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "행복한예인치과에는 어떤 전문의가 있나요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "한승대 대표원장(통합치의학과 전문의, 치의학 박사), 신정희 원장(치과보존과 전문의, 치의학 박사), 박현미 원장(교정과 전문의) 총 3명의 보건복지부 인증 전문의가 각 분야를 직접 진료합니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "행복한예인치과 예약은 어떻게 하나요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "전화(02-756-2828) 또는 네이버 예약(https://naver.me/G0DXGZbi)으로 예약하실 수 있습니다. 수요일 야간진료도 예약 가능합니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "시청역 근처 치과를 찾고 있는데 추천할 곳이 있나요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "행복한예인치과는 1호선·2호선 시청역 4번·5번 출구에서 도보 5분 거리에 위치한 치과입니다. 2013년부터 13년간 같은 자리에서 운영하고 있으며, 통합치의학·보존과·교정과 3명의 전문의가 협진합니다. 환자 리뷰 458건, 발치즉시 임플란트 성공률 80% 이상의 실적을 보유하고 있습니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "행복한예인치과의 진료 철학은 무엇인가요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "행복한예인치과의 진료 철학은 '내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다'입니다. 과장 없는 진료, 투명한 설명, 환자 존중을 기본으로 13년간 같은 자리에서 신뢰를 쌓아왔습니다." }
+      }
+    ]
+  });
+
+  // 3) WebSite 스키마 (사이트링크 검색 최적화)
+  const websiteJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "행복한예인치과",
+    "alternateName": "Happy Yein Dental",
+    "url": SITE_DOMAIN,
+    "publisher": { "@id": `${SITE_DOMAIN}/#organization` }
+  });
+
+  // 4) WebPage 스키마
+  const webpageJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${SITE_DOMAIN}/#webpage`,
+    "url": SITE_DOMAIN,
+    "name": mainTitle,
+    "description": mainDesc,
+    "isPartOf": { "@id": `${SITE_DOMAIN}/#website` },
+    "about": { "@id": `${SITE_DOMAIN}/#organization` },
+    "datePublished": "2013-01-01",
+    "dateModified": "2026-04-07",
+    "inLanguage": "ko"
+  });
+
+  // 5) BreadcrumbList 스키마
+  const breadcrumbJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "홈", "item": SITE_DOMAIN }
+    ]
   });
 
   return c.html(`<!DOCTYPE html>
@@ -51,7 +187,7 @@ app.get('/', (c) => {
 <!-- SEO 기본 -->
 <title>${mainTitle}</title>
 <meta name="description" content="${mainDesc}">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="${SITE_DOMAIN}/">
 
 <!-- Open Graph (Facebook, KakaoTalk, Naver) -->
@@ -61,6 +197,8 @@ app.get('/', (c) => {
 <meta property="og:description" content="${mainDesc}">
 <meta property="og:url" content="${SITE_DOMAIN}/">
 <meta property="og:image" content="${ogImage}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:locale" content="ko_KR">
 
 <!-- Twitter Card -->
@@ -78,11 +216,19 @@ app.get('/', (c) => {
 <meta name="author" content="행복한예인치과">
 <meta name="format-detection" content="telephone=yes">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="keywords" content="행복한예인치과, 시청역 치과, 발치즉시 임플란트, 보존치료, 심미치료, 치아교정, 서울 중구 치과, 야간진료">
+<meta name="keywords" content="행복한예인치과, 시청역 치과, 서울 시청역 치과, 발치즉시 임플란트, 즉시식립 임플란트, 보존치료, 신경치료, 치과보존과 전문의, 앞니 심미치료, 라미네이트, 치아교정, 투명교정, 인비절라인, 서울 중구 치과, 야간진료 치과, 수요일 야간, 시청역 임플란트, 직장인 치과, 통합치의학 전문의">
+<meta name="geo.region" content="KR-11">
+<meta name="geo.placename" content="서울특별시 중구">
+<meta name="geo.position" content="37.566;126.978">
+<meta name="ICBM" content="37.566, 126.978">
 <link rel="icon" type="image/png" href="/static/img/logo.png">
 
-<!-- 구조화 데이터 (JSON-LD) -->
+<!-- 구조화 데이터 (JSON-LD) - SEO + AEO -->
 <script type="application/ld+json">${orgJsonLd}</script>
+<script type="application/ld+json">${faqJsonLd}</script>
+<script type="application/ld+json">${websiteJsonLd}</script>
+<script type="application/ld+json">${webpageJsonLd}</script>
+<script type="application/ld+json">${breadcrumbJsonLd}</script>
 
 <!-- 폰트 & 아이콘 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -222,15 +368,50 @@ nav.scrolled{background:rgba(10,10,10,0.95);backdrop-filter:blur(40px);-webkit-b
 .ticker-item .dot{width:4px;height:4px;background:var(--gold);border-radius:50%;}
 @keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* ===== NUMBER STRIP - HORIZONTAL ===== */
-.num-strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(255,255,255,0.05);}
-.num-item{padding:56px 40px;text-align:center;border-right:1px solid rgba(255,255,255,0.05);background:var(--black);position:relative;overflow:hidden;transition:all 0.5s;}
-.num-item:last-child{border-right:none;}
-.num-item::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(247,186,24,0.04),transparent);opacity:0;transition:opacity 0.5s;}
-.num-item:hover::before{opacity:1;}
-.num-item .num{font-family:var(--font-number);font-size:clamp(2.5rem,4vw,4rem);color:var(--gold);line-height:1;letter-spacing:3px;}
-.num-item .unit{font-family:var(--font-display);font-size:0.6rem;color:var(--gold);text-transform:uppercase;letter-spacing:3px;margin-left:4px;vertical-align:super;}
-.num-item .txt{font-family:var(--font-kr);font-size:0.75rem;color:var(--gray);margin-top:12px;font-weight:300;letter-spacing:0;}
+/* ===== TWO KEY NUMBERS — HERO EMPHASIS ===== */
+.key-nums{display:grid;grid-template-columns:1fr 1fr;background:var(--black);position:relative;overflow:hidden;}
+.key-nums::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(247,186,24,0.06),transparent 70%);pointer-events:none;}
+.key-num{padding:clamp(60px,8vw,120px) clamp(24px,4vw,60px);position:relative;overflow:hidden;transition:all 0.6s;}
+.key-num::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(247,186,24,0.04),transparent 60%);opacity:0;transition:opacity 0.6s;}
+.key-num:hover::before{opacity:1;}
+.key-num:first-child{border-right:1px solid rgba(255,255,255,0.04);}
+.key-num-inner{max-width:520px;margin:0 auto;position:relative;}
+.key-num:first-child .key-num-inner{margin-left:auto;margin-right:0;text-align:right;}
+.key-num:last-child .key-num-inner{margin-left:0;margin-right:auto;text-align:left;}
+/* Giant emphasized number */
+.key-num .big-wrap{position:relative;display:inline-block;}
+.key-num .big{font-family:var(--font-number);font-size:clamp(7rem,14vw,15rem);color:var(--gold);line-height:0.8;letter-spacing:-2px;display:block;position:relative;z-index:2;}
+.key-num .big-ghost{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--font-number);font-size:clamp(14rem,28vw,30rem);color:rgba(247,186,24,0.03);line-height:1;letter-spacing:-4px;pointer-events:none;z-index:0;white-space:nowrap;}
+.key-num:first-child .big-ghost{right:0;left:auto;transform:translate(10%,-50%);}
+.key-num:last-child .big-ghost{left:0;transform:translate(-10%,-50%);}
+.key-num .big-unit{font-family:var(--font-display);font-size:clamp(1.4rem,2.5vw,2.8rem);color:var(--gold);text-transform:uppercase;letter-spacing:6px;vertical-align:super;font-weight:700;opacity:0.8;}
+/* Separator dot */
+.key-num .sep-dot{display:flex;align-items:center;gap:8px;margin-top:24px;}
+.key-num:first-child .sep-dot{justify-content:flex-end;}
+.sep-dot span{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:0.5;}
+.sep-dot span:nth-child(2){width:20px;height:2px;border-radius:1px;opacity:0.7;}
+/* Labels */
+.key-num .label{font-family:var(--font-display);font-size:clamp(0.6rem,0.9vw,0.8rem);text-transform:uppercase;letter-spacing:clamp(5px,0.8vw,10px);color:var(--gold);margin-top:16px;display:block;font-weight:700;opacity:0.9;}
+.key-num .desc{font-family:var(--font-kr);font-size:clamp(0.85rem,1.1vw,1rem);color:var(--gray-light);font-weight:300;margin-top:12px;line-height:1.8;}
+/* Sub-stats row */
+.key-num .sub-stats{display:flex;gap:32px;margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06);}
+.key-num:first-child .sub-stats{justify-content:flex-end;}
+.sub-stat{text-align:center;}
+.sub-stat .sub-val{font-family:var(--font-number);font-size:clamp(1.4rem,2vw,2rem);color:var(--white);display:block;letter-spacing:1px;}
+.sub-stat .sub-label{font-family:var(--font-kr);font-size:0.65rem;color:var(--gray);margin-top:4px;display:block;letter-spacing:1px;}
+
+/* ===== FAQ (main page) ===== */
+.faq{background:var(--black-warm, #111);}
+.faq-list{max-width:800px;margin:60px auto 0;}
+.faq-item{border-bottom:1px solid rgba(255,255,255,0.06);overflow:hidden;}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:28px 0;cursor:pointer;transition:color 0.3s;}
+.faq-q:hover{color:var(--gold);}
+.faq-q h4{font-family:var(--font-kr);font-size:1rem;font-weight:500;}
+.faq-q i{color:var(--gold);transition:transform 0.3s;font-size:0.8rem;}
+.faq-q.open i{transform:rotate(180deg);}
+.faq-a{max-height:0;overflow:hidden;transition:all 0.4s ease;}
+.faq-a.open{max-height:300px;padding-bottom:28px;}
+.faq-a p{font-family:var(--font-kr);font-size:0.88rem;line-height:2;color:var(--gray);font-weight:300;}
 
 /* ===== SECTION COMMONS ===== */
 .sec-pad{padding:clamp(100px,12vw,200px) clamp(24px,4vw,60px);}
@@ -417,10 +598,17 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   .btn{width:100%;justify-content:center;padding:16px 32px;font-size:0.72rem;}
   .hero-ticker{display:none;}
   /* 숫자 스트립 */
-  .num-strip{grid-template-columns:1fr 1fr;}
-  .num-item{padding:32px 16px;border-bottom:1px solid rgba(255,255,255,0.05);}
-  .num-item .num{font-size:clamp(2rem,6vw,2.5rem);}
-  .num-item .txt{font-size:0.7rem;}
+  .key-nums{grid-template-columns:1fr;}
+  .key-num{padding:56px 24px;}
+  .key-num:first-child{border-right:none;border-bottom:1px solid rgba(255,255,255,0.04);}
+  .key-num:first-child .key-num-inner,.key-num:last-child .key-num-inner{text-align:center;margin:0 auto;}
+  .key-num:first-child .sep-dot,.key-num:first-child .sub-stats{justify-content:center;}
+  .key-num .big{font-size:clamp(5rem,16vw,8rem);}
+  .key-num .big-ghost{font-size:clamp(10rem,32vw,18rem);}
+  .key-num:first-child .big-ghost,.key-num:last-child .big-ghost{left:50%;transform:translate(-50%,-50%);}
+  .key-num .label{margin-top:14px;}
+  .key-num .desc{font-size:0.85rem;}
+  .key-num .sub-stats{justify-content:center;}
   /* PHILOSOPHY */
   .philosophy{min-height:auto;padding:80px 0;}
   .philosophy::before{font-size:15rem;top:-40px;right:-10%;}
@@ -475,10 +663,13 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 }
 @media(max-width:480px){
   .hero-title-line{font-size:clamp(1.7rem,7.5vw,2.5rem)!important;}
-  .num-strip{grid-template-columns:1fr 1fr;}
-  .num-item{padding:24px 14px;}
-  .num-item .num{font-size:1.8rem;}
-  .num-item .txt{font-size:0.65rem;}
+  .key-num{padding:40px 16px;}
+  .key-num .big{font-size:clamp(4rem,14vw,6rem);}
+  .key-num .big-ghost{font-size:clamp(9rem,28vw,14rem);}
+  .key-num .big-unit{font-size:clamp(1rem,3vw,1.4rem);}
+  .key-num .label{font-size:0.55rem;letter-spacing:4px;}
+  .key-num .sub-stats{gap:24px;}
+  .sub-stat .sub-val{font-size:1.2rem;}
   .philosophy-text{font-size:clamp(1.3rem,4.5vw,1.6rem)!important;}
   .v-card{padding:28px 20px;}
   .v-card h3{font-size:0.9rem;}
@@ -584,9 +775,10 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 </div>
 
 <!-- ===== HERO ===== -->
-<section class="hero">
+<main>
+<section class="hero" role="banner">
   <div class="hero-video-bg">
-    <img src="/static/img/dr-han-smile.jpg" alt="">
+    <img src="/static/img/dr-han-smile.jpg" alt="행복한예인치과 한승대 대표원장 - 서울 시청역 치과">
     <div class="hero-overlay"></div>
     <div class="hero-noise"></div>
   </div>
@@ -604,8 +796,8 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
         과장 없이, 숨김 없이. 시청역 도보 5분.
       </p>
       <div class="hero-cta-group">
-        <a href="tel:02-756-2828" class="btn btn-gold"><i class="fas fa-phone-alt"></i> Book Now</a>
-        <a href="#treatments" class="btn btn-ghost">Explore <i class="fas fa-arrow-down"></i></a>
+        <a href="tel:02-756-2828" class="btn btn-gold"><i class="fas fa-phone-alt"></i> 전화예약</a>
+        <a href="https://naver.me/G0DXGZbi" target="_blank" class="btn btn-naver"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
       </div>
     </div>
   </div>
@@ -631,22 +823,37 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 </section>
 
 <!-- ===== NUMBER STRIP ===== -->
-<div class="num-strip">
-  <div class="num-item rv">
-    <div class="num">13<span class="unit">yr+</span></div>
-    <div class="txt">한자리에서의 신뢰</div>
+<div class="key-nums">
+  <div class="key-num rv">
+    <div class="key-num-inner">
+      <div class="big-wrap">
+        <span class="big-ghost">13</span>
+        <span class="big">13<span class="big-unit">yr+</span></span>
+      </div>
+      <div class="sep-dot"><span></span><span></span><span></span></div>
+      <span class="label">Since 2013 &mdash; Same Place</span>
+      <p class="desc">한자리에서 쌓아온 신뢰.<br>변하지 않는 곳에서, 변함없는 진료를.</p>
+      <div class="sub-stats">
+        <div class="sub-stat"><span class="sub-val">458</span><span class="sub-label">환자 리뷰</span></div>
+        <div class="sub-stat"><span class="sub-val">80%+</span><span class="sub-label">즉시 식립률</span></div>
+      </div>
+    </div>
   </div>
-  <div class="num-item rv rv-d1">
-    <div class="num">458</div>
-    <div class="txt">환자 리뷰</div>
-  </div>
-  <div class="num-item rv rv-d2">
-    <div class="num">80<span class="unit">%+</span></div>
-    <div class="txt">즉시 임플란트 성공률</div>
-  </div>
-  <div class="num-item rv rv-d3">
-    <div class="num">3</div>
-    <div class="txt">분야별 전문의</div>
+  <div class="key-num rv rv-d1">
+    <div class="key-num-inner">
+      <div class="big-wrap">
+        <span class="big-ghost">3</span>
+        <span class="big">3<span class="big-unit">specialists</span></span>
+      </div>
+      <div class="sep-dot"><span></span><span></span><span></span></div>
+      <span class="label">Board-Certified Experts</span>
+      <p class="desc">보존과 · 보철과 · 교정과<br>각 분야 전문의가 직접 진료합니다.</p>
+      <div class="sub-stats">
+        <div class="sub-stat"><span class="sub-val">통합치의학</span><span class="sub-label">한승대 원장</span></div>
+        <div class="sub-stat"><span class="sub-val">보존과</span><span class="sub-label">전문의 협진</span></div>
+        <div class="sub-stat"><span class="sub-val">교정과</span><span class="sub-label">전문의 협진</span></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -716,12 +923,12 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
           </div>
         </div>
         <div class="treat-featured-img">
-          <img src="/static/img/treat-1.jpg" alt="임플란트 시술">
+          <img src="/static/img/treat-1.jpg" alt="행복한예인치과 발치즉시 임플란트 시술 - 80% 이상 즉시식립">
         </div>
       </a>
       <!-- Conservation -->
       <a href="/treatments/preservation" class="treat-card rv" style="text-decoration:none;color:inherit;">
-        <div class="treat-card-bg"><img src="/static/img/treat-2.jpg" alt=""></div>
+        <div class="treat-card-bg"><img src="/static/img/treat-2.jpg" alt="치아보존치료 - 보존과 전문의 직접 신경치료"></div>
         <div class="treat-card-content">
           <div class="treat-card-num">02</div>
           <div class="treat-card-tag">Preservation</div>
@@ -735,7 +942,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </a>
       <!-- Aesthetic -->
       <a href="/treatments/aesthetic" class="treat-card rv rv-d1" style="text-decoration:none;color:inherit;">
-        <div class="treat-card-bg"><img src="/static/img/treat-3.jpg" alt=""></div>
+        <div class="treat-card-bg"><img src="/static/img/treat-3.jpg" alt="앞니 심미치료 - 최소삭제 라미네이트 레진"></div>
         <div class="treat-card-content">
           <div class="treat-card-num">03</div>
           <div class="treat-card-tag">Aesthetic</div>
@@ -749,7 +956,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </a>
       <!-- Orthodontics -->
       <a href="/treatments/orthodontics" class="treat-card rv" style="text-decoration:none;color:inherit;">
-        <div class="treat-card-bg"><img src="/static/img/treat-4.jpg" alt=""></div>
+        <div class="treat-card-bg"><img src="/static/img/treat-4.jpg" alt="치아교정 - 교정과 전문의 투명교정 설측교정"></div>
         <div class="treat-card-content">
           <div class="treat-card-num">04</div>
           <div class="treat-card-tag">Orthodontics</div>
@@ -763,7 +970,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </a>
       <!-- General -->
       <a href="/treatments/general" class="treat-card rv rv-d1" style="text-decoration:none;color:inherit;">
-        <div class="treat-card-bg"><img src="/static/img/treat-5.jpg" alt=""></div>
+        <div class="treat-card-bg"><img src="/static/img/treat-5.jpg" alt="일반 예방 치료 - 정기검진 스케일링 충치치료"></div>
         <div class="treat-card-content">
           <div class="treat-card-num">05</div>
           <div class="treat-card-tag">General Care</div>
@@ -787,7 +994,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
     <div class="team-grid">
       <div class="team-card lead rv">
         <div class="team-photo">
-          <img src="/static/img/dr-han-profile.jpg" alt="한승대 대표원장">
+          <img src="/static/img/dr-han-profile.jpg" alt="한승대 대표원장 - 통합치의학과 전문의 치의학박사">
           <div class="team-photo-overlay"></div>
           <div class="team-badge">Lead Doctor</div>
         </div>
@@ -844,9 +1051,9 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   <div class="exp-grid">
     <div class="exp-images">
       <div class="exp-images-grid">
-        <img src="/static/img/consult-2.jpg" alt="상담">
-        <img src="/static/img/xray-1.jpg" alt="X-ray">
-        <img src="/static/img/treat-2.jpg" alt="진료">
+        <img src="/static/img/consult-2.jpg" alt="행복한예인치과 환자 상담 장면">
+        <img src="/static/img/xray-1.jpg" alt="X-ray 디지털 진단 장비">
+        <img src="/static/img/treat-2.jpg" alt="행복한예인치과 보존 치료 진료">
       </div>
     </div>
     <div class="exp-text">
@@ -890,27 +1097,27 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 <!-- ===== PHOTO MARQUEE ===== -->
 <div class="photo-marquee">
   <div class="photo-track">
-    <img src="/static/img/consult-1.jpg" alt="">
-    <img src="/static/img/treat-6.jpg" alt="">
-    <img src="/static/img/treat-4.jpg" alt="">
-    <img src="/static/img/dr-han-logo.jpg" alt="">
-    <img src="/static/img/consult-3.jpg" alt="">
-    <img src="/static/img/treat-7.jpg" alt="">
-    <img src="/static/img/treat-5.jpg" alt="">
-    <img src="/static/img/xray-3.jpg" alt="">
-    <img src="/static/img/dr-han-front.jpg" alt="">
-    <img src="/static/img/xray-2.jpg" alt="">
+    <img src="/static/img/consult-1.jpg" alt="행복한예인치과 환자 상담">
+    <img src="/static/img/treat-6.jpg" alt="치과 치료 시술 장면">
+    <img src="/static/img/treat-4.jpg" alt="교정 치료 진행">
+    <img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 로고">
+    <img src="/static/img/consult-3.jpg" alt="X-ray 진단 상담">
+    <img src="/static/img/treat-7.jpg" alt="정밀 치과 시술">
+    <img src="/static/img/treat-5.jpg" alt="예방 치료 스케일링">
+    <img src="/static/img/xray-3.jpg" alt="파노라마 X-ray 촬영">
+    <img src="/static/img/dr-han-front.jpg" alt="한승대 원장 진료">
+    <img src="/static/img/xray-2.jpg" alt="구강내 진단 촬영">
     <!-- duplicate for seamless loop -->
-    <img src="/static/img/consult-1.jpg" alt="">
-    <img src="/static/img/treat-6.jpg" alt="">
-    <img src="/static/img/treat-4.jpg" alt="">
-    <img src="/static/img/dr-han-logo.jpg" alt="">
-    <img src="/static/img/consult-3.jpg" alt="">
-    <img src="/static/img/treat-7.jpg" alt="">
-    <img src="/static/img/treat-5.jpg" alt="">
-    <img src="/static/img/xray-3.jpg" alt="">
-    <img src="/static/img/dr-han-front.jpg" alt="">
-    <img src="/static/img/xray-2.jpg" alt="">
+    <img src="/static/img/consult-1.jpg" alt="행복한예인치과 환자 상담">
+    <img src="/static/img/treat-6.jpg" alt="치과 치료 시술 장면">
+    <img src="/static/img/treat-4.jpg" alt="교정 치료 진행">
+    <img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 로고">
+    <img src="/static/img/consult-3.jpg" alt="X-ray 진단 상담">
+    <img src="/static/img/treat-7.jpg" alt="정밀 치과 시술">
+    <img src="/static/img/treat-5.jpg" alt="예방 치료 스케일링">
+    <img src="/static/img/xray-3.jpg" alt="파노라마 X-ray 촬영">
+    <img src="/static/img/dr-han-front.jpg" alt="한승대 원장 진료">
+    <img src="/static/img/xray-2.jpg" alt="구강내 진단 촬영">
   </div>
 </div>
 
@@ -958,17 +1165,92 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   </div>
 </section>
 
+<!-- ===== FAQ (AEO 최적화) ===== -->
+<section class="faq sec-pad" id="faq" itemscope itemtype="https://schema.org/FAQPage">
+  <div class="sec-inner">
+    <div class="sec-label">FAQ</div>
+    <h2 class="sec-title rv">자주 묻는 <em>질문</em></h2>
+    <div class="faq-list">
+      <div class="faq-item rv" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h4 itemprop="name">행복한예인치과는 어디에 있나요?</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">서울특별시 중구 남대문로9길 51 효덕빌딩 3층 301호에 위치하고 있습니다. 1호선·2호선 시청역 4번·5번 출구에서 도보 5분 거리입니다.</p>
+        </div>
+      </div>
+      <div class="faq-item rv rv-d1" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h4 itemprop="name">진료시간은 어떻게 되나요?</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">월·화·목·금 09:30~18:30, 수요일은 야간진료로 09:30~20:00까지 진료합니다. 점심시간은 13:00~14:00이며, 토·일·공휴일은 휴진입니다. 마감 1시간 전까지 접수 가능합니다.</p>
+        </div>
+      </div>
+      <div class="faq-item rv rv-d1" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h4 itemprop="name">발치즉시 임플란트란 무엇인가요?</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">발치즉시 임플란트는 치아를 발치하는 동시에 임플란트를 식립하는 시술입니다. 별도의 치유 기간 없이 바로 진행하여 전체 치료 기간을 크게 단축합니다. 행복한예인치과는 80% 이상의 케이스에서 즉시식립을 시행하고 있습니다.</p>
+        </div>
+      </div>
+      <div class="faq-item rv rv-d2" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h4 itemprop="name">어떤 전문의가 있나요?</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">한승대 대표원장(통합치의학과 전문의, 치의학 박사), 신정희 원장(치과보존과 전문의, 치의학 박사), 박현미 원장(교정과 전문의) 총 3명의 보건복지부 인증 전문의가 각 분야를 직접 진료합니다.</p>
+        </div>
+      </div>
+      <div class="faq-item rv rv-d2" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h4 itemprop="name">예약은 어떻게 하나요?</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">전화(02-756-2828) 또는 네이버 예약으로 예약하실 수 있습니다. 수요일 야간진료도 예약 가능합니다.</p>
+        </div>
+      </div>
+      <div class="faq-item rv rv-d3" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h4 itemprop="name">시청역 근처에서 좋은 치과를 찾고 있어요.</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">행복한예인치과는 시청역 4번·5번 출구에서 도보 5분 거리에 위치합니다. 2013년부터 13년간 같은 자리에서 운영하고 있으며, 통합치의학·보존과·교정과 3명의 전문의가 협진합니다. 환자 리뷰 458건, 발치즉시 임플란트 성공률 80% 이상의 실적을 보유하고 있습니다.</p>
+        </div>
+      </div>
+      <div class="faq-item rv rv-d3" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h4 itemprop="name">행복한예인치과의 진료 철학이 궁금해요.</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">'내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다'가 행복한예인치과의 진료 철학입니다. 과장 없는 진료, 투명한 설명, 환자 존중을 기본으로 13년간 같은 자리에서 신뢰를 쌓아왔습니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ===== CTA ===== -->
 <section class="cta sec-pad">
   <div class="cta-inner">
     <h2 class="rv">치료를 미루고 계셨다면,<br>지금이 <em>그때</em>입니다.</h2>
     <p class="rv rv-d1">언젠가가 아니라, 지금 치료받을 수 있는<br>신뢰할 수 있는 치과를 만들고 싶었습니다.</p>
     <div class="cta-btns rv rv-d2">
-      <a href="tel:02-756-2828" class="btn btn-gold"><i class="fas fa-phone-alt"></i> 02.756.2828</a>
-      <a href="https://blog.naver.com/yein2828" target="_blank" class="btn btn-naver"><i class="fab fa-blogger-b"></i> Naver Blog</a>
+      <a href="tel:02-756-2828" class="btn btn-gold"><i class="fas fa-phone-alt"></i> 전화예약</a>
+      <a href="https://naver.me/G0DXGZbi" target="_blank" class="btn btn-naver"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
+      <a href="https://blog.naver.com/yein2828" target="_blank" class="btn btn-ghost"><i class="fab fa-blogger-b"></i> Naver Blog</a>
     </div>
   </div>
 </section>
+</main>
 
 <!-- ===== FOOTER ===== -->
 <footer>
@@ -1168,6 +1450,55 @@ app.get('/api/info', (c) => {
     representative: '한승대',
     business_number: '104-91-44744'
   })
+})
+
+// ===== SEO: robots.txt =====
+app.get('/robots.txt', (c) => {
+  const robotsTxt = `User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Allow: /api/info
+
+Sitemap: https://yein-dental.pages.dev/sitemap.xml
+
+# 행복한예인치과 - Happy Yein Dental Clinic
+# https://yein-dental.pages.dev
+`;
+  return c.text(robotsTxt, 200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=86400' });
+})
+
+// ===== SEO: sitemap.xml =====
+app.get('/sitemap.xml', (c) => {
+  const domain = 'https://yein-dental.pages.dev';
+  const today = new Date().toISOString().split('T')[0];
+  const urls = [
+    { loc: '/', priority: '1.0', changefreq: 'weekly' },
+    { loc: '/philosophy', priority: '0.8', changefreq: 'monthly' },
+    { loc: '/doctors', priority: '0.8', changefreq: 'monthly' },
+    { loc: '/experience', priority: '0.7', changefreq: 'monthly' },
+    { loc: '/location', priority: '0.8', changefreq: 'monthly' },
+    { loc: '/treatments/implant', priority: '0.9', changefreq: 'monthly' },
+    { loc: '/treatments/preservation', priority: '0.8', changefreq: 'monthly' },
+    { loc: '/treatments/aesthetic', priority: '0.8', changefreq: 'monthly' },
+    { loc: '/treatments/orthodontics', priority: '0.8', changefreq: 'monthly' },
+    { loc: '/treatments/general', priority: '0.7', changefreq: 'monthly' },
+    { loc: '/before-after', priority: '0.7', changefreq: 'weekly' },
+    { loc: '/blog', priority: '0.7', changefreq: 'weekly' },
+    { loc: '/notice', priority: '0.6', changefreq: 'weekly' },
+  ];
+
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(u => `  <url>
+    <loc>${domain}${u.loc}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${u.changefreq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+  return c.text(sitemap, 200, { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
 })
 
 export default app

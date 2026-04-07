@@ -200,7 +200,47 @@ export function renderTreatmentPage(slug: string): string | null {
     </a>`
   ).join('');
 
-  return `${head({ title: t.title, description: t.metaDesc, path: `/treatments/${t.slug}`, ogImage: t.heroImg, ogType: 'article' })}
+  // FAQ 스키마 (AEO)
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": t.faq.map(f => ({
+      "@type": "Question",
+      "name": f.q,
+      "acceptedAnswer": { "@type": "Answer", "text": f.a }
+    }))
+  };
+
+  // MedicalWebPage 스키마
+  const medicalPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "name": t.title,
+    "description": t.metaDesc,
+    "url": `https://yein-dental.pages.dev/treatments/${t.slug}`,
+    "about": {
+      "@type": "MedicalProcedure",
+      "name": t.title,
+      "procedureType": "Surgical",
+      "bodyLocation": "Mouth"
+    },
+    "lastReviewed": "2026-04-07"
+  };
+
+  return `${head({
+    title: t.title,
+    description: t.metaDesc,
+    path: `/treatments/${t.slug}`,
+    ogImage: t.heroImg,
+    ogType: 'article',
+    keywords: `${t.title}, 행복한예인치과, 시청역 치과, ${t.title} 비용, ${t.title} 후기, 서울 ${t.title}`,
+    breadcrumbs: [
+      { name: '홈', url: '/' },
+      { name: '진료 안내', url: '/#treatments' },
+      { name: t.title, url: `/treatments/${t.slug}` }
+    ],
+    jsonLd: [faqSchema, medicalPageSchema]
+  })}
 ${nav('treatments')}
 
 <!-- HERO -->
