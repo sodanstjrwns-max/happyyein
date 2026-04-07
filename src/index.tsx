@@ -8,1406 +8,547 @@ app.get('/', (c) => {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>행복한예인치과 | 13년의 신뢰, 한자리의 약속</title>
-<meta name="description" content="서울 시청역 5분, 13년간 한자리에서 쌓아온 신뢰. 발치즉시 임플란트, 보존치료, 심미치료 전문. 행복한예인치과 한승대 원장">
+<title>행복한예인치과 | YEIN DENTAL</title>
+<meta name="description" content="서울 시청역 5분. 13년간 한자리에서 쌓아온 신뢰. 발치즉시 임플란트, 보존치료, 심미치료 전문.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
 <style>
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css');
+}
 :root {
   --gold: #F7BA18;
-  --gold-light: #FDD85D;
-  --gold-dark: #D4960A;
-  --gold-pale: #FFF8E1;
-  --dark: #1A1A1A;
-  --dark-warm: #2C2418;
-  --gray-900: #1a1a2e;
-  --gray-800: #333;
-  --gray-600: #666;
-  --gray-400: #999;
-  --gray-200: #e8e8e8;
-  --gray-100: #f5f5f0;
-  --white: #FFFFFF;
-  --cream: #FDFBF7;
-  --warm-white: #FAF8F5;
+  --gold-deep: #C8930A;
+  --gold-glow: rgba(247,186,24,0.15);
+  --black: #0A0A0A;
+  --black-light: #141414;
+  --black-card: #1A1A1A;
+  --white: #F5F2ED;
+  --white-pure: #FFFFFF;
+  --cream: #EDE8E0;
+  --gray: #888;
+  --gray-dark: #555;
+  --gray-light: #B8B4AE;
+  --accent-font: 'Instrument Serif', 'Cormorant Garamond', serif;
+  --display-font: 'Syne', 'Space Grotesk', sans-serif;
+  --body-font: 'Space Grotesk', 'Noto Sans KR', sans-serif;
+  --korean-font: 'Noto Sans KR', sans-serif;
 }
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;scroll-behavior:smooth;overflow-x:hidden;}
+body{font-family:var(--body-font);color:var(--black);background:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+::selection{background:var(--gold);color:var(--black);}
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+/* ========= LOADER ========= */
+.loader{position:fixed;inset:0;background:var(--black);z-index:99999;display:flex;align-items:center;justify-content:center;transition:opacity 0.6s,visibility 0.6s;}
+.loader.done{opacity:0;visibility:hidden;pointer-events:none;}
+.loader-text{font-family:var(--accent-font);font-size:clamp(2rem,5vw,4rem);color:var(--gold);font-style:italic;opacity:0;animation:loaderIn 1.2s ease forwards;}
+@keyframes loaderIn{0%{opacity:0;transform:translateY(20px);letter-spacing:15px}50%{opacity:1}100%{opacity:1;transform:translateY(0);letter-spacing:2px}}
 
-html {
-  scroll-behavior: smooth;
-  font-size: 16px;
-}
+/* ========= MARQUEE ========= */
+.marquee-bar{background:var(--gold);color:var(--black);padding:10px 0;overflow:hidden;white-space:nowrap;position:relative;z-index:100;}
+.marquee-track{display:inline-flex;animation:marquee 25s linear infinite;}
+.marquee-track span{font-family:var(--display-font);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:4px;padding:0 40px;}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-body {
-  font-family: 'Noto Sans KR', sans-serif;
-  color: var(--dark);
-  background: var(--white);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
+/* ========= NAV ========= */
+nav{position:fixed;top:0;width:100%;z-index:1000;padding:24px 0;mix-blend-mode:difference;transition:all 0.5s;}
+nav.scrolled{mix-blend-mode:normal;background:rgba(10,10,10,0.92);backdrop-filter:blur(30px);padding:14px 0;}
+.nav-inner{max-width:1600px;margin:0 auto;padding:0 48px;display:flex;justify-content:space-between;align-items:center;}
+.nav-brand{font-family:var(--accent-font);font-size:1.4rem;color:var(--white-pure);text-decoration:none;font-style:italic;letter-spacing:1px;}
+.nav-brand em{color:var(--gold);font-style:italic;}
+.nav-links{display:flex;gap:32px;align-items:center;}
+.nav-links a{text-decoration:none;color:var(--white-pure);font-family:var(--display-font);font-size:0.8rem;font-weight:500;text-transform:uppercase;letter-spacing:2px;transition:color 0.3s;position:relative;}
+.nav-links a:hover{color:var(--gold);}
+.nav-tel{font-family:var(--display-font);font-weight:700;color:var(--gold)!important;font-size:0.85rem!important;letter-spacing:1px!important;}
+.hamburger{display:none;flex-direction:column;gap:6px;cursor:pointer;z-index:1001;}
+.hamburger span{width:28px;height:2px;background:var(--white-pure);transition:all 0.3s;}
+.hamburger.active span:nth-child(1){transform:rotate(45deg) translateY(5.5px);}
+.hamburger.active span:nth-child(2){opacity:0;}
+.hamburger.active span:nth-child(3){transform:rotate(-45deg) translateY(-5.5px);}
+.mob-menu{position:fixed;inset:0;background:var(--black);z-index:999;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:40px;opacity:0;visibility:hidden;transition:all 0.5s;}
+.mob-menu.open{opacity:1;visibility:visible;}
+.mob-menu a{font-family:var(--accent-font);font-size:2.5rem;color:var(--white);text-decoration:none;font-style:italic;transition:color 0.3s;}
+.mob-menu a:hover{color:var(--gold);}
 
-/* ==================== CUSTOM CURSOR ==================== */
-.cursor-dot {
-  width: 8px; height: 8px;
-  background: var(--gold);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 99999;
-  transition: transform 0.1s;
-  mix-blend-mode: difference;
-}
-.cursor-ring {
-  width: 40px; height: 40px;
-  border: 2px solid var(--gold);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 99998;
-  transition: all 0.15s ease-out;
-  opacity: 0.5;
-}
+/* ========= HERO ========= */
+.hero{min-height:100vh;background:var(--black);color:var(--white);display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;padding:0 48px 80px;}
+.hero-bg{position:absolute;inset:0;overflow:hidden;}
+.hero-bg img{position:absolute;right:-5%;bottom:0;height:95%;object-fit:cover;opacity:0.35;filter:grayscale(30%);mask-image:linear-gradient(to left,rgba(0,0,0,0.8) 30%,transparent 80%);}
+.hero-grain{position:absolute;inset:0;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");}
+.hero-content{position:relative;z-index:2;max-width:1600px;width:100%;margin:0 auto;}
+.hero-eyebrow{font-family:var(--display-font);font-size:0.7rem;text-transform:uppercase;letter-spacing:6px;color:var(--gold);margin-bottom:32px;display:flex;align-items:center;gap:16px;}
+.hero-eyebrow::before{content:'';width:40px;height:1px;background:var(--gold);}
+.hero-title{font-family:var(--accent-font);font-size:clamp(3rem,8vw,8rem);line-height:0.95;letter-spacing:-3px;font-weight:400;margin-bottom:40px;}
+.hero-title .italic{font-style:italic;color:var(--gold);}
+.hero-title .outline{-webkit-text-stroke:1.5px var(--white);color:transparent;}
+.hero-bottom{display:flex;justify-content:space-between;align-items:flex-end;margin-top:40px;}
+.hero-desc{max-width:420px;font-family:var(--korean-font);font-size:0.92rem;line-height:1.9;color:var(--gray-light);font-weight:300;}
+.hero-cta-group{display:flex;gap:16px;align-items:center;}
+.btn-gold{display:inline-flex;align-items:center;gap:10px;background:var(--gold);color:var(--black);padding:18px 40px;border-radius:60px;text-decoration:none;font-family:var(--display-font);font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:2px;transition:all 0.4s;border:none;cursor:pointer;}
+.btn-gold:hover{background:var(--gold-deep);transform:translateY(-2px);box-shadow:0 15px 40px rgba(247,186,24,0.3);}
+.btn-ghost{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--white);padding:18px 40px;border-radius:60px;text-decoration:none;font-family:var(--display-font);font-weight:500;font-size:0.85rem;text-transform:uppercase;letter-spacing:2px;border:1px solid rgba(255,255,255,0.2);transition:all 0.4s;cursor:pointer;}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:2;}
+.hero-scroll span{font-family:var(--display-font);font-size:0.65rem;text-transform:uppercase;letter-spacing:3px;color:var(--gray);writing-mode:vertical-rl;}
+.hero-scroll-line{width:1px;height:60px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollLine 2s ease-in-out infinite;}
+@keyframes scrollLine{0%,100%{opacity:0.3;transform:scaleY(0.5)}50%{opacity:1;transform:scaleY(1)}}
 
-/* ==================== NAVIGATION ==================== */
-nav {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
-  padding: 20px 0;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-nav.scrolled {
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(20px);
-  padding: 12px 0;
-  box-shadow: 0 1px 30px rgba(0,0,0,0.06);
-}
-.nav-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-}
-.nav-logo img {
-  height: 36px;
-}
-.nav-logo-text {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--dark);
-  letter-spacing: -0.5px;
-}
-.nav-logo-text span { color: var(--gold); }
+/* ========= HORIZONTAL NUMBER STRIP ========= */
+.num-strip{display:flex;border-top:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);background:var(--black);}
+.num-item{flex:1;padding:48px;text-align:center;border-right:1px solid rgba(255,255,255,0.08);transition:background 0.4s;}
+.num-item:last-child{border-right:none;}
+.num-item:hover{background:rgba(247,186,24,0.05);}
+.num-item .num{font-family:var(--accent-font);font-size:3.5rem;color:var(--gold);font-style:italic;line-height:1;}
+.num-item .txt{font-family:var(--korean-font);font-size:0.78rem;color:var(--gray);margin-top:12px;font-weight:300;letter-spacing:-0.3px;}
 
-.nav-links {
-  display: flex;
-  gap: 36px;
-  align-items: center;
-}
-.nav-links a {
-  text-decoration: none;
-  color: var(--gray-600);
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: -0.3px;
-  position: relative;
-  transition: color 0.3s;
-}
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--gold);
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.nav-links a:hover { color: var(--dark); }
-.nav-links a:hover::after { width: 100%; }
+/* ========= TEXT REVEAL SECTION ========= */
+.big-text-section{padding:200px 48px;background:var(--white);position:relative;overflow:hidden;}
+.big-text-inner{max-width:1400px;margin:0 auto;}
+.big-text{font-family:var(--accent-font);font-size:clamp(2.5rem,5.5vw,5rem);line-height:1.35;color:var(--black);font-weight:400;letter-spacing:-1px;}
+.big-text em{font-style:italic;color:var(--gold);}
+.big-text .light{color:var(--gray-light);font-weight:300;}
+.big-text-credit{margin-top:40px;font-family:var(--display-font);font-size:0.75rem;text-transform:uppercase;letter-spacing:4px;color:var(--gray);}
 
-.nav-cta {
-  background: var(--gold) !important;
-  color: var(--white) !important;
-  padding: 10px 24px !important;
-  border-radius: 50px !important;
-  font-weight: 600 !important;
-  transition: all 0.3s !important;
-}
-.nav-cta:hover {
-  background: var(--gold-dark) !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(247, 186, 24, 0.4);
-}
-.nav-cta::after { display: none !important; }
+/* ========= VALUES (Horizontal Scroll) ========= */
+.values-section{padding:160px 0;background:var(--cream);overflow:hidden;}
+.values-header{padding:0 48px;max-width:1600px;margin:0 auto 60px;}
+.sec-label{font-family:var(--display-font);font-size:0.7rem;text-transform:uppercase;letter-spacing:6px;color:var(--gold-deep);margin-bottom:20px;display:flex;align-items:center;gap:16px;}
+.sec-label::before{content:'';width:30px;height:1px;background:var(--gold-deep);}
+.sec-title{font-family:var(--accent-font);font-size:clamp(2rem,4vw,3.5rem);font-weight:400;letter-spacing:-1px;line-height:1.2;}
+.sec-title em{font-style:italic;color:var(--gold);}
+.values-track{display:flex;gap:24px;padding:0 48px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;cursor:grab;}
+.values-track::-webkit-scrollbar{display:none;}
+.value-card{flex-shrink:0;width:420px;padding:56px 44px;background:var(--white-pure);border-radius:24px;scroll-snap-align:start;transition:all 0.5s;position:relative;overflow:hidden;border:1px solid transparent;}
+.value-card:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 30px 60px rgba(0,0,0,0.06);}
+.value-card::before{content:attr(data-num);position:absolute;top:-15px;right:20px;font-family:var(--accent-font);font-size:8rem;color:rgba(247,186,24,0.06);font-style:italic;line-height:1;pointer-events:none;}
+.value-card h3{font-family:var(--display-font);font-size:1.3rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;}
+.value-card p{font-family:var(--korean-font);font-size:0.9rem;line-height:1.9;color:var(--gray-dark);font-weight:300;}
+.value-card-icon{width:52px;height:52px;background:var(--gold);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;font-size:1.2rem;color:var(--black);}
 
-.mobile-menu-btn {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  width: 30px;
-  height: 20px;
-  position: relative;
-}
-.mobile-menu-btn span {
-  display: block;
-  width: 100%;
-  height: 2px;
-  background: var(--dark);
-  position: absolute;
-  transition: all 0.3s;
-}
-.mobile-menu-btn span:nth-child(1) { top: 0; }
-.mobile-menu-btn span:nth-child(2) { top: 50%; transform: translateY(-50%); }
-.mobile-menu-btn span:nth-child(3) { bottom: 0; }
-.mobile-menu-btn.active span:nth-child(1) { top: 50%; transform: translateY(-50%) rotate(45deg); }
-.mobile-menu-btn.active span:nth-child(2) { opacity: 0; }
-.mobile-menu-btn.active span:nth-child(3) { bottom: 50%; transform: translateY(50%) rotate(-45deg); }
+/* ========= TREATMENTS ========= */
+.treatments{padding:160px 48px;background:var(--black);color:var(--white);}
+.treatments-inner{max-width:1600px;margin:0 auto;}
+.treat-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:80px;}
+.treat-card{position:relative;padding:60px 48px;background:var(--black-light);min-height:340px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;transition:all 0.5s;cursor:pointer;}
+.treat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(247,186,24,0.05),transparent);opacity:0;transition:opacity 0.5s;}
+.treat-card:hover::before{opacity:1;}
+.treat-card:hover{background:var(--black-card);}
+.treat-num{position:absolute;top:40px;right:48px;font-family:var(--accent-font);font-size:6rem;font-style:italic;color:rgba(247,186,24,0.08);line-height:1;}
+.treat-card:hover .treat-num{color:rgba(247,186,24,0.15);}
+.treat-tag{font-family:var(--display-font);font-size:0.65rem;text-transform:uppercase;letter-spacing:4px;color:var(--gold);margin-bottom:12px;}
+.treat-card h3{font-family:var(--korean-font);font-size:1.6rem;font-weight:700;margin-bottom:12px;letter-spacing:-0.5px;}
+.treat-card p{font-family:var(--korean-font);font-size:0.88rem;line-height:1.8;color:var(--gray);font-weight:300;max-width:400px;}
+.treat-card-featured{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0;min-height:500px;}
+.treat-card-featured .treat-content{padding:60px 48px;display:flex;flex-direction:column;justify-content:center;}
+.treat-card-featured .treat-img{position:relative;overflow:hidden;}
+.treat-card-featured .treat-img img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%);transition:all 0.6s;}
+.treat-card-featured:hover .treat-img img{filter:grayscale(0%);transform:scale(1.03);}
+.treat-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px;}
+.treat-pill{padding:8px 18px;border:1px solid rgba(247,186,24,0.25);border-radius:50px;font-family:var(--display-font);font-size:0.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;transition:all 0.3s;}
+.treat-card:hover .treat-pill{border-color:var(--gold);background:rgba(247,186,24,0.1);}
 
-.mobile-menu {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100vh;
-  background: var(--white);
-  z-index: 999;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 32px;
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-.mobile-menu.active { display: flex; opacity: 1; }
-.mobile-menu a {
-  text-decoration: none;
-  color: var(--dark);
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
+/* ========= TEAM ========= */
+.team-section{padding:160px 48px;background:var(--white);}
+.team-inner{max-width:1600px;margin:0 auto;}
+.team-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;margin-top:80px;}
+.team-card{position:relative;overflow:hidden;border-radius:20px;background:var(--cream);transition:all 0.5s;}
+.team-card:hover{transform:translateY(-6px);box-shadow:0 40px 60px rgba(0,0,0,0.08);}
+.team-card.lead{background:var(--black);color:var(--white);}
+.team-photo{aspect-ratio:3/4;overflow:hidden;position:relative;}
+.team-photo img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s;}
+.team-card:hover .team-photo img{transform:scale(1.04);}
+.team-photo-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--cream),var(--white));}
+.team-card.lead .team-photo-placeholder{background:linear-gradient(135deg,#1a1a1a,#2a2a2a);}
+.team-photo-placeholder i{font-size:3rem;color:var(--gold);opacity:0.2;}
+.team-label{position:absolute;top:16px;left:16px;background:var(--gold);color:var(--black);padding:6px 16px;border-radius:50px;font-family:var(--display-font);font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;}
+.team-info{padding:28px 28px 32px;}
+.team-info h3{font-family:var(--display-font);font-size:1.25rem;font-weight:700;margin-bottom:4px;}
+.team-info .role{font-family:var(--accent-font);font-size:0.95rem;font-style:italic;color:var(--gold);margin-bottom:16px;}
+.team-creds{list-style:none;font-family:var(--korean-font);font-size:0.78rem;line-height:1.9;color:var(--gray);}
+.team-card.lead .team-creds{color:var(--gray);}
+.team-creds li{padding-left:14px;position:relative;}
+.team-creds li::before{content:'';position:absolute;left:0;top:9px;width:4px;height:4px;background:var(--gold);border-radius:50%;}
 
-/* ==================== HERO ==================== */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, var(--cream) 0%, var(--white) 50%, var(--gold-pale) 100%);
-}
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 800px;
-  height: 800px;
-  background: radial-gradient(circle, rgba(247,186,24,0.08) 0%, transparent 70%);
-  border-radius: 50%;
-}
-.hero::after {
-  content: '';
-  position: absolute;
-  bottom: -30%;
-  left: -10%;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(247,186,24,0.05) 0%, transparent 70%);
-  border-radius: 50%;
-}
+/* ========= EXPERIENCE SPLIT ========= */
+.exp-section{padding:0;background:var(--black);color:var(--white);}
+.exp-grid{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
+.exp-images{position:relative;overflow:hidden;}
+.exp-images-inner{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;height:100%;}
+.exp-images-inner img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%);transition:filter 0.4s;}
+.exp-images-inner img:hover{filter:grayscale(0%);}
+.exp-images-inner img:first-child{grid-column:span 2;}
+.exp-text{padding:100px 72px;display:flex;flex-direction:column;justify-content:center;}
+.exp-text h2{font-family:var(--accent-font);font-size:clamp(2rem,3.5vw,3.2rem);font-weight:400;line-height:1.3;margin-bottom:32px;letter-spacing:-1px;}
+.exp-text h2 em{font-style:italic;color:var(--gold);}
+.exp-text>p{font-family:var(--korean-font);font-size:0.92rem;line-height:1.9;color:var(--gray-light);font-weight:300;margin-bottom:48px;}
+.exp-list{list-style:none;display:flex;flex-direction:column;gap:0;}
+.exp-item{display:flex;align-items:flex-start;gap:20px;padding:24px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.exp-item:last-child{border-bottom:none;}
+.exp-item-icon{width:44px;height:44px;flex-shrink:0;border:1px solid rgba(247,186,24,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:0.95rem;}
+.exp-item h4{font-family:var(--display-font);font-size:0.9rem;font-weight:600;margin-bottom:4px;letter-spacing:0.5px;}
+.exp-item p{font-family:var(--korean-font);font-size:0.82rem;color:var(--gray);font-weight:300;}
 
-.hero-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 120px 40px 80px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
+/* ========= PHOTO MARQUEE ========= */
+.photo-marquee{padding:80px 0;background:var(--cream);overflow:hidden;}
+.photo-track{display:flex;gap:16px;animation:photoScroll 40s linear infinite;}
+.photo-track img{height:280px;border-radius:16px;object-fit:cover;flex-shrink:0;filter:grayscale(20%);transition:filter 0.3s;}
+.photo-track img:hover{filter:grayscale(0%);}
+@keyframes photoScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(247,186,24,0.1);
-  border: 1px solid rgba(247,186,24,0.2);
-  padding: 8px 20px;
-  border-radius: 50px;
-  font-size: 0.85rem;
-  color: var(--gold-dark);
-  font-weight: 600;
-  margin-bottom: 24px;
-  animation: fadeInUp 0.8s ease-out;
-}
-.hero-badge i { font-size: 0.75rem; }
+/* ========= LOCATION ========= */
+.location{padding:160px 48px;background:var(--white);}
+.location-inner{max-width:1400px;margin:0 auto;}
+.location-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-top:80px;}
+.location-map{border-radius:24px;overflow:hidden;height:520px;background:var(--cream);}
+.location-map iframe{width:100%;height:100%;border:0;filter:grayscale(80%);transition:filter 0.5s;}
+.location-map:hover iframe{filter:grayscale(0%);}
+.loc-info{display:flex;flex-direction:column;justify-content:center;}
+.loc-block{padding:28px 0;border-bottom:1px solid rgba(0,0,0,0.06);}
+.loc-block:last-child{border-bottom:none;}
+.loc-block-label{font-family:var(--display-font);font-size:0.65rem;text-transform:uppercase;letter-spacing:4px;color:var(--gold-deep);font-weight:600;margin-bottom:12px;}
+.loc-block-value{font-family:var(--korean-font);font-size:1rem;font-weight:400;line-height:1.8;color:var(--black);}
+.loc-block-value small{display:block;font-size:0.82rem;color:var(--gray);font-weight:300;margin-top:4px;}
+.loc-block-value a{color:var(--gold-deep);text-decoration:none;font-weight:700;font-size:1.4rem;font-family:var(--display-font);letter-spacing:1px;}
+.loc-block-value a:hover{color:var(--gold);}
+.hours-grid{display:grid;grid-template-columns:60px 1fr;gap:4px 16px;font-size:0.9rem;}
+.hours-grid .day{font-weight:600;color:var(--black);}
+.hours-grid .time{color:var(--gray-dark);}
+.hours-grid .off{color:var(--gold-deep);font-weight:500;}
+.night-badge{display:inline-block;background:var(--gold);color:var(--black);padding:2px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;margin-left:8px;font-family:var(--display-font);text-transform:uppercase;letter-spacing:1px;}
 
-.hero-title {
-  font-size: 3.5rem;
-  font-weight: 900;
-  line-height: 1.2;
-  letter-spacing: -2px;
-  margin-bottom: 28px;
-  animation: fadeInUp 0.8s ease-out 0.1s both;
-}
-.hero-title .line { display: block; }
-.hero-title .gold { color: var(--gold); }
-.hero-title .serif {
-  font-family: 'Playfair Display', serif;
-  font-style: italic;
-  font-weight: 400;
-}
+/* ========= CTA SECTION ========= */
+.cta-section{padding:160px 48px;background:var(--black);text-align:center;position:relative;overflow:hidden;}
+.cta-section::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(247,186,24,0.08),transparent 70%);border-radius:50%;}
+.cta-inner{position:relative;z-index:1;}
+.cta-inner h2{font-family:var(--accent-font);font-size:clamp(2.5rem,5vw,4.5rem);color:var(--white);font-weight:400;letter-spacing:-2px;line-height:1.2;margin-bottom:24px;}
+.cta-inner h2 em{font-style:italic;color:var(--gold);}
+.cta-inner p{font-family:var(--korean-font);font-size:0.95rem;color:var(--gray);font-weight:300;line-height:1.8;margin-bottom:48px;max-width:500px;margin-left:auto;margin-right:auto;}
+.cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.btn-naver{display:inline-flex;align-items:center;gap:10px;background:#03C75A;color:var(--white-pure);padding:18px 40px;border-radius:60px;text-decoration:none;font-family:var(--display-font);font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:2px;transition:all 0.4s;}
+.btn-naver:hover{transform:translateY(-2px);box-shadow:0 15px 40px rgba(3,199,90,0.3);}
 
-.hero-sub {
-  font-size: 1.15rem;
-  color: var(--gray-600);
-  line-height: 1.8;
-  margin-bottom: 40px;
-  max-width: 480px;
-  font-weight: 300;
-  letter-spacing: -0.3px;
-  animation: fadeInUp 0.8s ease-out 0.2s both;
-}
+/* ========= FOOTER ========= */
+footer{padding:48px;background:var(--black-light);color:var(--gray);border-top:1px solid rgba(255,255,255,0.05);}
+.footer-inner{max-width:1600px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px;}
+.footer-left{font-family:var(--korean-font);font-size:0.78rem;line-height:1.9;font-weight:300;}
+.footer-left strong{color:var(--gray-light);font-weight:500;}
+.footer-right{display:flex;gap:24px;}
+.footer-right a{color:var(--gray);text-decoration:none;font-family:var(--display-font);font-size:0.72rem;text-transform:uppercase;letter-spacing:2px;transition:color 0.3s;}
+.footer-right a:hover{color:var(--gold);}
 
-.hero-actions {
-  display: flex;
-  gap: 16px;
-  animation: fadeInUp 0.8s ease-out 0.3s both;
-}
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--gold);
-  color: var(--white);
-  padding: 16px 36px;
-  border-radius: 60px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 1rem;
-  transition: all 0.3s;
-  border: none;
-  cursor: pointer;
-}
-.btn-primary:hover {
-  background: var(--gold-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(247,186,24,0.35);
-}
-.btn-outline {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: transparent;
-  color: var(--dark);
-  padding: 16px 36px;
-  border-radius: 60px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1rem;
-  border: 2px solid var(--gray-200);
-  transition: all 0.3s;
-  cursor: pointer;
-}
-.btn-outline:hover {
-  border-color: var(--gold);
-  color: var(--gold-dark);
-  background: var(--gold-pale);
-}
+/* ========= SCROLL REVEAL ========= */
+.reveal{opacity:0;transform:translateY(50px);transition:all 1s cubic-bezier(0.16,1,0.3,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-delay-1{transition-delay:0.1s;}
+.reveal-delay-2{transition-delay:0.2s;}
+.reveal-delay-3{transition-delay:0.3s;}
 
-.hero-stats {
-  display: flex;
-  gap: 40px;
-  margin-top: 48px;
-  animation: fadeInUp 0.8s ease-out 0.4s both;
-}
-.hero-stat .number {
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: var(--gold);
-  font-family: 'Playfair Display', serif;
-}
-.hero-stat .label {
-  font-size: 0.82rem;
-  color: var(--gray-400);
-  font-weight: 400;
-  margin-top: 4px;
-}
+/* ========= TEXT CHAR ANIMATION ========= */
+.char-reveal span{display:inline-block;opacity:0;transform:translateY(100%);transition:all 0.6s cubic-bezier(0.16,1,0.3,1);}
+.char-reveal.visible span{opacity:1;transform:translateY(0);}
 
-.hero-image {
-  position: relative;
-  animation: fadeInRight 1s ease-out 0.3s both;
-}
-.hero-image-main {
-  width: 100%;
-  max-width: 520px;
-  border-radius: 30px;
-  object-fit: cover;
-  aspect-ratio: 3/4;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.1);
-}
-.hero-image-float {
-  position: absolute;
-  background: var(--white);
-  border-radius: 20px;
-  padding: 20px 24px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-  animation: float 3s ease-in-out infinite;
-}
-.hero-image-float.top-right {
-  top: 40px;
-  right: -30px;
-}
-.hero-image-float.bottom-left {
-  bottom: 60px;
-  left: -30px;
-}
-.float-icon {
-  font-size: 1.5rem;
-  margin-bottom: 8px;
-}
-.float-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--dark);
-}
-.float-desc {
-  font-size: 0.75rem;
-  color: var(--gray-400);
-  margin-top: 2px;
-}
-
-/* ==================== PHILOSOPHY SECTION ==================== */
-.philosophy {
-  padding: 160px 40px;
-  background: var(--dark-warm);
-  color: var(--white);
-  position: relative;
-  overflow: hidden;
-}
-.philosophy::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F7BA18' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-}
-.philosophy-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
-}
-.section-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: var(--gold);
-  font-weight: 600;
-  margin-bottom: 24px;
-}
-.section-label::before {
-  content: '';
-  width: 30px;
-  height: 1px;
-  background: var(--gold);
-}
-.philosophy-quote {
-  font-size: 2.8rem;
-  font-weight: 300;
-  line-height: 1.5;
-  letter-spacing: -1.5px;
-  max-width: 900px;
-  margin-bottom: 60px;
-}
-.philosophy-quote em {
-  font-family: 'Playfair Display', serif;
-  color: var(--gold);
-  font-style: italic;
-}
-.philosophy-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  margin-top: 60px;
-}
-.philosophy-card {
-  padding: 40px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 20px;
-  transition: all 0.4s;
-}
-.philosophy-card:hover {
-  background: rgba(255,255,255,0.08);
-  transform: translateY(-4px);
-}
-.philosophy-card-icon {
-  width: 48px;
-  height: 48px;
-  background: rgba(247,186,24,0.15);
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  color: var(--gold);
-  margin-bottom: 24px;
-}
-.philosophy-card h3 {
-  font-size: 1.2rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-  letter-spacing: -0.5px;
-}
-.philosophy-card p {
-  font-size: 0.9rem;
-  line-height: 1.7;
-  color: rgba(255,255,255,0.6);
-  font-weight: 300;
-}
-
-/* ==================== TREATMENTS ==================== */
-.treatments {
-  padding: 160px 40px;
-  background: var(--white);
-}
-.treatments-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-.section-header {
-  text-align: center;
-  margin-bottom: 80px;
-}
-.section-header .section-label {
-  justify-content: center;
-}
-.section-title {
-  font-size: 2.8rem;
-  font-weight: 900;
-  letter-spacing: -2px;
-  margin-bottom: 20px;
-  line-height: 1.3;
-}
-.section-title .gold { color: var(--gold); }
-.section-desc {
-  font-size: 1.05rem;
-  color: var(--gray-600);
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.7;
-  font-weight: 300;
-}
-
-.treatment-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-}
-.treatment-card {
-  position: relative;
-  border-radius: 24px;
-  overflow: hidden;
-  background: var(--gray-100);
-  padding: 48px;
-  min-height: 360px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
-  border: 1px solid transparent;
-}
-.treatment-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 30px 60px rgba(0,0,0,0.08);
-  border-color: rgba(247,186,24,0.2);
-}
-.treatment-card.featured {
-  background: linear-gradient(135deg, var(--gold) 0%, #E8A708 100%);
-  color: var(--white);
-  grid-column: span 2;
-  min-height: 400px;
-  flex-direction: row;
-  align-items: center;
-  gap: 60px;
-}
-.treatment-number {
-  font-family: 'Playfair Display', serif;
-  font-size: 5rem;
-  font-weight: 700;
-  opacity: 0.1;
-  position: absolute;
-  top: 30px;
-  right: 40px;
-  line-height: 1;
-}
-.treatment-card.featured .treatment-number {
-  opacity: 0.2;
-  color: var(--white);
-}
-.treatment-icon {
-  width: 56px;
-  height: 56px;
-  background: rgba(247,186,24,0.1);
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
-  color: var(--gold);
-  margin-bottom: 24px;
-}
-.treatment-card.featured .treatment-icon {
-  background: rgba(255,255,255,0.2);
-  color: var(--white);
-}
-.treatment-card h3 {
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin-bottom: 12px;
-  letter-spacing: -0.5px;
-}
-.treatment-card .subtitle {
-  font-size: 0.85rem;
-  color: var(--gold-dark);
-  font-weight: 600;
-  margin-bottom: 16px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-.treatment-card.featured .subtitle {
-  color: rgba(255,255,255,0.8);
-}
-.treatment-card p {
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: var(--gray-600);
-  font-weight: 300;
-}
-.treatment-card.featured p {
-  color: rgba(255,255,255,0.85);
-}
-.treatment-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 20px;
-}
-.treatment-tag {
-  padding: 6px 16px;
-  border-radius: 50px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  background: rgba(247,186,24,0.08);
-  color: var(--gold-dark);
-}
-.treatment-card.featured .treatment-tag {
-  background: rgba(255,255,255,0.2);
-  color: var(--white);
-}
-.treatment-featured-img {
-  flex-shrink: 0;
-  width: 320px;
-  height: 320px;
-  border-radius: 20px;
-  object-fit: cover;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-}
-
-/* ==================== TEAM ==================== */
-.team {
-  padding: 160px 40px;
-  background: var(--warm-white);
-}
-.team-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-}
-.team-card {
-  background: var(--white);
-  border-radius: 24px;
-  overflow: hidden;
-  transition: all 0.4s;
-  border: 1px solid var(--gray-200);
-}
-.team-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 30px 60px rgba(0,0,0,0.08);
-  border-color: var(--gold);
-}
-.team-card.primary {
-  border-color: var(--gold);
-  box-shadow: 0 10px 40px rgba(247,186,24,0.1);
-}
-.team-img-wrap {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 4/5;
-}
-.team-img-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s;
-}
-.team-card:hover .team-img-wrap img {
-  transform: scale(1.05);
-}
-.team-badge {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  background: var(--gold);
-  color: var(--white);
-  padding: 6px 14px;
-  border-radius: 50px;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-.team-info {
-  padding: 28px;
-}
-.team-info h3 {
-  font-size: 1.3rem;
-  font-weight: 800;
-  margin-bottom: 4px;
-  letter-spacing: -0.5px;
-}
-.team-info .role {
-  font-size: 0.85rem;
-  color: var(--gold-dark);
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-.team-info .credentials {
-  list-style: none;
-  font-size: 0.82rem;
-  color: var(--gray-600);
-  line-height: 1.8;
-}
-.team-info .credentials li {
-  padding-left: 16px;
-  position: relative;
-}
-.team-info .credentials li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 10px;
-  width: 5px;
-  height: 5px;
-  background: var(--gold);
-  border-radius: 50%;
-}
-
-/* ==================== EXPERIENCE SECTION ==================== */
-.experience {
-  padding: 160px 40px;
-  background: var(--white);
-}
-.experience-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.experience-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
-}
-.experience-images {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-.experience-images img {
-  width: 100%;
-  border-radius: 16px;
-  object-fit: cover;
-  aspect-ratio: 1;
-}
-.experience-images img:first-child {
-  grid-column: span 2;
-  aspect-ratio: 16/9;
-}
-.exp-content h2 {
-  font-size: 2.4rem;
-  font-weight: 900;
-  letter-spacing: -1.5px;
-  margin-bottom: 24px;
-  line-height: 1.3;
-}
-.exp-content h2 .gold { color: var(--gold); }
-.exp-text {
-  font-size: 1rem;
-  line-height: 1.9;
-  color: var(--gray-600);
-  font-weight: 300;
-  margin-bottom: 36px;
-}
-.exp-features {
-  list-style: none;
-}
-.exp-features li {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--gray-200);
-}
-.exp-features li:last-child { border-bottom: none; }
-.exp-feature-icon {
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  background: var(--gold-pale);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--gold);
-  font-size: 1rem;
-}
-.exp-feature-text h4 {
-  font-size: 0.95rem;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-.exp-feature-text p {
-  font-size: 0.85rem;
-  color: var(--gray-400);
-  font-weight: 300;
-}
-
-/* ==================== GALLERY ==================== */
-.gallery {
-  padding: 120px 0;
-  background: var(--cream);
-  overflow: hidden;
-}
-.gallery-header {
-  text-align: center;
-  padding: 0 40px;
-  margin-bottom: 60px;
-}
-.gallery-scroll {
-  display: flex;
-  gap: 20px;
-  padding: 0 40px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.gallery-scroll::-webkit-scrollbar { display: none; }
-.gallery-item {
-  flex-shrink: 0;
-  width: 360px;
-  height: 280px;
-  border-radius: 20px;
-  overflow: hidden;
-  scroll-snap-align: start;
-  position: relative;
-}
-.gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s;
-}
-.gallery-item:hover img {
-  transform: scale(1.05);
-}
-.gallery-item-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 24px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.6));
-  color: var(--white);
-}
-.gallery-item-overlay span {
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-/* ==================== INFO SECTION ==================== */
-.info {
-  padding: 160px 40px;
-  background: var(--white);
-}
-.info-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-}
-.info-map {
-  border-radius: 24px;
-  overflow: hidden;
-  height: 480px;
-  background: var(--gray-100);
-}
-.info-map iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-.info-details {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.info-item {
-  padding: 24px 0;
-  border-bottom: 1px solid var(--gray-200);
-}
-.info-item:last-child { border-bottom: none; }
-.info-item-label {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--gold-dark);
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-.info-item-value {
-  font-size: 1.05rem;
-  font-weight: 500;
-  line-height: 1.7;
-  color: var(--dark);
-}
-.info-item-value small {
-  display: block;
-  font-size: 0.85rem;
-  color: var(--gray-400);
-  font-weight: 300;
-  margin-top: 4px;
-}
-
-.schedule-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 8px;
-}
-.schedule-table td {
-  padding: 8px 0;
-  font-size: 0.9rem;
-  border-bottom: 1px solid var(--gray-200);
-  vertical-align: top;
-}
-.schedule-table td:first-child {
-  font-weight: 600;
-  width: 80px;
-  color: var(--dark);
-}
-.schedule-table td:last-child {
-  color: var(--gray-600);
-}
-.schedule-table .rest {
-  color: var(--gold-dark);
-  font-weight: 500;
-}
-
-/* ==================== CONTACT CTA ==================== */
-.contact-cta {
-  padding: 120px 40px;
-  background: linear-gradient(135deg, var(--dark-warm) 0%, #1a1815 100%);
-  text-align: center;
-  color: var(--white);
-  position: relative;
-  overflow: hidden;
-}
-.contact-cta::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(247,186,24,0.1) 0%, transparent 70%);
-  border-radius: 50%;
-}
-.contact-cta-inner {
-  max-width: 700px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
-}
-.contact-cta h2 {
-  font-size: 2.8rem;
-  font-weight: 900;
-  letter-spacing: -2px;
-  margin-bottom: 20px;
-  line-height: 1.3;
-}
-.contact-cta h2 .gold { color: var(--gold); }
-.contact-cta p {
-  font-size: 1.05rem;
-  color: rgba(255,255,255,0.6);
-  line-height: 1.7;
-  margin-bottom: 40px;
-  font-weight: 300;
-}
-.contact-btns {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.contact-btn-phone {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--gold);
-  color: var(--white);
-  padding: 18px 40px;
-  border-radius: 60px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 1.1rem;
-  transition: all 0.3s;
-}
-.contact-btn-phone:hover {
-  background: var(--gold-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(247,186,24,0.35);
-}
-.contact-btn-naver {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  background: #03C75A;
-  color: var(--white);
-  padding: 18px 40px;
-  border-radius: 60px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 1.1rem;
-  transition: all 0.3s;
-}
-.contact-btn-naver:hover {
-  background: #02b350;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(3,199,90,0.35);
-}
-
-/* ==================== FOOTER ==================== */
-footer {
-  padding: 60px 40px;
-  background: var(--dark);
-  color: rgba(255,255,255,0.4);
-}
-.footer-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-.footer-left {
-  font-size: 0.82rem;
-  line-height: 1.8;
-}
-.footer-left strong {
-  color: rgba(255,255,255,0.7);
-}
-.footer-right {
-  display: flex;
-  gap: 24px;
-}
-.footer-right a {
-  color: rgba(255,255,255,0.4);
-  text-decoration: none;
-  font-size: 0.82rem;
-  transition: color 0.3s;
-}
-.footer-right a:hover {
-  color: var(--gold);
-}
-
-/* ==================== ANIMATIONS ==================== */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeInRight {
-  from { opacity: 0; transform: translateX(40px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ==================== SCROLL PROGRESS ==================== */
-.scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
-  background: var(--gold);
-  z-index: 10000;
-  transition: width 0.1s;
-}
-
-/* ==================== RESPONSIVE ==================== */
-@media (max-width: 1024px) {
-  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
-  .hero-title { font-size: 2.6rem; }
-  .hero-image { display: flex; justify-content: center; }
-  .hero-image-main { max-width: 400px; }
-  .hero-image-float { display: none; }
-  .philosophy-quote { font-size: 2rem; }
-  .philosophy-grid { grid-template-columns: 1fr; }
-  .treatment-card.featured { grid-column: span 2; flex-direction: column; }
-  .treatment-featured-img { width: 100%; height: 240px; }
-  .team-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
-  .experience-grid { grid-template-columns: 1fr; gap: 40px; }
-  .info-grid { grid-template-columns: 1fr; }
-  .info-map { height: 300px; }
-}
-
-@media (max-width: 768px) {
-  .nav-links { display: none; }
-  .mobile-menu-btn { display: block; }
-  .hero { min-height: auto; }
-  .hero-inner { padding: 100px 24px 60px; }
-  .hero-title { font-size: 2rem; }
-  .hero-sub { font-size: 1rem; }
-  .hero-actions { flex-direction: column; }
-  .hero-stats { gap: 24px; }
-  .hero-stat .number { font-size: 1.6rem; }
-  .philosophy { padding: 100px 24px; }
-  .philosophy-quote { font-size: 1.5rem; }
-  .treatments { padding: 100px 24px; }
-  .treatment-grid { grid-template-columns: 1fr; }
-  .treatment-card.featured { grid-column: span 1; }
-  .section-title { font-size: 2rem; }
-  .team { padding: 100px 24px; }
-  .experience { padding: 100px 24px; }
-  .gallery { padding: 80px 0; }
-  .gallery-item { width: 280px; height: 220px; }
-  .info { padding: 100px 24px; }
-  .contact-cta { padding: 80px 24px; }
-  .contact-cta h2 { font-size: 2rem; }
-  .contact-btns { flex-direction: column; align-items: center; }
-  footer { padding: 40px 24px; }
-  .footer-inner { flex-direction: column; text-align: center; }
-  .exp-content h2 { font-size: 1.8rem; }
-  .cursor-dot, .cursor-ring { display: none; }
-}
-
-@media (max-width: 480px) {
-  .hero-title { font-size: 1.7rem; letter-spacing: -1px; }
-  .hero-stats { flex-wrap: wrap; gap: 20px; }
-  .hero-stat .number { font-size: 1.4rem; }
-  .section-title { font-size: 1.6rem; }
-  .philosophy-quote { font-size: 1.3rem; }
-  .treatment-card { padding: 32px; min-height: 280px; }
-  .treatment-card.featured { min-height: 300px; }
-  .contact-cta h2 { font-size: 1.6rem; }
+/* ========= RESPONSIVE ========= */
+@media(max-width:1024px){
+  .hero{padding:0 32px 60px;}
+  .hero-title{font-size:clamp(2.5rem,7vw,5rem);}
+  .hero-bottom{flex-direction:column;gap:32px;align-items:flex-start;}
+  .num-strip{flex-wrap:wrap;}
+  .num-item{flex:1 1 50%;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .treat-grid{grid-template-columns:1fr;}
+  .treat-card-featured{grid-column:span 1;grid-template-columns:1fr;}
+  .treat-card-featured .treat-img{min-height:300px;}
+  .team-grid{grid-template-columns:1fr;max-width:440px;margin-left:auto;margin-right:auto;}
+  .exp-grid{grid-template-columns:1fr;}
+  .exp-images-inner{height:400px;}
+  .exp-text{padding:80px 48px;}
+  .location-grid{grid-template-columns:1fr;}
+  .location-map{height:350px;}
+}
+@media(max-width:768px){
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero{padding:0 24px 50px;min-height:90vh;}
+  .hero-title{letter-spacing:-1px;}
+  .hero-eyebrow{font-size:0.6rem;letter-spacing:4px;}
+  .hero-cta-group{flex-direction:column;width:100%;}
+  .btn-gold,.btn-ghost{width:100%;justify-content:center;}
+  .hero-scroll{display:none;}
+  .num-item{padding:32px 24px;}
+  .num-item .num{font-size:2.5rem;}
+  .big-text-section{padding:120px 24px;}
+  .big-text{font-size:clamp(1.8rem,5vw,3rem);}
+  .values-section{padding:100px 0;}
+  .value-card{width:320px;padding:40px 32px;}
+  .treatments{padding:100px 24px;}
+  .treat-card{padding:40px 32px;min-height:280px;}
+  .treat-card-featured .treat-content{padding:40px 32px;}
+  .team-section{padding:100px 24px;}
+  .exp-text{padding:60px 24px;}
+  .photo-track img{height:200px;}
+  .location{padding:100px 24px;}
+  .cta-section{padding:100px 24px;}
+  .cta-inner h2{font-size:clamp(2rem,5vw,3rem);}
+  footer{padding:32px 24px;}
+  .footer-inner{flex-direction:column;text-align:center;}
+  .footer-right{flex-wrap:wrap;justify-content:center;}
 }
 </style>
 </head>
 <body>
 
-<!-- Scroll Progress -->
-<div class="scroll-progress" id="scrollProgress"></div>
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-text">Yein Dental</div>
+</div>
 
-<!-- Custom Cursor -->
-<div class="cursor-dot" id="cursorDot"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+<!-- MARQUEE BAR -->
+<div class="marquee-bar">
+  <div class="marquee-track">
+    <span>Since 2013</span><span>Trusted by 458+ patients</span><span>Immediate Implant Specialist</span><span>City Hall Station 5min</span><span>Since 2013</span><span>Trusted by 458+ patients</span><span>Immediate Implant Specialist</span><span>City Hall Station 5min</span><span>Since 2013</span><span>Trusted by 458+ patients</span><span>Immediate Implant Specialist</span><span>City Hall Station 5min</span>
+  </div>
+</div>
 
-<!-- Navigation -->
-<nav id="navbar">
+<!-- NAV -->
+<nav id="nav">
   <div class="nav-inner">
-    <a href="#" class="nav-logo">
-      <img src="https://www.genspark.ai/api/files/s/3kOiUrPx" alt="행복한예인치과 로고">
-    </a>
+    <a href="#" class="nav-brand"><em>Yein</em> Dental</a>
     <div class="nav-links">
-      <a href="#philosophy">원장 소개</a>
-      <a href="#treatments">진료 안내</a>
-      <a href="#team">의료진</a>
-      <a href="#experience">진료 경험</a>
-      <a href="#info">오시는 길</a>
-      <a href="tel:02-756-2828" class="nav-cta"><i class="fas fa-phone-alt"></i> 예약 상담</a>
+      <a href="#philosophy">Philosophy</a>
+      <a href="#treatments">Treatments</a>
+      <a href="#team">Doctors</a>
+      <a href="#experience">Experience</a>
+      <a href="#location">Location</a>
+      <a href="tel:02-756-2828" class="nav-tel">02.756.2828</a>
     </div>
-    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="메뉴">
+    <div class="hamburger" id="hamburger">
       <span></span><span></span><span></span>
-    </button>
+    </div>
   </div>
 </nav>
 
-<!-- Mobile Menu -->
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#philosophy" onclick="closeMobile()">원장 소개</a>
-  <a href="#treatments" onclick="closeMobile()">진료 안내</a>
-  <a href="#team" onclick="closeMobile()">의료진</a>
-  <a href="#experience" onclick="closeMobile()">진료 경험</a>
-  <a href="#info" onclick="closeMobile()">오시는 길</a>
-  <a href="tel:02-756-2828" class="btn-primary" onclick="closeMobile()"><i class="fas fa-phone-alt"></i> 예약 상담</a>
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu">
+  <a href="#philosophy" onclick="closeMob()">Philosophy</a>
+  <a href="#treatments" onclick="closeMob()">Treatments</a>
+  <a href="#team" onclick="closeMob()">Doctors</a>
+  <a href="#experience" onclick="closeMob()">Experience</a>
+  <a href="#location" onclick="closeMob()">Location</a>
+  <a href="tel:02-756-2828" onclick="closeMob()" style="color:var(--gold)">02.756.2828</a>
 </div>
 
-<!-- Hero -->
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-inner">
-    <div class="hero-content">
-      <div class="hero-badge"><i class="fas fa-map-marker-alt"></i> 시청역 4번 출구 도보 5분</div>
-      <h1 class="hero-title">
-        <span class="line">13년 전의 진료를</span>
-        <span class="line">오늘까지 <span class="gold">책임</span>지며,</span>
-        <span class="line">함께 <span class="serif">나이 들어가는</span></span>
-        <span class="line"><span class="gold">주치의</span>입니다.</span>
-      </h1>
-      <p class="hero-sub">
-        바쁜 직장 생활 속에서 치료를 미루고 계셨나요?<br>
-        과장 없이, 숨김 없이. 내 가족에게 권할 수 없는 치료는 하지 않습니다.
+  <div class="hero-bg">
+    <img src="https://www.genspark.ai/api/files/s/KLYGAldi" alt="">
+    <div class="hero-grain"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Happy Yein Dental Clinic &mdash; Est. 2013</div>
+    <h1 class="hero-title">
+      13년 전의<br>
+      진료를 <span class="italic">오늘까지</span><br>
+      <span class="outline">책임</span>지는 치과
+    </h1>
+    <div class="hero-bottom">
+      <p class="hero-desc">
+        바쁜 직장 생활 속에서 미뤄왔던 치료,<br>
+        이제 더 이상 미루지 않아도 됩니다.<br>
+        과장 없이, 숨김 없이. 시청역 도보 5분.
       </p>
-      <div class="hero-actions">
-        <a href="tel:02-756-2828" class="btn-primary">
-          <i class="fas fa-phone-alt"></i> 02-756-2828
-        </a>
-        <a href="#treatments" class="btn-outline">
-          진료 안내 <i class="fas fa-arrow-right"></i>
-        </a>
-      </div>
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <div class="number">13+</div>
-          <div class="label">년 한자리 진료</div>
-        </div>
-        <div class="hero-stat">
-          <div class="number">458</div>
-          <div class="label">건 환자 리뷰</div>
-        </div>
-        <div class="hero-stat">
-          <div class="number">80%+</div>
-          <div class="label">발치즉시 임플란트</div>
-        </div>
+      <div class="hero-cta-group">
+        <a href="tel:02-756-2828" class="btn-gold"><i class="fas fa-phone-alt"></i> Book Now</a>
+        <a href="#treatments" class="btn-ghost">Explore <i class="fas fa-arrow-down"></i></a>
       </div>
     </div>
-    <div class="hero-image">
-      <img class="hero-image-main" src="https://www.genspark.ai/api/files/s/ztzdipBZ" alt="한승대 대표원장">
-      <div class="hero-image-float top-right">
-        <div class="float-icon">
-          <i class="fas fa-award" style="color:var(--gold)"></i>
-        </div>
-        <div class="float-title">통합치의학과 전문의</div>
-        <div class="float-desc">경희대 치의학 박사</div>
-      </div>
-      <div class="hero-image-float bottom-left">
-        <div class="float-icon">
-          <i class="fas fa-heart" style="color:var(--gold)"></i>
-        </div>
-        <div class="float-title">변하지 않는 그 자리</div>
-        <div class="float-desc">2013년부터 지금까지</div>
-      </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- NUMBER STRIP -->
+<div class="num-strip">
+  <div class="num-item">
+    <div class="num">13+</div>
+    <div class="txt">Years in One Place</div>
+  </div>
+  <div class="num-item">
+    <div class="num">458</div>
+    <div class="txt">Patient Reviews</div>
+  </div>
+  <div class="num-item">
+    <div class="num">80%+</div>
+    <div class="txt">Immediate Implant</div>
+  </div>
+  <div class="num-item">
+    <div class="num">3</div>
+    <div class="txt">Specialist Doctors</div>
+  </div>
+</div>
+
+<!-- BIG TEXT -->
+<section class="big-text-section" id="philosophy">
+  <div class="big-text-inner">
+    <p class="big-text reveal">
+      내 가족에게<br>
+      <em>권할 수 없는 치료</em>는<br>
+      <span class="light">시작도 하지 않습니다.</span>
+    </p>
+    <div class="big-text-credit reveal reveal-delay-1">&mdash; Han Seungdae, D.M.D., Ph.D.</div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values-section">
+  <div class="values-header">
+    <div class="sec-label">Our Values</div>
+    <h2 class="sec-title reveal">치료의 <em>본질</em>에 집중합니다</h2>
+  </div>
+  <div class="values-track">
+    <div class="value-card" data-num="01">
+      <div class="value-card-icon"><i class="fas fa-handshake"></i></div>
+      <h3>Trust</h3>
+      <p>"원장님은 믿거든요" 라는 말씀을 자주 듣습니다. 과장하지 않고 숨김없는 진료. 13년간 같은 자리에서 쌓아온 신뢰가 우리의 가장 큰 자산입니다.</p>
+    </div>
+    <div class="value-card" data-num="02">
+      <div class="value-card-icon"><i class="fas fa-hand-holding-heart"></i></div>
+      <h3>Care</h3>
+      <p>환자의 시간, 상황, 선택을 존중합니다. 사회초년생들의 부담을 줄이기 위한 진료 할인부터, 바쁜 직장인을 위한 효율적인 예약 시스템까지.</p>
+    </div>
+    <div class="value-card" data-num="03">
+      <div class="value-card-icon"><i class="fas fa-infinity"></i></div>
+      <h3>Sustain</h3>
+      <p>환자, 직원, 병원 모두 오래 갈 수 있는 방향을 모색합니다. 단기적인 매출보다 장기적인 관계를 우선합니다.</p>
+    </div>
+    <div class="value-card" data-num="04">
+      <div class="value-card-icon"><i class="fas fa-feather-alt"></i></div>
+      <h3>Comfort</h3>
+      <p>치료 결과도 중요하지만 과정에서의 경험을 더 중요하게 생각합니다. 치과를 다녀간 뒤 피곤함보다 안도감을 느낄 수 있도록.</p>
     </div>
   </div>
 </section>
 
-<!-- Philosophy -->
-<section class="philosophy" id="philosophy">
-  <div class="philosophy-inner">
-    <div class="section-label">PHILOSOPHY</div>
-    <div class="philosophy-quote reveal">
-      내 가족에게 <em>권할 수 없는</em> 치료는<br>
-      시작도 하지 않습니다.<br>
-      <span style="font-size:0.6em;color:rgba(255,255,255,0.4);font-weight:400;">
-        단기적인 매출보다 장기적인 신뢰를 우선합니다 &mdash; 한승대
-      </span>
-    </div>
-    <div class="philosophy-grid">
-      <div class="philosophy-card reveal">
-        <div class="philosophy-card-icon"><i class="fas fa-handshake"></i></div>
-        <h3>신뢰</h3>
-        <p>"원장님은 믿거든요" 라는 말씀을 많이 듣습니다. 과장하지 않고 숨김없는 진료, 불필요한 설명이나 과장 없이 진심을 전합니다.</p>
-      </div>
-      <div class="philosophy-card reveal">
-        <div class="philosophy-card-icon"><i class="fas fa-hand-holding-heart"></i></div>
-        <h3>배려</h3>
-        <p>환자의 시간, 상황, 선택을 존중합니다. 사회초년생들의 부담을 줄이기 위해 진료 할인율을 높이는 등 실질적인 배려를 실천합니다.</p>
-      </div>
-      <div class="philosophy-card reveal">
-        <div class="philosophy-card-icon"><i class="fas fa-infinity"></i></div>
-        <h3>지속가능성</h3>
-        <p>환자, 직원, 병원 모두 오래 갈 수 있는 방향을 모색합니다. 결과보다 치료 과정에서의 경험을 더 중요하게 생각합니다.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Treatments -->
+<!-- TREATMENTS -->
 <section class="treatments" id="treatments">
   <div class="treatments-inner">
-    <div class="section-header">
-      <div class="section-label">TREATMENTS</div>
-      <h2 class="section-title reveal">각 상황에 맞는 <span class="gold">정확한 치료</span></h2>
-      <p class="section-desc reveal">빠른 치료, 빠른 선택보다 환자 한 분 한 분의 상황에 맞는 최선의 치료를 제안합니다.</p>
-    </div>
-    <div class="treatment-grid">
-      <div class="treatment-card featured reveal">
-        <div>
-          <div class="treatment-number">01</div>
-          <div class="treatment-icon"><i class="fas fa-bolt"></i></div>
-          <div class="subtitle">Core Treatment</div>
+    <div class="sec-label" style="color:var(--gold);">Treatments</div>
+    <h2 class="sec-title reveal" style="color:var(--white);">정확한 진단, <em>최적의</em> 치료</h2>
+    <div class="treat-grid">
+      <div class="treat-card treat-card-featured reveal">
+        <div class="treat-content">
+          <div class="treat-num">01</div>
+          <div class="treat-tag">Core Treatment</div>
           <h3>발치즉시 임플란트</h3>
-          <p>발치와 동시에 임플란트를 식립하여 치료 기간을 획기적으로 단축합니다. 80% 이상의 케이스에서 발치즉시 식립을 시행하며, 고난이도 케이스도 가능합니다. 환자분의 시간을 아끼고 불편감을 최소화합니다.</p>
-          <div class="treatment-tags">
-            <span class="treatment-tag">치료기간 단축</span>
-            <span class="treatment-tag">고난이도 가능</span>
-            <span class="treatment-tag">80%+ 즉시식립</span>
+          <p>발치와 동시에 임플란트를 식립하여 치료 기간을 획기적으로 단축. 80% 이상의 케이스에서 즉시식립을 시행하며, 고난이도 케이스까지 대응합니다.</p>
+          <div class="treat-pills">
+            <span class="treat-pill">Time-Saving</span>
+            <span class="treat-pill">High Difficulty</span>
+            <span class="treat-pill">80%+ Immediate</span>
           </div>
         </div>
-        <img class="treatment-featured-img" src="https://www.genspark.ai/api/files/s/4QFpv2o4" alt="임플란트 시술">
+        <div class="treat-img">
+          <img src="https://www.genspark.ai/api/files/s/4QFpv2o4" alt="임플란트 시술">
+        </div>
       </div>
-      <div class="treatment-card reveal">
-        <div class="treatment-number">02</div>
-        <div class="treatment-icon"><i class="fas fa-tooth"></i></div>
-        <div class="subtitle">Preservation</div>
+      <div class="treat-card reveal">
+        <div class="treat-num">02</div>
+        <div class="treat-tag">Preservation</div>
         <h3>치아 보존 치료</h3>
-        <p>보존과 전문의가 직접 치료하는 치아살리는 보존 중심의 신경치료 및 보존치료. 최대한 자연 치아를 살리는 방향으로 치료합니다.</p>
-        <div class="treatment-tags">
-          <span class="treatment-tag">보존과 전문의</span>
-          <span class="treatment-tag">자연치아 보존</span>
+        <p>보존과 전문의가 직접 치료. 최대한 자연 치아를 살리는 방향의 신경치료 및 보존 수복.</p>
+        <div class="treat-pills">
+          <span class="treat-pill">Specialist</span>
+          <span class="treat-pill">Natural Tooth</span>
         </div>
       </div>
-      <div class="treatment-card reveal">
-        <div class="treatment-number">03</div>
-        <div class="treatment-icon"><i class="fas fa-sparkles"></i></div>
-        <div class="subtitle">Aesthetic</div>
+      <div class="treat-card reveal">
+        <div class="treat-num">03</div>
+        <div class="treat-tag">Aesthetic</div>
         <h3>앞니 심미 치료</h3>
-        <p>치아 삭제량을 최소화하는 전치부 레진 및 라미네이트 치료. 자연스럽고 아름다운 미소를 위한 심미 수복에 진심을 다합니다.</p>
-        <div class="treatment-tags">
-          <span class="treatment-tag">최소 삭제</span>
-          <span class="treatment-tag">레진 / 라미네이트</span>
+        <p>치아 삭제량을 최소화하는 전치부 레진 및 라미네이트 치료. 자연스러운 미소를 설계합니다.</p>
+        <div class="treat-pills">
+          <span class="treat-pill">Minimal Prep</span>
+          <span class="treat-pill">Laminate</span>
         </div>
       </div>
-      <div class="treatment-card reveal">
-        <div class="treatment-number">04</div>
-        <div class="treatment-icon"><i class="fas fa-smile-beam"></i></div>
-        <div class="subtitle">Orthodontics</div>
+      <div class="treat-card reveal">
+        <div class="treat-num">04</div>
+        <div class="treat-tag">Orthodontics</div>
         <h3>치아 교정</h3>
-        <p>교정과 전문의의 체계적인 교정 치료. 투명교정부터 설측교정까지 환자분의 라이프스타일에 맞는 교정 방법을 제안합니다.</p>
-        <div class="treatment-tags">
-          <span class="treatment-tag">교정과 전문의</span>
-          <span class="treatment-tag">투명교정 / 설측교정</span>
+        <p>교정과 전문의의 체계적인 교정. 투명교정부터 설측교정까지 라이프스타일에 맞는 솔루션.</p>
+        <div class="treat-pills">
+          <span class="treat-pill">Invisalign</span>
+          <span class="treat-pill">Lingual</span>
         </div>
       </div>
-      <div class="treatment-card reveal">
-        <div class="treatment-number">05</div>
-        <div class="treatment-icon"><i class="fas fa-shield-alt"></i></div>
-        <div class="subtitle">General</div>
+      <div class="treat-card reveal">
+        <div class="treat-num">05</div>
+        <div class="treat-tag">General Care</div>
         <h3>일반 / 예방 치료</h3>
-        <p>정기검진, 스케일링, 충치치료 등 기본에 충실한 치료. 치과가 무서운 분들도 편안하게 내원할 수 있는 환경을 만들었습니다.</p>
-        <div class="treatment-tags">
-          <span class="treatment-tag">정기검진</span>
-          <span class="treatment-tag">편안한 진료</span>
+        <p>정기검진, 스케일링, 충치치료. 기본에 충실하되 편안함을 더한 진료를 제공합니다.</p>
+        <div class="treat-pills">
+          <span class="treat-pill">Check-up</span>
+          <span class="treat-pill">Painless</span>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Team -->
-<section class="team" id="team">
+<!-- TEAM -->
+<section class="team-section" id="team">
   <div class="team-inner">
-    <div class="section-header">
-      <div class="section-label">DOCTORS</div>
-      <h2 class="section-title reveal"><span class="gold">협진 시스템</span>으로<br>더욱 신뢰감 있는 진료</h2>
-      <p class="section-desc reveal">각 분야 전문의가 함께하여 최적의 치료 결과를 만들어냅니다.</p>
-    </div>
+    <div class="sec-label">Doctors</div>
+    <h2 class="sec-title reveal">각 분야 <em>전문의</em> 협진</h2>
     <div class="team-grid">
-      <div class="team-card primary reveal">
-        <div class="team-img-wrap">
-          <img src="https://www.genspark.ai/api/files/s/1xv530Ip" alt="한승대 대표원장">
-          <div class="team-badge">대표원장</div>
+      <div class="team-card lead reveal">
+        <div class="team-photo">
+          <img src="https://www.genspark.ai/api/files/s/aZ1AVpoe" alt="한승대 대표원장">
+          <div class="team-label">Lead Doctor</div>
         </div>
         <div class="team-info">
-          <h3>한승대 원장</h3>
-          <div class="role">통합치의학과 전문의 / 치의학 박사</div>
-          <ul class="credentials">
+          <h3>한승대</h3>
+          <div class="role">Integrative Dentistry Specialist, Ph.D.</div>
+          <ul class="team-creds">
             <li>보건복지부 인증 통합치의학과 전문의</li>
-            <li>경희대 치의학전문대학원 치의학박사 Ph.D</li>
+            <li>경희대 치의학전문대학원 치의학박사</li>
             <li>고려대학교 졸업</li>
             <li>NYU Implant Institute Course 수료</li>
             <li>대한악안면임플란트학회 정회원</li>
           </ul>
         </div>
       </div>
-      <div class="team-card reveal">
-        <div class="team-img-wrap" style="background:linear-gradient(135deg,var(--gold-pale),var(--gray-100));display:flex;align-items:center;justify-content:center;">
-          <div style="text-align:center;">
-            <i class="fas fa-user-md" style="font-size:4rem;color:var(--gold);opacity:0.3;"></i>
-          </div>
+      <div class="team-card reveal reveal-delay-1">
+        <div class="team-photo">
+          <div class="team-photo-placeholder"><i class="fas fa-user-md"></i></div>
         </div>
         <div class="team-info">
-          <h3>신정희 원장</h3>
-          <div class="role">치과보존과 전문의</div>
-          <ul class="credentials">
+          <h3>신정희</h3>
+          <div class="role">Conservative Dentistry Specialist, Ph.D.</div>
+          <ul class="team-creds">
             <li>경희대학교 치과대학 졸업</li>
             <li>경희대학교 대학원 치의학 박사</li>
-            <li>보건복지부인증 치과보존과 전문의</li>
+            <li>보건복지부 인증 치과보존과 전문의</li>
             <li>경희대 치과보존과 레지던트 수료</li>
             <li>경희대 치과보존과 외래강사 역임</li>
           </ul>
         </div>
       </div>
-      <div class="team-card reveal">
-        <div class="team-img-wrap" style="background:linear-gradient(135deg,var(--gold-pale),var(--gray-100));display:flex;align-items:center;justify-content:center;">
-          <div style="text-align:center;">
-            <i class="fas fa-user-md" style="font-size:4rem;color:var(--gold);opacity:0.3;"></i>
-          </div>
+      <div class="team-card reveal reveal-delay-2">
+        <div class="team-photo">
+          <div class="team-photo-placeholder"><i class="fas fa-user-md"></i></div>
         </div>
         <div class="team-info">
-          <h3>박현미 원장</h3>
-          <div class="role">교정과 전문의</div>
-          <ul class="credentials">
+          <h3>박현미</h3>
+          <div class="role">Orthodontics Specialist</div>
+          <ul class="team-creds">
             <li>연세대학교 졸업</li>
-            <li>연세대학교 치의학대학원 교정과 석사</li>
-            <li>경희대학교 치과병원 인턴</li>
+            <li>연세대 치의학대학원 교정과 석사</li>
+            <li>에이플러스치과병원 교정과 전임의</li>
             <li>인비절라인 투명교정 수료</li>
             <li>Columbia University CE 수료</li>
           </ul>
@@ -1417,130 +558,118 @@ footer {
   </div>
 </section>
 
-<!-- Experience -->
-<section class="experience" id="experience">
-  <div class="experience-inner">
-    <div class="experience-grid">
-      <div class="experience-images reveal">
-        <img src="https://www.genspark.ai/api/files/s/9Tv8JF9w" alt="상담 장면">
-        <img src="https://www.genspark.ai/api/files/s/vxRijLs3" alt="X-ray 설명">
-        <img src="https://www.genspark.ai/api/files/s/tqlF25HE" alt="진료 장면">
+<!-- EXPERIENCE -->
+<section class="exp-section" id="experience">
+  <div class="exp-grid">
+    <div class="exp-images">
+      <div class="exp-images-inner">
+        <img src="https://www.genspark.ai/api/files/s/9Tv8JF9w" alt="상담">
+        <img src="https://www.genspark.ai/api/files/s/vxRijLs3" alt="X-ray">
+        <img src="https://www.genspark.ai/api/files/s/tqlF25HE" alt="진료">
       </div>
-      <div class="exp-content reveal">
-        <div class="section-label">EXPERIENCE</div>
-        <h2>치과를 다녀간 뒤<br><span class="gold">안도감</span>을 느끼셨으면 합니다</h2>
-        <p class="exp-text">
-          결과도 중요하지만, 치료를 받는 과정에서의 경험이 더 중요하다고 생각합니다.
-          불필요한 치료를 지양하고, 환자분들이 불안해하지 않고 편하게 내원할 수 있는 곳을 만들고 있습니다.
-        </p>
-        <ul class="exp-features">
-          <li>
-            <div class="exp-feature-icon"><i class="fas fa-hand-sparkles"></i></div>
-            <div class="exp-feature-text">
-              <h4>부드러운 마취와 치료</h4>
-              <p>"손이 부드럽고 편안하다"는 말씀을 자주 들을 때 보람을 느낍니다</p>
-            </div>
-          </li>
-          <li>
-            <div class="exp-feature-icon"><i class="fas fa-clock"></i></div>
-            <div class="exp-feature-text">
-              <h4>직장인 중심 설계</h4>
-              <p>진료 기준, 상담, 예약 운영까지 바쁜 분들의 시간을 고려합니다</p>
-            </div>
-          </li>
-          <li>
-            <div class="exp-feature-icon"><i class="fas fa-comments"></i></div>
-            <div class="exp-feature-text">
-              <h4>충분한 설명</h4>
-              <p>X-ray 앞에서 이해가 될 때까지, 궁금한 점이 없을 때까지</p>
-            </div>
-          </li>
-          <li>
-            <div class="exp-feature-icon"><i class="fas fa-user-shield"></i></div>
-            <div class="exp-feature-text">
-              <h4>사후 관리까지 책임</h4>
-              <p>치료 후에도 꾸준한 관리와 케어로 오래 건강한 치아를 유지합니다</p>
-            </div>
-          </li>
-        </ul>
-      </div>
+    </div>
+    <div class="exp-text">
+      <div class="sec-label" style="color:var(--gold);">Patient Experience</div>
+      <h2>치과를 다녀간 뒤<br><em>안도감</em>을 느끼셨으면.</h2>
+      <p>긴장하고 오셨다가 생각보다 아프지 않아서 놀라셨다는 말씀. 그 한마디가 저희에게 가장 큰 보람입니다.</p>
+      <ul class="exp-list">
+        <li class="exp-item">
+          <div class="exp-item-icon"><i class="fas fa-hand-sparkles"></i></div>
+          <div>
+            <h4>Gentle Touch</h4>
+            <p>마취부터 치료까지, 부드럽고 편안한 진료</p>
+          </div>
+        </li>
+        <li class="exp-item">
+          <div class="exp-item-icon"><i class="fas fa-clock"></i></div>
+          <div>
+            <h4>Time-Efficient</h4>
+            <p>바쁜 직장인을 기준으로 설계된 진료 프로세스</p>
+          </div>
+        </li>
+        <li class="exp-item">
+          <div class="exp-item-icon"><i class="fas fa-comments"></i></div>
+          <div>
+            <h4>Clear Communication</h4>
+            <p>X-ray 앞에서 이해가 될 때까지 설명합니다</p>
+          </div>
+        </li>
+        <li class="exp-item">
+          <div class="exp-item-icon"><i class="fas fa-shield-alt"></i></div>
+          <div>
+            <h4>Aftercare</h4>
+            <p>치료 후에도 꾸준한 관리와 사후 케어</p>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </section>
 
-<!-- Gallery -->
-<section class="gallery">
-  <div class="gallery-header">
-    <div class="section-label" style="justify-content:center;">GALLERY</div>
-    <h2 class="section-title reveal">진료 <span class="gold">현장</span></h2>
+<!-- PHOTO MARQUEE -->
+<div class="photo-marquee">
+  <div class="photo-track">
+    <img src="https://www.genspark.ai/api/files/s/SI2rNsv1" alt="">
+    <img src="https://www.genspark.ai/api/files/s/oMAXh11u" alt="">
+    <img src="https://www.genspark.ai/api/files/s/cZc5FX3M" alt="">
+    <img src="https://www.genspark.ai/api/files/s/ztzdipBZ" alt="">
+    <img src="https://www.genspark.ai/api/files/s/Ifp4ODKF" alt="">
+    <img src="https://www.genspark.ai/api/files/s/RPl9UxsF" alt="">
+    <img src="https://www.genspark.ai/api/files/s/pNaPRPWE" alt="">
+    <img src="https://www.genspark.ai/api/files/s/yZhTDJht" alt="">
+    <img src="https://www.genspark.ai/api/files/s/jXurzPZE" alt="">
+    <img src="https://www.genspark.ai/api/files/s/TNxmWlgT" alt="">
+    <!-- duplicate for seamless loop -->
+    <img src="https://www.genspark.ai/api/files/s/SI2rNsv1" alt="">
+    <img src="https://www.genspark.ai/api/files/s/oMAXh11u" alt="">
+    <img src="https://www.genspark.ai/api/files/s/cZc5FX3M" alt="">
+    <img src="https://www.genspark.ai/api/files/s/ztzdipBZ" alt="">
+    <img src="https://www.genspark.ai/api/files/s/Ifp4ODKF" alt="">
+    <img src="https://www.genspark.ai/api/files/s/RPl9UxsF" alt="">
+    <img src="https://www.genspark.ai/api/files/s/pNaPRPWE" alt="">
+    <img src="https://www.genspark.ai/api/files/s/yZhTDJht" alt="">
+    <img src="https://www.genspark.ai/api/files/s/jXurzPZE" alt="">
+    <img src="https://www.genspark.ai/api/files/s/TNxmWlgT" alt="">
   </div>
-  <div class="gallery-scroll">
-    <div class="gallery-item">
-      <img src="https://www.genspark.ai/api/files/s/SI2rNsv1" alt="상담">
-      <div class="gallery-item-overlay"><span>1:1 맞춤 상담</span></div>
-    </div>
-    <div class="gallery-item">
-      <img src="https://www.genspark.ai/api/files/s/yZhTDJht" alt="진료 설명">
-      <div class="gallery-item-overlay"><span>X-ray 기반 정밀 진단</span></div>
-    </div>
-    <div class="gallery-item">
-      <img src="https://www.genspark.ai/api/files/s/oMAXh11u" alt="진료">
-      <div class="gallery-item-overlay"><span>정밀 진료</span></div>
-    </div>
-    <div class="gallery-item">
-      <img src="https://www.genspark.ai/api/files/s/cZc5FX3M" alt="치료">
-      <div class="gallery-item-overlay"><span>세심한 치료 과정</span></div>
-    </div>
-    <div class="gallery-item">
-      <img src="https://www.genspark.ai/api/files/s/KLYGAldi" alt="원장 프로필">
-      <div class="gallery-item-overlay"><span>한승대 대표원장</span></div>
-    </div>
-    <div class="gallery-item">
-      <img src="https://www.genspark.ai/api/files/s/Ifp4ODKF" alt="상담 장면">
-      <div class="gallery-item-overlay"><span>환자 중심 상담</span></div>
-    </div>
-  </div>
-</section>
+</div>
 
-<!-- Info -->
-<section class="info" id="info">
-  <div class="info-inner">
-    <div class="section-header">
-      <div class="section-label">LOCATION</div>
-      <h2 class="section-title reveal"><span class="gold">시청역</span>에서 도보 5분</h2>
-      <p class="section-desc reveal">서울 중구 남대문로9길 51, 효덕빌딩 3층 301호</p>
-    </div>
-    <div class="info-grid reveal">
-      <div class="info-map">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3162.5!2d126.978!3d37.566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca2eb1a2f4b7d%3A0x!2z7ISc7Jq4IOykkSDrgqjrjIDrrLjroZw56ri4IDUxIOuztOuNleu5jOuUqSAz7Li1IDMwMQ!5e0!3m2!1sko!2skr!4v1700000000000!5m2!1sko!2skr" allowfullscreen="" loading="lazy"></iframe>
+<!-- LOCATION -->
+<section class="location" id="location">
+  <div class="location-inner">
+    <div class="sec-label">Location</div>
+    <h2 class="sec-title reveal">시청역에서 <em>도보 5분</em></h2>
+    <div class="location-grid">
+      <div class="location-map reveal">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3162.5!2d126.978!3d37.566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca2eb1a2f4b7d%3A0x!2z7ISc7Jq4IOykkSDrgqjrjIDrrLjroZw56ri4IDUx!5e0!3m2!1sko!2skr!4v1700000000000!5m2!1sko!2skr" allowfullscreen="" loading="lazy"></iframe>
       </div>
-      <div class="info-details">
-        <div class="info-item">
-          <div class="info-item-label">Address</div>
-          <div class="info-item-value">
-            서울 중구 남대문로9길 51 효덕빌딩 3층 301호
+      <div class="loc-info">
+        <div class="loc-block reveal">
+          <div class="loc-block-label">Address</div>
+          <div class="loc-block-value">
+            서울 중구 남대문로9길 51<br>효덕빌딩 3층 301호
             <small>1호선 시청역 4, 5번 출구 도보 5분</small>
           </div>
         </div>
-        <div class="info-item">
-          <div class="info-item-label">Contact</div>
-          <div class="info-item-value">
-            <a href="tel:02-756-2828" style="color:var(--gold);text-decoration:none;font-weight:700;font-size:1.3rem;">02-756-2828</a>
+        <div class="loc-block reveal reveal-delay-1">
+          <div class="loc-block-label">Contact</div>
+          <div class="loc-block-value">
+            <a href="tel:02-756-2828">02.756.2828</a>
             <small>FAX 02-754-8188</small>
           </div>
         </div>
-        <div class="info-item">
-          <div class="info-item-label">Hours</div>
-          <div class="info-item-value">
-            <table class="schedule-table">
-              <tr><td>월</td><td>09:30 - 18:30</td></tr>
-              <tr><td>화</td><td>09:30 - 18:30</td></tr>
-              <tr><td>수</td><td>09:30 - <strong>20:00</strong> <span style="color:var(--gold);font-size:0.8rem;">(야간진료)</span></td></tr>
-              <tr><td>목</td><td>09:30 - 18:30</td></tr>
-              <tr><td>금</td><td>09:30 - 18:30</td></tr>
-              <tr><td class="rest">토/일</td><td class="rest">휴진</td></tr>
-            </table>
-            <small>점심시간 13:00 - 14:00 | 접수마감 진료종료 1시간 전</small>
+        <div class="loc-block reveal reveal-delay-2">
+          <div class="loc-block-label">Hours</div>
+          <div class="loc-block-value">
+            <div class="hours-grid">
+              <span class="day">MON</span><span class="time">09:30 &ndash; 18:30</span>
+              <span class="day">TUE</span><span class="time">09:30 &ndash; 18:30</span>
+              <span class="day">WED</span><span class="time">09:30 &ndash; 20:00 <span class="night-badge">Night</span></span>
+              <span class="day">THU</span><span class="time">09:30 &ndash; 18:30</span>
+              <span class="day">FRI</span><span class="time">09:30 &ndash; 18:30</span>
+              <span class="day off">SAT</span><span class="time off">Closed</span>
+              <span class="day off">SUN</span><span class="time off">Closed</span>
+            </div>
+            <small style="margin-top:12px;display:block;">Lunch 13:00&ndash;14:00 / Last reception 1hr before closing</small>
           </div>
         </div>
       </div>
@@ -1548,23 +677,19 @@ footer {
   </div>
 </section>
 
-<!-- Contact CTA -->
-<section class="contact-cta">
-  <div class="contact-cta-inner">
-    <h2 class="reveal">치료를 미루고 계셨다면<br>지금이 <span class="gold">그때</span>입니다</h2>
-    <p class="reveal">긴장하고 오셨다가, 생각보다 아프지 않아서 놀라셨다는 말씀.<br>그 한마디가 저희에게 가장 큰 보람입니다.</p>
-    <div class="contact-btns reveal">
-      <a href="tel:02-756-2828" class="contact-btn-phone">
-        <i class="fas fa-phone-alt"></i> 02-756-2828
-      </a>
-      <a href="https://blog.naver.com/yein2828" target="_blank" class="contact-btn-naver">
-        <i class="fab fa-naver"></i> 네이버 블로그
-      </a>
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2 class="reveal">치료를 미루고 계셨다면,<br>지금이 <em>그때</em>입니다.</h2>
+    <p class="reveal reveal-delay-1">언젠가가 아니라, 지금 치료받을 수 있는<br>신뢰할 수 있는 치과를 만들고 싶었습니다.</p>
+    <div class="cta-btns reveal reveal-delay-2">
+      <a href="tel:02-756-2828" class="btn-gold"><i class="fas fa-phone-alt"></i> 02.756.2828</a>
+      <a href="https://blog.naver.com/yein2828" target="_blank" class="btn-naver"><i class="fab fa-blogger-b"></i> Blog</a>
     </div>
   </div>
 </section>
 
-<!-- Footer -->
+<!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="footer-left">
@@ -1572,112 +697,55 @@ footer {
       서울 중구 남대문로9길 51 효덕빌딩 3층 301호<br>
       대표자: 한승대 | 사업자등록번호: 104-91-44744<br>
       TEL 02-756-2828 | FAX 02-754-8188<br>
-      COPYRIGHT 2005~2026 ALL RIGHT RESERVED
+      &copy; 2005&ndash;2026 Happy Yein Dental Clinic. All rights reserved.
     </div>
     <div class="footer-right">
-      <a href="#">이용약관</a>
-      <a href="#">개인정보처리방침</a>
-      <a href="#">비급여비용안내</a>
-      <a href="https://blog.naver.com/yein2828" target="_blank">블로그</a>
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+      <a href="https://blog.naver.com/yein2828" target="_blank">Blog</a>
+      <a href="#">Instagram</a>
     </div>
   </div>
 </footer>
 
 <script>
-// ==================== SMOOTH SCROLL ====================
+// LOADER
+window.addEventListener('load',()=>{
+  setTimeout(()=>document.getElementById('loader').classList.add('done'),1800);
+});
+
+// NAV SCROLL
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>80));
+
+// HAMBURGER
+const hb=document.getElementById('hamburger'),mm=document.getElementById('mobMenu');
+hb.addEventListener('click',()=>{hb.classList.toggle('active');mm.classList.toggle('open');document.body.style.overflow=mm.classList.contains('open')?'hidden':'';});
+function closeMob(){hb.classList.remove('active');mm.classList.remove('open');document.body.style.overflow='';}
+
+// SMOOTH SCROLL
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click',e=>{
-    e.preventDefault();
-    const t=document.querySelector(a.getAttribute('href'));
-    if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
-  });
+  a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});});
 });
 
-// ==================== NAVBAR SCROLL ====================
-const nav=document.getElementById('navbar');
-window.addEventListener('scroll',()=>{
-  nav.classList.toggle('scrolled',window.scrollY>50);
-  // Scroll progress
-  const h=document.documentElement;
-  const pct=(h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
-  document.getElementById('scrollProgress').style.width=pct+'%';
-});
+// SCROLL REVEAL
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:0.12,rootMargin:'0px 0px -60px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-// ==================== MOBILE MENU ====================
-const mBtn=document.getElementById('mobileMenuBtn');
-const mMenu=document.getElementById('mobileMenu');
-mBtn.addEventListener('click',()=>{
-  mBtn.classList.toggle('active');
-  mMenu.classList.toggle('active');
-  document.body.style.overflow=mMenu.classList.contains('active')?'hidden':'';
-});
-function closeMobile(){
-  mBtn.classList.remove('active');
-  mMenu.classList.remove('active');
-  document.body.style.overflow='';
-}
-
-// ==================== REVEAL ON SCROLL ====================
-const observer=new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.classList.add('active');
-    }
-  });
-},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
-document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
-
-// ==================== CUSTOM CURSOR ====================
-const dot=document.getElementById('cursorDot');
-const ring=document.getElementById('cursorRing');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{
-  mx=e.clientX;my=e.clientY;
-  dot.style.left=mx-4+'px';
-  dot.style.top=my-4+'px';
-});
-function animCursor(){
-  rx+=(mx-rx)*0.15;
-  ry+=(my-ry)*0.15;
-  ring.style.left=rx-20+'px';
-  ring.style.top=ry-20+'px';
-  requestAnimationFrame(animCursor);
-}
-animCursor();
-
-// Hover effect on links
-document.querySelectorAll('a,button,.treatment-card').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{
-    ring.style.transform='scale(1.5)';
-    ring.style.opacity='0.3';
-  });
-  el.addEventListener('mouseleave',()=>{
-    ring.style.transform='scale(1)';
-    ring.style.opacity='0.5';
-  });
-});
-
-// ==================== GALLERY DRAG SCROLL ====================
-const gallery=document.querySelector('.gallery-scroll');
-let isDown=false,startX,scrollL;
-gallery.addEventListener('mousedown',e=>{
-  isDown=true;startX=e.pageX-gallery.offsetLeft;scrollL=gallery.scrollLeft;
-  gallery.style.cursor='grabbing';
-});
-gallery.addEventListener('mouseleave',()=>{isDown=false;gallery.style.cursor='grab';});
-gallery.addEventListener('mouseup',()=>{isDown=false;gallery.style.cursor='grab';});
-gallery.addEventListener('mousemove',e=>{
-  if(!isDown)return;e.preventDefault();
-  const x=e.pageX-gallery.offsetLeft;
-  gallery.scrollLeft=scrollL-(x-startX)*2;
-});
-gallery.style.cursor='grab';
+// VALUES DRAG SCROLL
+const vt=document.querySelector('.values-track');
+if(vt){let down=false,sx,sl;
+vt.addEventListener('mousedown',e=>{down=true;sx=e.pageX-vt.offsetLeft;sl=vt.scrollLeft;vt.style.cursor='grabbing';});
+vt.addEventListener('mouseleave',()=>{down=false;vt.style.cursor='grab';});
+vt.addEventListener('mouseup',()=>{down=false;vt.style.cursor='grab';});
+vt.addEventListener('mousemove',e=>{if(!down)return;e.preventDefault();vt.scrollLeft=sl-(e.pageX-vt.offsetLeft-sx)*1.5;});}
 </script>
 </body>
 </html>`)
 })
 
-// API routes
 app.get('/api/info', (c) => {
   return c.json({
     name: '행복한예인치과의원',
