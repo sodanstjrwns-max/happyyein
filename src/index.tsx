@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import { renderTreatmentPage } from './treatments'
 
 const app = new Hono()
 
@@ -73,6 +74,14 @@ nav.scrolled{background:rgba(10,10,10,0.95);backdrop-filter:blur(40px);-webkit-b
 .nav-link::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--gold);transition:width 0.3s;}
 .nav-link:hover{color:var(--gold);}
 .nav-link:hover::after{width:100%;}
+.nav-link.active{color:var(--gold);}
+.nav-link.active::after{width:100%;}
+/* NAV DROPDOWN */
+.nav-dropdown-wrap{position:relative;}
+.nav-dropdown{position:absolute;top:calc(100% + 16px);left:50%;background:rgba(10,10,10,0.97);backdrop-filter:blur(40px);border:1px solid rgba(247,186,24,0.1);border-radius:16px;padding:12px 8px;min-width:220px;opacity:0;visibility:hidden;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);transform:translateX(-50%) translateY(10px);}
+.nav-dropdown-wrap:hover .nav-dropdown{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+.nav-dropdown-item{display:block;padding:10px 20px;font-family:var(--font-kr);font-size:0.82rem;color:var(--gray-light);border-radius:10px;transition:all 0.2s;font-weight:400;white-space:nowrap;}
+.nav-dropdown-item:hover{background:rgba(247,186,24,0.08);color:var(--gold);}
 .nav-tel{font-family:var(--font-mono);font-weight:700;color:var(--gold)!important;font-size:0.85rem!important;letter-spacing:2px!important;}
 .hamburger{display:none;flex-direction:column;gap:7px;cursor:pointer;z-index:10001;padding:8px;}
 .hamburger span{width:28px;height:1.5px;background:var(--white);transition:all 0.4s cubic-bezier(0.76,0,0.24,1);transform-origin:center;}
@@ -91,6 +100,11 @@ nav.scrolled{background:rgba(10,10,10,0.95);backdrop-filter:blur(40px);-webkit-b
 .mob-link:nth-child(4){transition-delay:0.35s;}
 .mob-link:nth-child(5){transition-delay:0.4s;}
 .mob-link:nth-child(6){transition-delay:0.45s;}
+.mob-link:nth-child(7){transition-delay:0.48s;}
+.mob-link:nth-child(8){transition-delay:0.5s;}
+.mob-link:nth-child(9){transition-delay:0.52s;}
+.mob-link-sub{font-size:clamp(0.9rem,2.5vw,1.2rem)!important;font-weight:500!important;letter-spacing:1px!important;color:var(--gray-light)!important;padding:8px 0!important;}
+.mob-link-sub:hover{color:var(--gold)!important;}
 .mob-link:hover{color:var(--gold);-webkit-text-stroke:0;}
 .mob-menu-footer{position:absolute;bottom:60px;font-family:var(--font-mono);font-size:0.8rem;color:var(--gray);letter-spacing:2px;}
 
@@ -305,6 +319,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   .team-card.lead .team-photo{aspect-ratio:16/9;}
 }
 @media(max-width:1024px){
+  .nav-dropdown{display:none;}
   .treat-grid{grid-template-columns:1fr;}
   .treat-featured{grid-column:span 1;grid-template-columns:1fr;}
   .treat-featured-img{min-height:300px;}
@@ -363,11 +378,20 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   <div class="nav-inner">
     <a href="#" class="nav-brand"><em>Yein</em> Dental</a>
     <div class="nav-links">
-      <a href="#philosophy" class="nav-link">Philosophy</a>
-      <a href="#treatments" class="nav-link">Treatments</a>
-      <a href="#team" class="nav-link">Doctors</a>
-      <a href="#experience" class="nav-link">Experience</a>
-      <a href="#location" class="nav-link">Location</a>
+      <a href="/#philosophy" class="nav-link">Philosophy</a>
+      <div class="nav-dropdown-wrap">
+        <a href="/#treatments" class="nav-link">Treatments <i class="fas fa-chevron-down" style="font-size:0.45rem;margin-left:4px;"></i></a>
+        <div class="nav-dropdown">
+          <a href="/treatments/implant" class="nav-dropdown-item">발치즉시 임플란트</a>
+          <a href="/treatments/preservation" class="nav-dropdown-item">치아 보존 치료</a>
+          <a href="/treatments/aesthetic" class="nav-dropdown-item">앞니 심미 치료</a>
+          <a href="/treatments/orthodontics" class="nav-dropdown-item">치아 교정</a>
+          <a href="/treatments/general" class="nav-dropdown-item">일반 / 예방 치료</a>
+        </div>
+      </div>
+      <a href="/#team" class="nav-link">Doctors</a>
+      <a href="/#experience" class="nav-link">Experience</a>
+      <a href="/#location" class="nav-link">Location</a>
       <a href="tel:02-756-2828" class="nav-link nav-tel">02.756.2828</a>
     </div>
     <div class="hamburger" id="hamburger">
@@ -378,11 +402,14 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 
 <!-- MOBILE MENU -->
 <div class="mob-menu" id="mobMenu">
-  <a href="#philosophy" class="mob-link" onclick="closeMob()">Philosophy</a>
-  <a href="#treatments" class="mob-link" onclick="closeMob()">Treatments</a>
-  <a href="#team" class="mob-link" onclick="closeMob()">Doctors</a>
-  <a href="#experience" class="mob-link" onclick="closeMob()">Experience</a>
-  <a href="#location" class="mob-link" onclick="closeMob()">Location</a>
+  <a href="/" class="mob-link" onclick="closeMob()">Home</a>
+  <a href="/treatments/implant" class="mob-link mob-link-sub" onclick="closeMob()">발치즉시 임플란트</a>
+  <a href="/treatments/preservation" class="mob-link mob-link-sub" onclick="closeMob()">치아 보존 치료</a>
+  <a href="/treatments/aesthetic" class="mob-link mob-link-sub" onclick="closeMob()">앞니 심미 치료</a>
+  <a href="/treatments/orthodontics" class="mob-link mob-link-sub" onclick="closeMob()">치아 교정</a>
+  <a href="/treatments/general" class="mob-link mob-link-sub" onclick="closeMob()">일반 / 예방 치료</a>
+  <a href="/#team" class="mob-link" onclick="closeMob()">Doctors</a>
+  <a href="/#location" class="mob-link" onclick="closeMob()">Location</a>
   <a href="tel:02-756-2828" class="mob-link" onclick="closeMob()" style="color:var(--gold)">02.756.2828</a>
   <div class="mob-menu-footer">Est. 2013 &mdash; Seoul</div>
 </div>
@@ -507,7 +534,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
     <h2 class="sec-title rv">정확한 진단, <em>최적의</em> 치료</h2>
     <div class="treat-grid">
       <!-- Featured: Immediate Implant -->
-      <div class="treat-card treat-featured rv">
+      <a href="/treatments/implant" class="treat-card treat-featured rv" style="text-decoration:none;color:inherit;">
         <div class="treat-card-content">
           <div class="treat-card-num">01</div>
           <div class="treat-card-tag">Core Treatment</div>
@@ -522,9 +549,9 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
         <div class="treat-featured-img">
           <img src="/static/img/treat-1.jpg" alt="임플란트 시술">
         </div>
-      </div>
+      </a>
       <!-- Conservation -->
-      <div class="treat-card rv">
+      <a href="/treatments/preservation" class="treat-card rv" style="text-decoration:none;color:inherit;">
         <div class="treat-card-bg"><img src="/static/img/treat-2.jpg" alt=""></div>
         <div class="treat-card-content">
           <div class="treat-card-num">02</div>
@@ -536,9 +563,9 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
             <span class="treat-pill">Natural Tooth</span>
           </div>
         </div>
-      </div>
+      </a>
       <!-- Aesthetic -->
-      <div class="treat-card rv rv-d1">
+      <a href="/treatments/aesthetic" class="treat-card rv rv-d1" style="text-decoration:none;color:inherit;">
         <div class="treat-card-bg"><img src="/static/img/treat-3.jpg" alt=""></div>
         <div class="treat-card-content">
           <div class="treat-card-num">03</div>
@@ -550,9 +577,9 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
             <span class="treat-pill">Laminate</span>
           </div>
         </div>
-      </div>
+      </a>
       <!-- Orthodontics -->
-      <div class="treat-card rv">
+      <a href="/treatments/orthodontics" class="treat-card rv" style="text-decoration:none;color:inherit;">
         <div class="treat-card-bg"><img src="/static/img/treat-4.jpg" alt=""></div>
         <div class="treat-card-content">
           <div class="treat-card-num">04</div>
@@ -564,9 +591,9 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
             <span class="treat-pill">Lingual</span>
           </div>
         </div>
-      </div>
+      </a>
       <!-- General -->
-      <div class="treat-card rv rv-d1">
+      <a href="/treatments/general" class="treat-card rv rv-d1" style="text-decoration:none;color:inherit;">
         <div class="treat-card-bg"><img src="/static/img/treat-5.jpg" alt=""></div>
         <div class="treat-card-content">
           <div class="treat-card-num">05</div>
@@ -578,7 +605,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
             <span class="treat-pill">Painless</span>
           </div>
         </div>
-      </div>
+      </a>
     </div>
   </div>
 </section>
@@ -910,6 +937,14 @@ document.querySelectorAll('.num-item .num').forEach(el => numObserver.observe(el
 
 </body>
 </html>`)
+})
+
+// ===== TREATMENT DETAIL PAGES =====
+app.get('/treatments/:slug', (c) => {
+  const slug = c.req.param('slug')
+  const html = renderTreatmentPage(slug)
+  if (!html) return c.notFound()
+  return c.html(html)
 })
 
 app.get('/api/info', (c) => {
