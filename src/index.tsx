@@ -5,13 +5,80 @@ import { philosophyPage, doctorsPage, experiencePage, locationPage } from './pag
 const app = new Hono()
 
 app.get('/', (c) => {
+  const SITE_DOMAIN = 'https://yein-dental.pages.dev';
+  const mainDesc = '서울 시청역 5분, 13년간 한자리에서 쌓아온 신뢰. 발치즉시 임플란트 80%+, 보존과 전문의 직접 신경치료, 교정 전문의 협진. 행복한예인치과.';
+  const mainTitle = '행복한예인치과 | 서울 시청역 치과 - 임플란트, 보존, 심미, 교정 전문';
+  const ogImage = `${SITE_DOMAIN}/static/img/dr-han-logo.jpg`;
+  const orgJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Dentist",
+    "name": "행복한예인치과",
+    "alternateName": "Happy Yein Dental Clinic",
+    "url": SITE_DOMAIN,
+    "logo": `${SITE_DOMAIN}/static/img/logo.png`,
+    "image": ogImage,
+    "telephone": "02-756-2828",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "남대문로9길 51 효덕빌딩 3층 301호",
+      "addressLocality": "중구",
+      "addressRegion": "서울특별시",
+      "postalCode": "04530",
+      "addressCountry": "KR"
+    },
+    "geo": { "@type": "GeoCoordinates", "latitude": "37.566", "longitude": "126.978" },
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Thursday","Friday"], "opens": "09:30", "closes": "18:30" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "09:30", "closes": "20:00" }
+    ],
+    "priceRange": "$$",
+    "areaServed": { "@type": "City", "name": "Seoul" },
+    "sameAs": ["https://blog.naver.com/yein2828"]
+  });
+
   return c.html(`<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>행복한예인치과 | YEIN DENTAL</title>
-<meta name="description" content="서울 시청역 5분. 13년간 한자리에서 쌓아온 신뢰. 발치즉시 임플란트, 보존치료, 심미치료 전문.">
+
+<!-- SEO 기본 -->
+<title>${mainTitle}</title>
+<meta name="description" content="${mainDesc}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="${SITE_DOMAIN}/">
+
+<!-- Open Graph (Facebook, KakaoTalk, Naver) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="행복한예인치과">
+<meta property="og:title" content="${mainTitle}">
+<meta property="og:description" content="${mainDesc}">
+<meta property="og:url" content="${SITE_DOMAIN}/">
+<meta property="og:image" content="${ogImage}">
+<meta property="og:locale" content="ko_KR">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${mainTitle}">
+<meta name="twitter:description" content="${mainDesc}">
+<meta name="twitter:image" content="${ogImage}">
+
+<!-- Naver 검색 최적화 -->
+<meta name="naver-site-verification" content="">
+<meta property="og:article:author" content="행복한예인치과">
+
+<!-- 추가 메타 -->
+<meta name="theme-color" content="#F7BA18">
+<meta name="author" content="행복한예인치과">
+<meta name="format-detection" content="telephone=yes">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="keywords" content="행복한예인치과, 시청역 치과, 발치즉시 임플란트, 보존치료, 심미치료, 치아교정, 서울 중구 치과, 야간진료">
+<link rel="icon" type="image/png" href="/static/img/logo.png">
+
+<!-- 구조화 데이터 (JSON-LD) -->
+<script type="application/ld+json">${orgJsonLd}</script>
+
+<!-- 폰트 & 아이콘 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">

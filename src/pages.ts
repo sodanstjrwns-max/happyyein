@@ -5,7 +5,7 @@ import { head, nav, footer, scripts } from './layout'
 // PHILOSOPHY PAGE
 // ===========================
 export function philosophyPage(): string {
-  return `${head('진료 철학', '행복한예인치과의 진료 철학 - 내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다. 한승대 원장의 13년간의 치과 철학.')}
+  return `${head({ title: '진료 철학', description: '행복한예인치과의 진료 철학 - 내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다. 한승대 원장의 13년간의 치과 철학. 과장 없는 진료, 환자 존중, 장기적 관계.', path: '/philosophy', ogImage: '/static/img/dr-han-logo.jpg' })}
 ${nav('philosophy')}
 
 <!-- HERO -->
@@ -154,7 +154,7 @@ ${scripts()}`;
 // DOCTORS PAGE
 // ===========================
 export function doctorsPage(): string {
-  return `${head('의료진 소개', '행복한예인치과 의료진 - 한승대 대표원장(통합치의학 전문의), 신정희 원장(보존과 전문의), 박현미 원장(교정 전문의)')}
+  return `${head({ title: '의료진 소개', description: '행복한예인치과 의료진 - 한승대 대표원장(통합치의학 전문의, 치의학 박사), 신정희 원장(보존과 전문의, 치의학 박사), 박현미 원장(교정 전문의). 각 분야 전문의 협진 시스템.', path: '/doctors', ogImage: '/static/img/dr-han-profile.jpg' })}
 ${nav('doctors')}
 
 <!-- HERO -->
@@ -317,7 +317,7 @@ ${scripts()}`;
 // EXPERIENCE PAGE
 // ===========================
 export function experiencePage(): string {
-  return `${head('환자 경험', '행복한예인치과 환자 경험 - 치과를 다녀간 뒤 안도감을 느끼셨으면. 부드러운 진료, 명확한 설명, 효율적 예약.')}
+  return `${head({ title: '환자 경험', description: '행복한예인치과 환자 경험 - 치과를 다녀간 뒤 안도감을 느끼셨으면. 부드러운 마취, X-ray 앞 투명한 설명, 직장인 맞춤 효율적 예약, 꾸준한 사후 케어.', path: '/experience', ogImage: '/static/img/consult-2.jpg' })}
 ${nav('experience')}
 
 <!-- HERO -->
@@ -448,7 +448,7 @@ ${scripts()}`;
 // LOCATION PAGE
 // ===========================
 export function locationPage(): string {
-  return `${head('오시는 길', '행복한예인치과 위치 - 서울 중구 남대문로9길 51 효덕빌딩 3층, 시청역 도보 5분, 02-756-2828')}
+  return `${head({ title: '오시는 길', description: '행복한예인치과 오시는 길 - 서울 중구 남대문로9길 51 효덕빌딩 3층 301호. 1호선 시청역 4·5번 출구 도보 5분. 전화 02-756-2828. 수요일 야간진료 20시.', path: '/location' })}
 ${nav('location')}
 
 <!-- HERO -->

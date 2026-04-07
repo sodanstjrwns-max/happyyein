@@ -1,13 +1,132 @@
 // 공통 레이아웃: head, nav, footer, scripts
 
-export function head(title: string, description: string) {
+// 사이트 기본 정보 상수
+const SITE = {
+  name: '행복한예인치과',
+  nameEn: 'Happy Yein Dental Clinic',
+  domain: 'https://yein-dental.pages.dev',
+  ogImage: '/static/img/dr-han-logo.jpg',
+  locale: 'ko_KR',
+  phone: '02-756-2828',
+  address: '서울 중구 남대문로9길 51 효덕빌딩 3층 301호',
+  geo: { lat: '37.566', lng: '126.978' },
+};
+
+interface HeadOptions {
+  title: string;
+  description: string;
+  path: string;           // canonical 경로 (예: '/', '/philosophy')
+  ogType?: string;        // 'website' | 'article' 등
+  ogImage?: string;       // 커스텀 OG 이미지 (없으면 기본 사용)
+  noindex?: boolean;      // true면 noindex
+  jsonLd?: object;        // 추가 JSON-LD 구조화 데이터
+}
+
+export function head(opts: HeadOptions | string, descriptionLegacy?: string, pathLegacy?: string) {
+  // 하위 호환: head('title','desc') 형태도 지원, 단 path 필수 추가
+  let o: HeadOptions;
+  if (typeof opts === 'string') {
+    o = {
+      title: opts,
+      description: descriptionLegacy || '',
+      path: pathLegacy || '/',
+      ogType: 'website',
+    };
+  } else {
+    o = opts;
+  }
+
+  const fullTitle = o.path === '/'
+    ? `${o.title}`
+    : `${o.title} | ${SITE.name}`;
+  const canonicalUrl = `${SITE.domain}${o.path}`;
+  const ogImage = o.ogImage
+    ? (o.ogImage.startsWith('http') ? o.ogImage : `${SITE.domain}${o.ogImage}`)
+    : `${SITE.domain}${SITE.ogImage}`;
+  const ogType = o.ogType || 'website';
+  const robots = o.noindex ? 'noindex, nofollow' : 'index, follow';
+
+  // JSON-LD: 기본 DentalClinic + 페이지별 추가
+  const orgJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Dentist",
+    "name": SITE.name,
+    "alternateName": SITE.nameEn,
+    "url": SITE.domain,
+    "logo": `${SITE.domain}/static/img/logo.png`,
+    "image": ogImage,
+    "telephone": SITE.phone,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "남대문로9길 51 효덕빌딩 3층 301호",
+      "addressLocality": "중구",
+      "addressRegion": "서울특별시",
+      "postalCode": "04530",
+      "addressCountry": "KR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": SITE.geo.lat,
+      "longitude": SITE.geo.lng
+    },
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Thursday","Friday"], "opens": "09:30", "closes": "18:30" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "09:30", "closes": "20:00" }
+    ],
+    "priceRange": "$$",
+    "areaServed": { "@type": "City", "name": "Seoul" },
+    "sameAs": ["https://blog.naver.com/yein2828"]
+  };
+
+  const jsonLdScripts = [
+    `<script type="application/ld+json">${JSON.stringify(orgJsonLd)}</script>`
+  ];
+  if (o.jsonLd) {
+    jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify(o.jsonLd)}</script>`);
+  }
+
   return `<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title} | 행복한예인치과</title>
-<meta name="description" content="${description}">
+
+<!-- SEO 기본 -->
+<title>${fullTitle}</title>
+<meta name="description" content="${o.description}">
+<meta name="robots" content="${robots}">
+<link rel="canonical" href="${canonicalUrl}">
+
+<!-- Open Graph (Facebook, KakaoTalk, Naver) -->
+<meta property="og:type" content="${ogType}">
+<meta property="og:site_name" content="${SITE.name}">
+<meta property="og:title" content="${fullTitle}">
+<meta property="og:description" content="${o.description}">
+<meta property="og:url" content="${canonicalUrl}">
+<meta property="og:image" content="${ogImage}">
+<meta property="og:locale" content="${SITE.locale}">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${fullTitle}">
+<meta name="twitter:description" content="${o.description}">
+<meta name="twitter:image" content="${ogImage}">
+
+<!-- Naver 검색 최적화 -->
+<meta name="naver-site-verification" content="">
+<meta property="og:article:author" content="${SITE.name}">
+
+<!-- 추가 메타 -->
+<meta name="theme-color" content="#F7BA18">
+<meta name="author" content="${SITE.name}">
+<meta name="format-detection" content="telephone=yes">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="icon" type="image/png" href="/static/img/logo.png">
+
+<!-- 구조화 데이터 (JSON-LD) -->
+${jsonLdScripts.join('\n')}
+
+<!-- 폰트 & 아이콘 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">

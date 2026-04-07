@@ -200,7 +200,7 @@ export function renderTreatmentPage(slug: string): string | null {
     </a>`
   ).join('');
 
-  return `${head(t.title, t.metaDesc)}
+  return `${head({ title: t.title, description: t.metaDesc, path: `/treatments/${t.slug}`, ogImage: t.heroImg, ogType: 'article' })}
 ${nav('treatments')}
 
 <!-- HERO -->
