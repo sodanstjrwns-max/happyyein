@@ -138,6 +138,15 @@ boards.put('/:board/:id', async (c) => {
     const body = await c.req.json()
     const { title, content, thumbnail_url, images } = body
 
+    // 게시글 존재 여부 확인
+    const existing = await c.env.DB.prepare(
+      'SELECT id FROM posts WHERE id = ? AND board = ?'
+    ).bind(id, board).first()
+
+    if (!existing) {
+      return c.json({ error: '게시글을 찾을 수 없습니다.' }, 404)
+    }
+
     // 게시글 수정
     await c.env.DB.prepare(
       `UPDATE posts SET title = ?, content = ?, thumbnail_url = ?, updated_at = datetime('now')
@@ -172,6 +181,15 @@ boards.delete('/:board/:id', async (c) => {
   const id = parseInt(c.req.param('id'))
 
   try {
+    // 게시글 존재 여부 확인
+    const existing = await c.env.DB.prepare(
+      'SELECT id FROM posts WHERE id = ? AND board = ?'
+    ).bind(id, board).first()
+
+    if (!existing) {
+      return c.json({ error: '게시글을 찾을 수 없습니다.' }, 404)
+    }
+
     // R2에서 이미지도 삭제
     const { results: images } = await c.env.DB.prepare(
       'SELECT image_url FROM post_images WHERE post_id = ?'

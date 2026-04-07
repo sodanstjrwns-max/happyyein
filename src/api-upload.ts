@@ -1,14 +1,16 @@
-// R2 이미지 업로드 API
+// R2 이미지 업로드 & 서빙 API
 import { Hono } from 'hono'
 
 type Bindings = {
   R2: R2Bucket;
 }
 
-const upload = new Hono<{ Bindings: Bindings }>()
+// ===== 업로드 API =====
+// index.tsx에서 app.route('/api/upload', uploadApi)로 마운트
+export const uploadApi = new Hono<{ Bindings: Bindings }>()
 
-// POST /api/upload - 이미지 업로드 (multipart/form-data)
-upload.post('/', async (c) => {
+// POST /api/upload → POST /
+uploadApi.post('/', async (c) => {
   try {
     const formData = await c.req.formData()
     const file = formData.get('file') as File | null
@@ -41,7 +43,7 @@ upload.post('/', async (c) => {
       },
     })
 
-    // R2 public URL 반환 (로컬 개발시에는 /api/images/... 경로로)
+    // URL은 /api/images/uploads/... 형태
     const url = `/api/images/${key}`
 
     return c.json({ 
@@ -56,10 +58,21 @@ upload.post('/', async (c) => {
   }
 })
 
-// GET /api/images/:key+ - R2에서 이미지 서빙
-upload.get('/images/*', async (c) => {
-  const key = c.req.path.replace('/api/images/', '')
+
+// ===== 이미지 서빙 API =====
+// index.tsx에서 app.route('/api/images', imagesApi)로 마운트
+export const imagesApi = new Hono<{ Bindings: Bindings }>()
+
+// GET /api/images/uploads/xxx → R2 key: uploads/xxx
+imagesApi.get('/*', async (c) => {
+  // c.req.path는 원본 전체 경로 (예: /api/images/uploads/xxx)
+  // route prefix를 제거하여 R2 key 추출
+  const key = c.req.path.replace(/^\/api\/images\//, '')
   
+  if (!key) {
+    return c.notFound()
+  }
+
   try {
     const object = await c.env.R2.get(key)
     if (!object) {
@@ -75,5 +88,3 @@ upload.get('/images/*', async (c) => {
     return c.notFound()
   }
 })
-
-export default upload

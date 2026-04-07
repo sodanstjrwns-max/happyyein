@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { renderTreatmentPage } from './treatments'
 import { philosophyPage, doctorsPage, experiencePage, locationPage } from './pages'
 import { boardListPage, boardDetailPage, boardWritePage, boardEditPage } from './board-pages'
-import uploadApi from './api-upload'
+import { uploadApi, imagesApi } from './api-upload'
 import boardsApi from './api-boards'
 
 type Bindings = { DB: D1Database; R2: R2Bucket }
@@ -1040,14 +1040,8 @@ app.get('/treatments/:slug', (c) => {
 })
 
 // ===== BOARD API ROUTES =====
-app.post('/api/upload', async (c) => {
-  const newApp = new Hono<{ Bindings: Bindings }>()
-  newApp.route('/', uploadApi)
-  return uploadApi.fetch(c.req.raw, c.env, c.executionCtx)
-})
-app.get('/api/images/*', async (c) => {
-  return uploadApi.fetch(c.req.raw, c.env, c.executionCtx)
-})
+app.route('/api/upload', uploadApi)
+app.route('/api/images', imagesApi)
 app.route('/api/boards', boardsApi)
 
 // ===== BOARD PAGE ROUTES =====

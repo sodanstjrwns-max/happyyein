@@ -297,8 +297,10 @@ async function loadPosts(page = 1) {
       pagEl.innerHTML = '';
     }
 
-    // reveal 재초기화
-    document.querySelectorAll('.rv:not(.vis)').forEach(el => io.observe(el));
+    // reveal 재초기화 (io는 layout scripts()에서 선언)
+    if (typeof io !== 'undefined') {
+      document.querySelectorAll('.rv:not(.vis)').forEach(el => io.observe(el));
+    }
   } catch (err) {
     console.error('Failed to load posts:', err);
   }
@@ -308,10 +310,6 @@ function escHtml(s) { const d = document.createElement('div'); d.textContent = s
 function formatDate(d) { if (!d) return ''; return d.substring(0, 10); }
 
 // init
-const io = new IntersectionObserver(entries => {
-  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis'); });
-}, { threshold: 0.1 });
-
 loadPosts(1);
 </script>
 ${scripts()}`
