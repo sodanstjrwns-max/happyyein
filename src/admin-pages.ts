@@ -249,18 +249,60 @@ a{text-decoration:none;color:inherit;}
 @media(max-width:768px){
   .admin-sidebar{transform:translateX(-100%);}
   .admin-sidebar.open{transform:translateX(0);}
-  .admin-main{margin-left:0;padding:20px 16px;padding-top:72px;}
+  .admin-main{margin-left:0;padding:16px 12px;padding-top:68px;}
   .admin-mobile-toggle{display:flex;}
   .stat-grid{grid-template-columns:1fr 1fr;}
-  .login-card{margin:16px;padding:40px 28px;}
-  .admin-table{font-size:0.78rem;}
+  .stat-card{padding:20px 16px;}
+  .stat-card-num{font-size:1.8rem;}
+  .stat-card-label{font-size:0.55rem;letter-spacing:2px;}
+  .login-card{margin:16px;padding:36px 24px;border-radius:20px;}
+  .login-title{font-size:1.6rem;}
+  .login-subtitle{font-size:0.65rem;}
+  .login-input{padding:14px 16px;font-size:0.92rem;}
+  .login-btn{padding:14px;font-size:0.72rem;}
+  .admin-table{font-size:0.75rem;}
+  .admin-table th{font-size:0.5rem;padding:10px 8px;letter-spacing:2px;}
+  .admin-table td{padding:10px 8px;}
   .admin-table th:nth-child(4),.admin-table td:nth-child(4){display:none;}
-  .board-mgmt-toolbar{flex-direction:column;align-items:stretch;}
+  .admin-table .td-thumb{width:36px;height:36px;border-radius:8px;}
+  .admin-table .td-title{max-width:140px;font-size:0.78rem;}
+  .admin-table .td-title-wrap{gap:8px;}
+  .admin-table .td-date{font-size:0.65rem;}
+  .admin-table .td-actions button,.admin-table .td-actions a{width:28px;height:28px;font-size:0.65rem;}
+  .admin-table .td-views-wrap{padding:3px 8px;}
+  .admin-table .td-views-wrap .views-num{font-size:0.72rem;}
+  .board-mgmt-toolbar{flex-direction:column;align-items:stretch;gap:10px;}
   .board-search{max-width:100%;}
+  .board-search input{font-size:0.85rem;}
+  .admin-header h1{font-size:1.1rem;}
+  .admin-header h1 em{font-size:1.1rem;}
+  .admin-header-actions .admin-btn{padding:10px 16px;font-size:0.6rem;}
+  .admin-panel{padding:16px 12px;border-radius:14px;}
+  .admin-panel-header{flex-direction:column;gap:8px;align-items:flex-start;}
+  .admin-pagination{gap:4px;}
+  .admin-pagination button{width:32px;height:32px;font-size:0.72rem;border-radius:8px;}
+  .quick-actions{grid-template-columns:1fr;}
+  .quick-action-btn{padding:14px 16px;}
+  .quick-action-text{font-size:0.8rem;}
+  .quick-action-sub{font-size:0.58rem;}
+  .top-post-item{padding:10px 12px;gap:10px;}
+  .top-post-title{font-size:0.78rem;}
+  .top-post-views{font-size:0.95rem;}
+  .top-post-rank{font-size:1.2rem;width:22px;}
+  .chart-row{grid-template-columns:1fr;}
+  .admin-nav a{padding:14px 16px;font-size:0.72rem;letter-spacing:1px;}
+  .admin-nav a i{font-size:0.85rem;width:24px;}
 }
 @media(max-width:480px){
   .stat-grid{grid-template-columns:1fr;}
-  .quick-actions{grid-template-columns:1fr;}
+  .stat-card{padding:18px 14px;}
+  .admin-main{padding:12px 10px;padding-top:64px;}
+  .admin-table .td-title{max-width:110px;font-size:0.72rem;}
+  .admin-table .td-actions{gap:4px;}
+  .admin-header{flex-direction:column;gap:10px;align-items:flex-start;}
+  .admin-header h1{font-size:1rem;}
+  .admin-panel{padding:14px 10px;}
+  .login-card{margin:12px;padding:28px 20px;}
 }
 `;
 

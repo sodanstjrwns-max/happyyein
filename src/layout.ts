@@ -243,7 +243,12 @@ export function footer() {
       <a href="#">Instagram</a>
     </div>
   </div>
-</footer>`;
+</footer>
+<!-- MOBILE BOTTOM BAR -->
+<div class="mob-bottom-bar">
+  <a href="tel:02-756-2828" class="mob-bottom-btn btn-call"><i class="fas fa-phone-alt"></i> 전화 상담</a>
+  <a href="https://blog.naver.com/yein2828" target="_blank" class="mob-bottom-btn btn-blog"><i class="fab fa-blogger-b"></i> 네이버 블로그</a>
+</div>`;
 }
 
 export function scripts() {
@@ -419,11 +424,35 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 @media(max-width:768px){
   .nav-links{display:none;}
   .hamburger{display:flex;}
-  .btn{width:100%;justify-content:center;}
-  footer{padding:40px 24px;}
-  .footer-inner{flex-direction:column;text-align:center;}
-  .footer-right{flex-wrap:wrap;justify-content:center;}
   .cursor-dot,.cursor-ring{display:none;}
+  .btn{width:100%;justify-content:center;padding:16px 32px;font-size:0.72rem;}
+  .sec-pad{padding:clamp(60px,10vw,120px) 20px;}
+  .sec-title{font-size:clamp(1.6rem,5vw,2.4rem)!important;letter-spacing:-1px;}
+  .sec-label{font-size:0.55rem;letter-spacing:5px;}
+  .cta-inner h2{font-size:clamp(1.6rem,5vw,2.4rem);}
+  .cta-inner>p{font-size:0.85rem;margin-bottom:32px;}
+  .cta{padding-bottom:100px!important;}
+  footer{padding:32px 20px;padding-bottom:80px!important;}
+  .footer-inner{flex-direction:column;text-align:center;gap:20px;}
+  .footer-left{font-size:0.72rem;}
+  .footer-right{flex-wrap:wrap;justify-content:center;gap:20px;}
+  .mob-link{font-size:clamp(1.3rem,4.5vw,2rem);padding:10px 0;letter-spacing:2px;}
+  .mob-link-sub{font-size:clamp(0.8rem,2.2vw,1rem)!important;padding:6px 0!important;}
+  .mob-menu-footer{bottom:32px;font-size:0.7rem;}
+  /* 모바일 하단 바 */
+  .mob-bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:9998;display:flex;gap:1px;background:rgba(10,10,10,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(247,186,24,0.15);}
+  .mob-bottom-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 12px;font-family:var(--font-display);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--white);transition:all 0.3s;text-decoration:none;}
+  .mob-bottom-btn i{font-size:0.9rem;}
+  .mob-bottom-btn.btn-call{background:var(--gold);color:var(--black);}
+  .mob-bottom-btn.btn-blog{background:rgba(255,255,255,0.06);}
+}
+@media(max-width:480px){
+  .sec-pad{padding:48px 16px;}
+  .btn{padding:14px 24px;font-size:0.68rem;letter-spacing:2px;}
+  .mob-link{font-size:clamp(1.1rem,4vw,1.6rem);}
+}
+@media(min-width:769px){
+  .mob-bottom-bar{display:none;}
 }
 `;
 
@@ -654,19 +683,65 @@ const subpageCSS = `
   .philo-numbers{grid-template-columns:repeat(2,1fr);}
 }
 @media(max-width:768px){
-  .sub-hero{min-height:50vh;}
-  .sub-hero-tall{min-height:60vh;}
-  .sub-hero h1{font-size:clamp(2rem,5vw,3rem);}
-  .sub-hero-breadcrumb{top:90px;}
-  .process-steps{grid-template-columns:1fr;}
-  .philo-value-item{flex-direction:column;gap:16px;}
+  .sub-hero{min-height:40vh;}
+  .sub-hero-tall{min-height:50vh;}
+  .sub-hero h1{font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:-1px;}
+  .sub-hero-content{padding:0 20px 48px;}
+  .sub-hero-breadcrumb{top:80px;left:20px;font-size:0.58rem;}
+  .sub-hero-tag{font-size:0.55rem;letter-spacing:5px;}
+  .sub-hero-desc{font-size:0.88rem;}
+  .page-section{padding:clamp(60px,10vw,100px) 20px;}
+  .process-steps{grid-template-columns:1fr;gap:20px;}
+  .process-card{padding:32px 24px;}
+  .philo-value-item{flex-direction:column;gap:12px;}
   .philo-value-num{font-size:2.5rem;min-width:auto;}
+  .philo-value-content h3{font-size:1.1rem;}
+  .philo-value-content p{font-size:0.85rem;}
   .story-timeline::before{display:none;}
-  .story-item{flex-direction:column;gap:16px;}
-  .story-year{text-align:left;min-width:auto;}
+  .story-item{flex-direction:column;gap:12px;padding:28px 0;}
+  .story-year{text-align:left;min-width:auto;font-size:2rem;}
   .story-year::after{display:none;}
-  .exp-gallery-grid{grid-template-columns:1fr;}
-  .clinic-info-row{flex-direction:column;align-items:stretch;}
   .philo-numbers{grid-template-columns:1fr 1fr;}
+  .philo-num-item{padding:36px 16px;}
+  .philo-num-big{font-size:clamp(2.5rem,6vw,3.5rem);}
+  /* DOCTORS */
+  .doc-lead-photo{max-width:280px;margin:0 auto;}
+  .doc-lead-info h2{font-size:clamp(1.8rem,5vw,2.2rem);text-align:center;}
+  .doc-name-en{display:block;margin-left:0;text-align:center;margin-top:4px;}
+  .doc-role{text-align:center;}
+  .doc-quote{font-size:0.95rem;padding:20px;}
+  .doc-creds-grid{grid-template-columns:1fr;gap:24px;}
+  .doc-card-horizontal{flex-direction:column;align-items:center;gap:20px;}
+  .doc-h-icon{width:64px;height:64px;}
+  .doc-h-info h2{font-size:clamp(1.5rem,4vw,1.8rem);text-align:center;}
+  .doc-h-desc{font-size:0.88rem;text-align:center;}
+  .doc-specialty-tags{justify-content:center;}
+  .team-approach-card{padding:32px 24px;}
+  /* EXPERIENCE */
+  .exp-pillar{grid-template-columns:1fr;gap:32px;margin-bottom:80px;}
+  .exp-pillar-num{font-size:3rem;}
+  .exp-pillar-text h4{font-size:clamp(1.2rem,4vw,1.5rem);}
+  .exp-pillar-text p{font-size:0.85rem;}
+  .exp-gallery-grid{grid-template-columns:1fr;gap:12px;}
+  .exp-gallery-item{aspect-ratio:16/10;}
+  .review-card{padding:28px 24px;}
+  .review-card p{font-size:0.85rem;}
+  .clinic-info-row{flex-direction:column;align-items:stretch;}
+  /* LOCATION */
+  .loc-full-map{height:280px;border-radius:16px;}
+  .loc-info-card{gap:16px;padding:20px 0;}
+  .loc-info-icon{width:40px;height:40px;border-radius:10px;font-size:0.9rem;}
+  .loc-info-card h4{font-size:0.62rem;}
+  .loc-info-card p{font-size:0.88rem;}
+  .loc-hours-grid{font-size:0.82rem;}
+  .dir-card{padding:32px 24px;}
+}
+@media(max-width:480px){
+  .sub-hero{min-height:35vh;}
+  .sub-hero h1{font-size:clamp(1.5rem,5vw,2rem);}
+  .page-section{padding:48px 16px;}
+  .philo-num-big{font-size:clamp(2rem,5vw,2.5rem);}
+  .doc-lead-photo{max-width:240px;}
+  .process-card{padding:24px 20px;}
 }
 `;

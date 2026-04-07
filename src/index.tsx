@@ -406,28 +406,109 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   .nav-links{display:none;}
   .hamburger{display:flex;}
   .cursor-dot,.cursor-ring{display:none;}
-  .hero-bottom{flex-direction:column;gap:32px;align-items:flex-start;}
-  .hero-cta-group{flex-direction:column;width:100%;}
-  .btn{width:100%;justify-content:center;}
+  /* HERO 모바일 */
+  .hero{height:100svh;min-height:600px;}
+  .hero-content{padding:0 20px 60px;}
+  .hero-eyebrow{font-size:0.55rem;letter-spacing:5px;margin-bottom:20px;}
+  .hero-title-line{font-size:clamp(2rem,8vw,3.5rem)!important;letter-spacing:-1px;}
+  .hero-bottom{flex-direction:column;gap:24px;align-items:flex-start;margin-top:32px;}
+  .hero-desc{font-size:0.82rem;max-width:100%;}
+  .hero-cta-group{flex-direction:column;width:100%;gap:12px;}
+  .btn{width:100%;justify-content:center;padding:16px 32px;font-size:0.72rem;}
   .hero-ticker{display:none;}
+  /* 숫자 스트립 */
   .num-strip{grid-template-columns:1fr 1fr;}
-  .num-item{border-bottom:1px solid rgba(255,255,255,0.05);}
+  .num-item{padding:32px 16px;border-bottom:1px solid rgba(255,255,255,0.05);}
+  .num-item .num{font-size:clamp(2rem,6vw,2.5rem);}
+  .num-item .txt{font-size:0.7rem;}
+  /* PHILOSOPHY */
+  .philosophy{min-height:auto;padding:80px 0;}
+  .philosophy::before{font-size:15rem;top:-40px;right:-10%;}
+  .philosophy-text{font-size:clamp(1.6rem,5vw,2.2rem)!important;}
+  .philosophy-credit{margin-top:32px;font-size:0.6rem;}
+  /* VALUES */
   .values-grid{grid-template-columns:1fr;}
-  .team-grid{grid-template-columns:1fr!important;max-width:440px;margin-left:auto;margin-right:auto;}
+  .v-card{padding:36px 28px;}
+  .v-card-num{font-size:3.5rem;}
+  /* TREATMENTS */
+  .treat-card{min-height:280px;}
+  .treat-card-content{padding:32px 24px;}
+  .treat-card h3{font-size:1.2rem;}
+  .treat-card-num{font-size:4rem;right:16px;}
+  .treat-featured .treat-card-content{padding:36px 24px;}
+  .treat-pills{gap:6px;}
+  .treat-pill{padding:5px 12px;font-size:0.58rem;}
+  /* TEAM */
+  .team-grid{grid-template-columns:1fr!important;max-width:440px;margin-left:auto;margin-right:auto;gap:20px;}
   .team-card.lead{grid-column:span 1;}
   .team-card.lead .team-photo{aspect-ratio:3/4;}
-  .exp-text{padding:60px 24px;}
-  .photo-track img{height:180px;}
-  .cta-inner h2{font-size:clamp(1.8rem,5vw,3rem);}
-  footer{padding:40px 24px;}
-  .footer-inner{flex-direction:column;text-align:center;}
-  .footer-right{flex-wrap:wrap;justify-content:center;}
+  .team-info{padding:24px 20px 28px;}
+  .team-info h3{font-size:1.1rem;}
+  /* EXPERIENCE */
+  .exp-text{padding:48px 20px;}
+  .exp-text h2{font-size:clamp(1.6rem,5vw,2rem);margin-bottom:20px;}
+  .exp-text>p{font-size:0.82rem;margin-bottom:32px;}
+  .exp-images-grid{height:300px;}
+  .exp-item h4{font-size:0.78rem;}
+  /* PHOTO MARQUEE */
+  .photo-marquee{padding:48px 0;}
+  .photo-track img{height:140px;border-radius:12px;}
+  /* LOCATION */
+  .location-map{height:280px;border-radius:16px;}
+  .loc-block{padding:20px 0;}
+  /* CTA */
+  .cta-inner h2{font-size:clamp(1.6rem,5vw,2.4rem);}
+  .cta-inner>p{font-size:0.85rem;margin-bottom:32px;}
+  /* FOOTER */
+  footer{padding:32px 20px;}
+  .footer-inner{flex-direction:column;text-align:center;gap:20px;}
+  .footer-left{font-size:0.72rem;line-height:1.9;}
+  .footer-right{flex-wrap:wrap;justify-content:center;gap:20px;}
+  /* SECTION */
+  .sec-pad{padding:clamp(60px,10vw,120px) 20px;}
+  .sec-title{font-size:clamp(1.6rem,5vw,2.4rem)!important;letter-spacing:-1px;}
+  .sec-label{font-size:0.55rem;letter-spacing:5px;}
+  /* 모바일 메뉴 */
+  .mob-link{font-size:clamp(1.3rem,4.5vw,2rem);padding:10px 0;letter-spacing:2px;}
+  .mob-link-sub{font-size:clamp(0.8rem,2.2vw,1rem)!important;padding:6px 0!important;}
+  .mob-menu-footer{bottom:32px;font-size:0.7rem;}
 }
 @media(max-width:480px){
+  .hero-title-line{font-size:clamp(1.7rem,7.5vw,2.5rem)!important;}
   .num-strip{grid-template-columns:1fr 1fr;}
-  .num-item{padding:32px 20px;}
-  .num-item .num{font-size:2rem;}
-  .philosophy-text{font-size:clamp(1.5rem,5vw,2rem)!important;}
+  .num-item{padding:24px 14px;}
+  .num-item .num{font-size:1.8rem;}
+  .num-item .txt{font-size:0.65rem;}
+  .philosophy-text{font-size:clamp(1.3rem,4.5vw,1.6rem)!important;}
+  .v-card{padding:28px 20px;}
+  .v-card h3{font-size:0.9rem;}
+  .treat-card{min-height:240px;}
+  .treat-card h3{font-size:1.05rem;}
+  .treat-card p{font-size:0.78rem;}
+  .sec-pad{padding:48px 16px;}
+  .btn{padding:14px 24px;font-size:0.68rem;letter-spacing:2px;}
+  .exp-text{padding:36px 16px;}
+  .exp-images-grid{height:220px;}
+  .photo-track img{height:110px;}
+  .cta-inner h2{font-size:clamp(1.4rem,5vw,2rem);}
+  .mob-link{font-size:clamp(1.1rem,4vw,1.6rem);letter-spacing:1px;}
+  .mob-link-sub{font-size:clamp(0.75rem,2vw,0.85rem)!important;}
+  /* 하단 고정 전화 버튼 */
+}
+/* 모바일 전용: 하단 고정 전화 + 네이버 버튼 */
+@media(max-width:768px){
+  .mob-bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:9998;display:flex;gap:1px;background:rgba(10,10,10,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(247,186,24,0.15);padding:0;safe-area-inset-bottom:env(safe-area-inset-bottom);}
+  .mob-bottom-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 12px;font-family:var(--font-display);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--white);transition:all 0.3s;text-decoration:none;}
+  .mob-bottom-btn i{font-size:0.9rem;}
+  .mob-bottom-btn.btn-call{background:var(--gold);color:var(--black);}
+  .mob-bottom-btn.btn-blog{background:rgba(255,255,255,0.06);}
+  .mob-bottom-btn.btn-blog:hover{background:rgba(247,186,24,0.1);}
+  /* CTA, 푸터 하단 여백 */
+  .cta{padding-bottom:100px!important;}
+  footer{padding-bottom:80px!important;}
+}
+@media(min-width:769px){
+  .mob-bottom-bar{display:none;}
 }
 </style>
 </head>
@@ -907,6 +988,12 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
     </div>
   </div>
 </footer>
+
+<!-- MOBILE BOTTOM BAR -->
+<div class="mob-bottom-bar">
+  <a href="tel:02-756-2828" class="mob-bottom-btn btn-call"><i class="fas fa-phone-alt"></i> 전화 상담</a>
+  <a href="https://blog.naver.com/yein2828" target="_blank" class="mob-bottom-btn btn-blog"><i class="fab fa-blogger-b"></i> 네이버 블로그</a>
+</div>
 
 <script>
 // ===== PRELOADER WITH COUNTER =====
