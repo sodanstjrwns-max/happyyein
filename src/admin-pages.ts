@@ -164,6 +164,15 @@ a{text-decoration:none;color:inherit;}
 .admin-table .badge-notice{background:rgba(251,191,36,0.1);color:#FBBF24;border:1px solid rgba(251,191,36,0.2);}
 .admin-table .td-date{font-family:'Space Grotesk',monospace;font-size:0.75rem;color:#888;letter-spacing:1px;white-space:nowrap;}
 .admin-table .td-views{font-family:'Space Grotesk',monospace;font-size:0.78rem;text-align:center;}
+.admin-table .td-views-wrap{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;background:rgba(247,186,24,0.06);border:1px solid rgba(247,186,24,0.1);}
+.admin-table .td-views-wrap i{font-size:0.6rem;color:#F7BA18;opacity:0.7;}
+.admin-table .td-views-wrap .views-num{font-family:'Space Grotesk',monospace;font-size:0.82rem;font-weight:600;color:#F7BA18;letter-spacing:0.5px;}
+.admin-table .td-views-wrap.views-hot{background:rgba(255,100,60,0.08);border-color:rgba(255,100,60,0.15);}
+.admin-table .td-views-wrap.views-hot i{color:#FF6B3D;}
+.admin-table .td-views-wrap.views-hot .views-num{color:#FF6B3D;}
+.admin-table .td-views-wrap.views-zero{background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.06);}
+.admin-table .td-views-wrap.views-zero i{color:#555;}
+.admin-table .td-views-wrap.views-zero .views-num{color:#666;font-weight:400;}
 .admin-table .td-actions{display:flex;gap:6px;}
 .admin-table .td-actions button,.admin-table .td-actions a{width:30px;height:30px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#888;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s;font-size:0.72rem;text-decoration:none;}
 .admin-table .td-actions .btn-edit:hover{border-color:#F7BA18;color:#F7BA18;background:rgba(247,186,24,0.08);}
@@ -855,7 +864,8 @@ function renderRecentPosts(posts) {
     html += '<tr>';
     html += '<td>' + getBoardBadge(p.board) + '</td>';
     html += '<td><div class="td-title-wrap">' + thumb + '<span class="td-title">' + escHtml(p.title) + '</span></div></td>';
-    html += '<td class="td-views">' + (p.view_count || 0) + '</td>';
+    const rvCls = (p.view_count||0) >= 5 ? 'views-hot' : (p.view_count||0) === 0 ? 'views-zero' : '';
+    html += '<td class="td-views"><div class="td-views-wrap ' + rvCls + '"><i class="fas fa-eye"></i><span class="views-num">' + formatNum(p.view_count || 0) + '</span></div></td>';
     html += '<td class="td-date">' + formatDate(p.created_at) + '</td>';
     html += '<td><div class="td-actions">';
     html += '<a href="/' + slug + '/' + p.id + '" target="_blank" class="btn-view" title="보기"><i class="fas fa-eye"></i></a>';
@@ -936,7 +946,8 @@ async function loadBoardManagement(board, page) {
       thtml += '<td style="text-align:center;font-family:\\'Space Grotesk\\',monospace;font-size:0.78rem;color:#888;">' + num + '</td>';
       thtml += '<td><div class="td-title-wrap">' + thumb + '<span class="td-title">' + escHtml(p.title) + '</span></div></td>';
       thtml += '<td style="text-align:center;font-family:\\'Space Grotesk\\',monospace;font-size:0.78rem;color:#888;">' + (p.image_count || 0) + '</td>';
-      thtml += '<td class="td-views">' + (p.view_count || 0) + '</td>';
+      const bvCls = (p.view_count||0) >= 5 ? 'views-hot' : (p.view_count||0) === 0 ? 'views-zero' : '';
+      thtml += '<td class="td-views"><div class="td-views-wrap ' + bvCls + '"><i class="fas fa-eye"></i><span class="views-num">' + formatNum(p.view_count || 0) + '</span></div></td>';
       thtml += '<td class="td-date">' + formatDate(p.created_at) + '</td>';
       thtml += '<td><div class="td-actions">';
       thtml += '<a href="/' + slug + '/' + p.id + '" target="_blank" class="btn-view" title="보기"><i class="fas fa-eye"></i></a>';
