@@ -5,7 +5,9 @@ import { boardListPage, boardDetailPage, boardWritePage, boardEditPage } from '.
 import { uploadApi, imagesApi } from './api-upload'
 import boardsApi from './api-boards'
 import authApi, { requireAdmin } from './api-auth'
+import userAuthApi from './api-user-auth'
 import { adminLoginPage, adminDashboardPage } from './admin-pages'
+import { registerPage, loginPage } from './auth-pages'
 
 type Bindings = { DB: D1Database; R2: R2Bucket }
 const app = new Hono<{ Bindings: Bindings }>()
@@ -746,6 +748,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
         </div>
       </div>
       <a href="/location" class="nav-link">Location</a>
+      <a href="/register" class="nav-link" style="padding:10px 24px;border:1px solid rgba(247,186,24,0.3);border-radius:50px;color:var(--gold);font-size:0.65rem;">회원가입</a>
       <a href="tel:02-756-2828" class="nav-link nav-tel">02.756.2828</a>
     </div>
     <div class="hamburger" id="hamburger">
@@ -770,6 +773,8 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   <a href="/blog" class="mob-link mob-link-sub" onclick="closeMob()">블로그</a>
   <a href="/notice" class="mob-link mob-link-sub" onclick="closeMob()">공지사항</a>
   <a href="/location" class="mob-link" onclick="closeMob()">Location</a>
+  <a href="/register" class="mob-link" onclick="closeMob()" style="color:var(--gold);font-size:clamp(0.9rem,2.5vw,1.2rem)!important;">회원가입</a>
+  <a href="/login" class="mob-link mob-link-sub" onclick="closeMob()">로그인</a>
   <a href="tel:02-756-2828" class="mob-link" onclick="closeMob()" style="color:var(--gold)">02.756.2828</a>
   <div class="mob-menu-footer">Est. 2013 &mdash; Seoul</div>
 </div>
@@ -1263,10 +1268,10 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       &copy; 2005–2026 Happy Yein Dental Clinic. All rights reserved.
     </div>
     <div class="footer-right">
-      <a href="#">Terms</a>
-      <a href="#">Privacy</a>
+      <a href="/register">Register</a>
+      <a href="/login">Login</a>
       <a href="https://blog.naver.com/yein2828" target="_blank">Blog</a>
-      <a href="#">Instagram</a>
+      <a href="https://naver.me/G0DXGZbi" target="_blank">Reservation</a>
     </div>
   </div>
 </footer>
@@ -1412,6 +1417,11 @@ app.get('/treatments/:slug', (c) => {
 
 // ===== AUTH API =====
 app.route('/api/auth', authApi)
+app.route('/api/user', userAuthApi)
+
+// ===== USER AUTH PAGES =====
+app.get('/register', (c) => c.html(registerPage()))
+app.get('/login', (c) => c.html(loginPage()))
 
 // ===== BOARD API ROUTES =====
 app.route('/api/upload', uploadApi)
