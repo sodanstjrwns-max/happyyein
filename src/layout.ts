@@ -145,6 +145,7 @@ export function nav(activeMenu?: string) {
     { label: 'Treatments', href: '/treatments/implant', dropdown: true },
     { label: 'Doctors', href: '/doctors' },
     { label: 'Experience', href: '/experience' },
+    { label: 'Contents', href: '/before-after', dropdown2: true },
     { label: 'Location', href: '/location' },
   ];
   const dropdownItems = [
@@ -153,6 +154,11 @@ export function nav(activeMenu?: string) {
     { label: '앞니 심미 치료', href: '/treatments/aesthetic' },
     { label: '치아 교정', href: '/treatments/orthodontics' },
     { label: '일반 / 예방 치료', href: '/treatments/general' },
+  ];
+  const contentsDropdown = [
+    { label: '비포 & 애프터', href: '/before-after' },
+    { label: '블로그', href: '/blog' },
+    { label: '공지사항', href: '/notice' },
   ];
 
   return `
@@ -175,6 +181,14 @@ export function nav(activeMenu?: string) {
             </div>
           </div>`;
         }
+        if ((item as any).dropdown2) {
+          return `<div class="nav-dropdown-wrap">
+            <a href="${item.href}" class="nav-link ${['before-after','blog','notice'].includes(activeMenu || '') ? 'active' : ''}">${item.label} <i class="fas fa-chevron-down" style="font-size:0.5rem;margin-left:4px;"></i></a>
+            <div class="nav-dropdown">
+              ${contentsDropdown.map(d => `<a href="${d.href}" class="nav-dropdown-item">${d.label}</a>`).join('')}
+            </div>
+          </div>`;
+        }
         const isActive = activeMenu === item.label.toLowerCase();
         return `<a href="${item.href}" class="nav-link ${isActive ? 'active' : ''}">${item.label}</a>`;
       }).join('')}
@@ -193,6 +207,8 @@ export function nav(activeMenu?: string) {
   ${dropdownItems.map(d => `<a href="${d.href}" class="mob-link mob-link-sub" onclick="closeMob()">${d.label}</a>`).join('')}
   <a href="/doctors" class="mob-link" onclick="closeMob()">Doctors</a>
   <a href="/experience" class="mob-link" onclick="closeMob()">Experience</a>
+  <a href="/before-after" class="mob-link" onclick="closeMob()">Contents</a>
+  ${contentsDropdown.map(d => `<a href="${d.href}" class="mob-link mob-link-sub" onclick="closeMob()">${d.label}</a>`).join('')}
   <a href="/location" class="mob-link" onclick="closeMob()">Location</a>
   <a href="tel:02-756-2828" class="mob-link" onclick="closeMob()" style="color:var(--gold)">02.756.2828</a>
   <div class="mob-menu-footer">Est. 2013 — Seoul</div>

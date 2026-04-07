@@ -1,8 +1,12 @@
 import { Hono } from 'hono'
 import { renderTreatmentPage } from './treatments'
 import { philosophyPage, doctorsPage, experiencePage, locationPage } from './pages'
+import { boardListPage, boardDetailPage, boardWritePage, boardEditPage } from './board-pages'
+import uploadApi from './api-upload'
+import boardsApi from './api-boards'
 
-const app = new Hono()
+type Bindings = { DB: D1Database; R2: R2Bucket }
+const app = new Hono<{ Bindings: Bindings }>()
 
 app.get('/', (c) => {
   const SITE_DOMAIN = 'https://yein-dental.pages.dev';
@@ -459,6 +463,14 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </div>
       <a href="/doctors" class="nav-link">Doctors</a>
       <a href="/experience" class="nav-link">Experience</a>
+      <div class="nav-dropdown-wrap">
+        <a href="/before-after" class="nav-link">Contents <i class="fas fa-chevron-down" style="font-size:0.45rem;margin-left:4px;"></i></a>
+        <div class="nav-dropdown">
+          <a href="/before-after" class="nav-dropdown-item">비포 & 애프터</a>
+          <a href="/blog" class="nav-dropdown-item">블로그</a>
+          <a href="/notice" class="nav-dropdown-item">공지사항</a>
+        </div>
+      </div>
       <a href="/location" class="nav-link">Location</a>
       <a href="tel:02-756-2828" class="nav-link nav-tel">02.756.2828</a>
     </div>
@@ -479,6 +491,10 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   <a href="/treatments/general" class="mob-link mob-link-sub" onclick="closeMob()">일반 / 예방 치료</a>
   <a href="/doctors" class="mob-link" onclick="closeMob()">Doctors</a>
   <a href="/experience" class="mob-link" onclick="closeMob()">Experience</a>
+  <a href="/before-after" class="mob-link" onclick="closeMob()">Contents</a>
+  <a href="/before-after" class="mob-link mob-link-sub" onclick="closeMob()">비포 & 애프터</a>
+  <a href="/blog" class="mob-link mob-link-sub" onclick="closeMob()">블로그</a>
+  <a href="/notice" class="mob-link mob-link-sub" onclick="closeMob()">공지사항</a>
   <a href="/location" class="mob-link" onclick="closeMob()">Location</a>
   <a href="tel:02-756-2828" class="mob-link" onclick="closeMob()" style="color:var(--gold)">02.756.2828</a>
   <div class="mob-menu-footer">Est. 2013 &mdash; Seoul</div>
@@ -1022,6 +1038,36 @@ app.get('/treatments/:slug', (c) => {
   if (!html) return c.notFound()
   return c.html(html)
 })
+
+// ===== BOARD API ROUTES =====
+app.post('/api/upload', async (c) => {
+  const newApp = new Hono<{ Bindings: Bindings }>()
+  newApp.route('/', uploadApi)
+  return uploadApi.fetch(c.req.raw, c.env, c.executionCtx)
+})
+app.get('/api/images/*', async (c) => {
+  return uploadApi.fetch(c.req.raw, c.env, c.executionCtx)
+})
+app.route('/api/boards', boardsApi)
+
+// ===== BOARD PAGE ROUTES =====
+// 비포 & 애프터
+app.get('/before-after', (c) => c.html(boardListPage('before-after')))
+app.get('/before-after/write', (c) => c.html(boardWritePage('before-after')))
+app.get('/before-after/:id/edit', (c) => c.html(boardEditPage('before-after')))
+app.get('/before-after/:id', (c) => c.html(boardDetailPage('before-after')))
+
+// 블로그
+app.get('/blog', (c) => c.html(boardListPage('blog')))
+app.get('/blog/write', (c) => c.html(boardWritePage('blog')))
+app.get('/blog/:id/edit', (c) => c.html(boardEditPage('blog')))
+app.get('/blog/:id', (c) => c.html(boardDetailPage('blog')))
+
+// 공지사항
+app.get('/notice', (c) => c.html(boardListPage('notice')))
+app.get('/notice/write', (c) => c.html(boardWritePage('notice')))
+app.get('/notice/:id/edit', (c) => c.html(boardEditPage('notice')))
+app.get('/notice/:id', (c) => c.html(boardDetailPage('notice')))
 
 app.get('/api/info', (c) => {
   return c.json({
