@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import { renderTreatmentPage } from './treatments'
+import { philosophyPage, doctorsPage, experiencePage, locationPage } from './pages'
 
 const app = new Hono()
 
@@ -378,9 +379,9 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   <div class="nav-inner">
     <a href="#" class="nav-brand"><em>Yein</em> Dental</a>
     <div class="nav-links">
-      <a href="/#philosophy" class="nav-link">Philosophy</a>
+      <a href="/philosophy" class="nav-link">Philosophy</a>
       <div class="nav-dropdown-wrap">
-        <a href="/#treatments" class="nav-link">Treatments <i class="fas fa-chevron-down" style="font-size:0.45rem;margin-left:4px;"></i></a>
+        <a href="/treatments/implant" class="nav-link">Treatments <i class="fas fa-chevron-down" style="font-size:0.45rem;margin-left:4px;"></i></a>
         <div class="nav-dropdown">
           <a href="/treatments/implant" class="nav-dropdown-item">발치즉시 임플란트</a>
           <a href="/treatments/preservation" class="nav-dropdown-item">치아 보존 치료</a>
@@ -389,9 +390,9 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
           <a href="/treatments/general" class="nav-dropdown-item">일반 / 예방 치료</a>
         </div>
       </div>
-      <a href="/#team" class="nav-link">Doctors</a>
-      <a href="/#experience" class="nav-link">Experience</a>
-      <a href="/#location" class="nav-link">Location</a>
+      <a href="/doctors" class="nav-link">Doctors</a>
+      <a href="/experience" class="nav-link">Experience</a>
+      <a href="/location" class="nav-link">Location</a>
       <a href="tel:02-756-2828" class="nav-link nav-tel">02.756.2828</a>
     </div>
     <div class="hamburger" id="hamburger">
@@ -403,13 +404,15 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 <!-- MOBILE MENU -->
 <div class="mob-menu" id="mobMenu">
   <a href="/" class="mob-link" onclick="closeMob()">Home</a>
+  <a href="/philosophy" class="mob-link" onclick="closeMob()">Philosophy</a>
   <a href="/treatments/implant" class="mob-link mob-link-sub" onclick="closeMob()">발치즉시 임플란트</a>
   <a href="/treatments/preservation" class="mob-link mob-link-sub" onclick="closeMob()">치아 보존 치료</a>
   <a href="/treatments/aesthetic" class="mob-link mob-link-sub" onclick="closeMob()">앞니 심미 치료</a>
   <a href="/treatments/orthodontics" class="mob-link mob-link-sub" onclick="closeMob()">치아 교정</a>
   <a href="/treatments/general" class="mob-link mob-link-sub" onclick="closeMob()">일반 / 예방 치료</a>
-  <a href="/#team" class="mob-link" onclick="closeMob()">Doctors</a>
-  <a href="/#location" class="mob-link" onclick="closeMob()">Location</a>
+  <a href="/doctors" class="mob-link" onclick="closeMob()">Doctors</a>
+  <a href="/experience" class="mob-link" onclick="closeMob()">Experience</a>
+  <a href="/location" class="mob-link" onclick="closeMob()">Location</a>
   <a href="tel:02-756-2828" class="mob-link" onclick="closeMob()" style="color:var(--gold)">02.756.2828</a>
   <div class="mob-menu-footer">Est. 2013 &mdash; Seoul</div>
 </div>
@@ -938,6 +941,12 @@ document.querySelectorAll('.num-item .num').forEach(el => numObserver.observe(el
 </body>
 </html>`)
 })
+
+// ===== INDIVIDUAL PAGES =====
+app.get('/philosophy', (c) => c.html(philosophyPage()))
+app.get('/doctors', (c) => c.html(doctorsPage()))
+app.get('/experience', (c) => c.html(experiencePage()))
+app.get('/location', (c) => c.html(locationPage()))
 
 // ===== TREATMENT DETAIL PAGES =====
 app.get('/treatments/:slug', (c) => {
