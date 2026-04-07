@@ -10,6 +10,80 @@ type Bindings = {
 const boards = new Hono<{ Bindings: Bindings }>()
 
 // ============================================================
+// GET /api/boards/stats/overview - 관리자 대시보드 통계
+// ============================================================
+boards.get('/stats/overview', async (c) => {
+  try {
+    // 게시판별 통계
+    const boardStats = await c.env.DB.prepare(`
+      SELECT board,
+             COUNT(*) as total,
+             SUM(view_count) as total_views,
+             MAX(created_at) as last_post
+      FROM posts WHERE is_published = 1
+      GROUP BY board
+    `).all()
+
+    // 전체 이미지 수
+    const imgCount = await c.env.DB.prepare(
+      'SELECT COUNT(*) as total FROM post_images'
+    ).first<{ total: number }>()
+
+    // 최근 7일 게시글 수
+    const recentCount = await c.env.DB.prepare(
+      `SELECT COUNT(*) as total FROM posts WHERE is_published = 1 AND created_at >= datetime('now', '-7 days')`
+    ).first<{ total: number }>()
+
+    // 가장 많이 본 글 Top5
+    const { results: topPosts } = await c.env.DB.prepare(
+      `SELECT id, board, title, view_count, created_at FROM posts
+       WHERE is_published = 1 ORDER BY view_count DESC LIMIT 5`
+    ).all()
+
+    // 최근 10개 게시글 (전체 게시판 통합)
+    const { results: recentPosts } = await c.env.DB.prepare(
+      `SELECT p.id, p.board, p.title, p.thumbnail_url, p.view_count, p.created_at,
+              (SELECT COUNT(*) FROM post_images WHERE post_id = p.id) as image_count
+       FROM posts p WHERE p.is_published = 1
+       ORDER BY p.created_at DESC LIMIT 10`
+    ).all()
+
+    // 게시판별 숫자
+    const stats: Record<string, { total: number; views: number; lastPost: string | null }> = {
+      'before-after': { total: 0, views: 0, lastPost: null },
+      'blog': { total: 0, views: 0, lastPost: null },
+      'notice': { total: 0, views: 0, lastPost: null },
+    }
+    let totalPosts = 0
+    let totalViews = 0
+
+    for (const row of (boardStats.results || [])) {
+      const b = row.board as string
+      if (stats[b]) {
+        stats[b].total = row.total as number
+        stats[b].views = row.total_views as number || 0
+        stats[b].lastPost = row.last_post as string || null
+        totalPosts += stats[b].total
+        totalViews += stats[b].views
+      }
+    }
+
+    return c.json({
+      success: true,
+      totalPosts,
+      totalViews,
+      totalImages: imgCount?.total || 0,
+      recentWeekPosts: recentCount?.total || 0,
+      boards: stats,
+      topPosts: topPosts || [],
+      recentPosts: recentPosts || []
+    })
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500)
+  }
+})
+
+// ============================================================
 // GET /api/boards/:board - 게시글 리스트
 // ============================================================
 boards.get('/:board', async (c) => {
