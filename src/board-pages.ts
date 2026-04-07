@@ -87,8 +87,16 @@ const boardCSS = `
 .board-detail-title{font-family:var(--font-kr);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;letter-spacing:-1px;margin-bottom:16px;line-height:1.4;}
 .board-detail-meta{font-family:var(--font-mono);font-size:0.75rem;color:var(--gray);letter-spacing:1px;margin-bottom:48px;display:flex;gap:20px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.06);}
 .board-detail-content{font-family:var(--font-kr);font-size:1rem;line-height:2.2;color:var(--gray-light);font-weight:300;}
+.board-detail-content h2{font-size:1.6rem;font-weight:900;color:var(--gold);margin:48px 0 20px;letter-spacing:-1px;border-bottom:2px solid rgba(247,186,24,0.15);padding-bottom:12px;line-height:1.4;}
+.board-detail-content h3{font-size:1.2rem;font-weight:700;color:var(--white);margin:36px 0 16px;letter-spacing:-0.5px;line-height:1.4;}
 .board-detail-content p{margin-bottom:20px;}
-.board-detail-content img{width:100%;border-radius:16px;margin:24px 0;}
+.board-detail-content img{width:100%;border-radius:16px;margin:28px 0;}
+.board-detail-content strong{color:var(--white);font-weight:600;}
+.board-detail-content em{color:var(--gold);}
+.board-detail-content ul,.board-detail-content ol{margin:16px 0 24px 24px;font-size:0.95rem;line-height:2.2;}
+.board-detail-content ul li{list-style:disc;margin-bottom:6px;}
+.board-detail-content ol li{list-style:decimal;margin-bottom:6px;}
+.board-detail-content blockquote{border-left:3px solid var(--gold);padding:16px 24px;margin:24px 0;background:rgba(247,186,24,0.04);border-radius:0 12px 12px 0;font-style:italic;}
 
 /* BEFORE-AFTER DETAIL */
 .ba-detail-grid{display:grid;gap:48px;margin-bottom:48px;}
@@ -156,6 +164,33 @@ const boardCSS = `
 .ba-upload-slot.has-image .slot-remove{display:flex;}
 .ba-upload-slot.has-image .slot-label,.ba-upload-slot.has-image .slot-icon{display:none;}
 
+/* SEO EDITOR TOOLBAR */
+.seo-toolbar{display:flex;flex-wrap:wrap;gap:4px;padding:10px 12px;background:var(--dark-card);border:1px solid rgba(255,255,255,0.1);border-bottom:none;border-radius:12px 12px 0 0;}
+.tb-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);color:var(--gray-light);padding:8px 14px;border-radius:8px;cursor:pointer;font-family:var(--font-display);font-size:0.72rem;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
+.tb-btn:hover{background:rgba(247,186,24,0.12);border-color:var(--gold);color:var(--gold);}
+.tb-btn b{font-size:0.8rem;}
+.tb-btn-img{background:rgba(3,199,90,0.08);border-color:rgba(3,199,90,0.2);color:#03C75A;}
+.tb-btn-img:hover{background:rgba(3,199,90,0.18);border-color:#03C75A;}
+.tb-sep{width:1px;height:28px;background:rgba(255,255,255,0.08);margin:0 6px;align-self:center;}
+.seo-hint{padding:10px 14px;background:rgba(247,186,24,0.04);border-left:3px solid var(--gold);border-radius:0 0 0 0;font-family:var(--font-kr);font-size:0.75rem;color:var(--gray);font-weight:300;margin-bottom:8px;}
+.seo-hint i{color:var(--gold);margin-right:6px;}
+.seo-toolbar+.seo-hint+.form-input{border-radius:0 0 12px 12px;}
+
+/* SEO PREVIEW */
+.seo-preview{background:var(--dark-card);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:32px;min-height:120px;}
+.seo-preview h2{font-family:var(--font-kr);font-size:1.6rem;font-weight:900;margin:32px 0 16px;letter-spacing:-1px;color:var(--gold);border-bottom:2px solid rgba(247,186,24,0.15);padding-bottom:12px;}
+.seo-preview h3{font-family:var(--font-kr);font-size:1.2rem;font-weight:700;margin:24px 0 12px;color:var(--white);}
+.seo-preview p{font-family:var(--font-kr);font-size:0.95rem;line-height:2;color:var(--gray-light);font-weight:300;margin-bottom:16px;}
+.seo-preview strong{color:var(--white);font-weight:600;}
+.seo-preview em{color:var(--gold);}
+.seo-preview ul{margin:12px 0 20px 20px;font-family:var(--font-kr);font-size:0.92rem;line-height:2.2;color:var(--gray-light);}
+.seo-preview ul li{margin-bottom:4px;list-style:disc;}
+.seo-preview blockquote{border-left:3px solid var(--gold);padding:16px 20px;margin:16px 0;background:rgba(247,186,24,0.04);border-radius:0 12px 12px 0;font-style:italic;color:var(--gray-light);}
+.seo-preview img{width:100%;max-width:100%;border-radius:16px;margin:24px 0;}
+
+/* INLINE IMAGE INSERT INDICATOR */
+.inline-img-inserting{opacity:0.5;pointer-events:none;}
+
 /* FORM BUTTONS */
 .form-actions{display:flex;gap:16px;margin-top:48px;justify-content:flex-end;}
 .form-actions .btn{min-width:160px;}
@@ -215,6 +250,161 @@ const boardCSS = `
   .board-card-body h3{font-size:0.88rem;}
 }
 `;
+
+// ==========================================
+// SEO 에디터 HTML (작성/수정 공통)
+// ==========================================
+function seoEditorHTML() {
+  return `
+      <div class="form-group">
+        <label class="form-label">본문 <span style="font-size:0.7rem;color:var(--gray);font-weight:300;">(SEO 최적화 에디터)</span></label>
+        <div class="seo-toolbar">
+          <button type="button" class="tb-btn" onclick="insertTag('h2')" title="대제목 (H2)"><b>H2</b></button>
+          <button type="button" class="tb-btn" onclick="insertTag('h3')" title="소제목 (H3)"><b>H3</b></button>
+          <button type="button" class="tb-btn" onclick="insertTag('p')" title="본문 단락"><b>P</b></button>
+          <span class="tb-sep"></span>
+          <button type="button" class="tb-btn" onclick="insertTag('strong')" title="굵게"><i class="fas fa-bold"></i></button>
+          <button type="button" class="tb-btn" onclick="insertTag('em')" title="기울임"><i class="fas fa-italic"></i></button>
+          <span class="tb-sep"></span>
+          <button type="button" class="tb-btn" onclick="insertTag('ul')" title="목록"><i class="fas fa-list-ul"></i></button>
+          <button type="button" class="tb-btn" onclick="insertTag('blockquote')" title="인용"><i class="fas fa-quote-left"></i></button>
+          <span class="tb-sep"></span>
+          <button type="button" class="tb-btn tb-btn-img" onclick="triggerInlineImage()" title="본문 중간에 이미지 삽입">
+            <i class="fas fa-image"></i> 사진 삽입
+          </button>
+          <input type="file" id="inlineImgInput" accept="image/*" style="display:none">
+        </div>
+        <div class="seo-hint">
+          <i class="fas fa-lightbulb"></i> <b>SEO 팁:</b> H2로 큰 주제, H3로 세부 주제를 나누세요. 본문 사이사이에 이미지를 삽입하면 검색엔진·AI 노출에 유리합니다.
+        </div>
+        <textarea id="postContent" class="form-input form-textarea" placeholder="본문을 작성하세요.
+
+H2, H3 버튼으로 제목 구조를 잡고,
+사진 삽입 버튼으로 본문 사이에 이미지를 넣으세요.
+
+예시:
+<h2>발치즉시 임플란트란?</h2>
+<p>발치즉시 임플란트는 치아를 발치하는 동시에 임플란트를 식립하는 술식입니다.</p>
+
+<h3>치료 과정</h3>
+<p>1단계: 정밀 진단 및 CT 촬영을 통해...</p>" rows="20"></textarea>
+      </div>
+
+      <!-- 본문 미리보기 -->
+      <div class="form-group">
+        <label class="form-label">미리보기 <span style="font-size:0.65rem;color:var(--gray);font-weight:300;">(실시간 반영)</span></label>
+        <div class="seo-preview" id="seoPreview">
+          <p style="color:var(--gray);font-size:0.85rem;">본문을 입력하면 여기에 미리보기가 표시됩니다.</p>
+        </div>
+      </div>`;
+}
+
+// SEO 에디터 JavaScript (작성/수정 공통)
+function seoEditorJS() {
+  return `
+// ===== SEO EDITOR =====
+const contentEl = document.getElementById('postContent');
+const previewEl = document.getElementById('seoPreview');
+const inlineInput = document.getElementById('inlineImgInput');
+
+// 실시간 미리보기
+contentEl.addEventListener('input', updatePreview);
+function updatePreview() {
+  const val = contentEl.value.trim();
+  if (!val) {
+    previewEl.innerHTML = '<p style="color:var(--gray);font-size:0.85rem;">본문을 입력하면 여기에 미리보기가 표시됩니다.</p>';
+    return;
+  }
+  // 간단한 XSS 방지: script 태그 제거
+  let safe = val.replace(/<script[^>]*>[\\\\s\\\\S]*?<\\\\/script>/gi, '');
+  previewEl.innerHTML = safe;
+}
+
+// 태그 삽입
+function insertTag(tag) {
+  const start = contentEl.selectionStart;
+  const end = contentEl.selectionEnd;
+  const selected = contentEl.value.substring(start, end);
+  const val = contentEl.value;
+  let insert = '';
+
+  if (tag === 'h2') {
+    insert = selected ? '<h2>' + selected + '</h2>' : '<h2>제목을 입력하세요</h2>';
+  } else if (tag === 'h3') {
+    insert = selected ? '<h3>' + selected + '</h3>' : '<h3>소제목을 입력하세요</h3>';
+  } else if (tag === 'p') {
+    insert = selected ? '<p>' + selected + '</p>' : '<p>본문 내용을 입력하세요.</p>';
+  } else if (tag === 'strong') {
+    insert = selected ? '<strong>' + selected + '</strong>' : '<strong>굵은 텍스트</strong>';
+  } else if (tag === 'em') {
+    insert = selected ? '<em>' + selected + '</em>' : '<em>기울임 텍스트</em>';
+  } else if (tag === 'ul') {
+    insert = '<ul>\\n  <li>' + (selected || '항목 1') + '</li>\\n  <li>항목 2</li>\\n</ul>';
+  } else if (tag === 'blockquote') {
+    insert = '<blockquote>' + (selected || '인용 내용') + '</blockquote>';
+  }
+
+  // 앞뒤에 줄바꿈 추가 (블록 태그)
+  const blockTags = ['h2','h3','p','ul','blockquote'];
+  if (blockTags.includes(tag)) {
+    const before = val.substring(0, start);
+    const after = val.substring(end);
+    const needNewlineBefore = before.length > 0 && !before.endsWith('\\n') && !before.endsWith('\\n\\n');
+    const needNewlineAfter = after.length > 0 && !after.startsWith('\\n');
+    insert = (needNewlineBefore ? '\\n\\n' : '') + insert + (needNewlineAfter ? '\\n\\n' : '');
+  }
+
+  contentEl.value = val.substring(0, start) + insert + val.substring(end);
+  contentEl.focus();
+  const newPos = start + insert.length;
+  contentEl.setSelectionRange(newPos, newPos);
+  updatePreview();
+}
+
+// 인라인 이미지 삽입
+function triggerInlineImage() {
+  inlineInput.click();
+}
+
+inlineInput.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  e.target.value = '';
+  
+  if (!file.type.startsWith('image/')) {
+    alert('이미지 파일만 업로드 가능합니다.');
+    return;
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    alert('파일 크기는 10MB 이하만 가능합니다.');
+    return;
+  }
+
+  // 커서 위치 저장
+  const cursorPos = contentEl.selectionStart;
+  
+  // 업로드 중 표시
+  const val = contentEl.value;
+  const placeholder = '[이미지 업로드 중...]';
+  contentEl.value = val.substring(0, cursorPos) + placeholder + val.substring(cursorPos);
+  updatePreview();
+
+  const url = await uploadFile(file);
+  
+  if (url) {
+    // placeholder를 실제 img 태그로 교체
+    const imgTag = '\\n<img src="' + url + '" alt="' + (file.name.replace(/\\\\.[^.]+$/, '').replace(/[<>"]/g, '')) + '">\\n';
+    contentEl.value = contentEl.value.replace(placeholder, imgTag);
+  } else {
+    // 실패 시 placeholder 제거
+    contentEl.value = contentEl.value.replace(placeholder, '');
+  }
+  updatePreview();
+});
+// 초기 미리보기
+updatePreview();
+`;
+}
 
 // ==========================================
 // 리스트 페이지
@@ -431,19 +621,13 @@ async function loadDetail() {
     }
     html += '</div>';
     ` : `
-    // 블로그/공지 이미지 + 본문
-    if (images.length > 0) {
-      html += '<div class="board-detail-images">';
-      images.forEach(img => {
-        html += '<img src="' + img.image_url + '" alt="">';
-      });
-      html += '</div>';
-    }
+    // 블로그/공지: 본문 HTML이 이미지를 포함 (인라인)
+    // 기존 이미지 갤러리 방식은 사용하지 않음
     `}
 
-    // 본문 (공통)
+    // 본문 (공통) — 블로그/공지는 H태그+인라인 이미지가 포함된 HTML
     if (post.content) {
-      html += '<div class="board-detail-content">' + post.content + '</div>';
+      html += '<article class="board-detail-content">' + post.content + '</article>';
     }
 
     // 관리 버튼 (로그인된 관리자만 표시)
@@ -544,23 +728,19 @@ ${nav(cfg.navKey)}
       </div>
       <input type="file" id="slotFileInput" accept="image/*" style="display:none">
       ` : `
-      <!-- 블로그/공지 이미지 업로드 -->
+      <!-- 블로그/공지 썸네일 -->
       <div class="form-group">
-        <label class="form-label">이미지</label>
-        <div class="upload-zone" id="uploadZone">
-          <i class="fas fa-cloud-upload-alt"></i>
-          <p>클릭하거나 드래그하여 이미지를 업로드하세요</p>
-          <p class="upload-hint">JPG, PNG, WebP, GIF (최대 10MB)</p>
+        <label class="form-label">썸네일 이미지 <span style="font-size:0.65rem;color:var(--gray);font-weight:300;">(목록에 표시됩니다)</span></label>
+        <div class="upload-zone" id="thumbZone" style="padding:24px;">
+          <i class="fas fa-image"></i>
+          <p>클릭하여 썸네일 이미지를 업로드하세요</p>
         </div>
-        <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
-        <div class="upload-previews" id="uploadPreviews"></div>
+        <input type="file" id="thumbInput" accept="image/*" style="display:none">
+        <div id="thumbPreview" class="upload-previews"></div>
       </div>
       `}
 
-      <div class="form-group">
-        <label class="form-label">본문</label>
-        <textarea id="postContent" class="form-input form-textarea" placeholder="내용을 입력하세요 (HTML 가능)"></textarea>
-      </div>
+      ${seoEditorHTML()}
 
       <div class="form-actions">
         <a href="/${cfg.slug}" class="btn btn-ghost">취소</a>
@@ -615,45 +795,34 @@ function removeSlot(type) {
   slotEl.onclick = () => triggerSlotUpload(type);
 }
 ` : `
-// ===== 일반 이미지 업로드 =====
-const uploadedImages = [];
+// ===== 썸네일 업로드 =====
+let thumbnailUrl = null;
 
-const zone = document.getElementById('uploadZone');
-const fileInput = document.getElementById('fileInput');
+const thumbZone = document.getElementById('thumbZone');
+const thumbInput = document.getElementById('thumbInput');
+const thumbPreview = document.getElementById('thumbPreview');
 
-zone.addEventListener('click', () => fileInput.click());
-zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
-zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-zone.addEventListener('drop', async (e) => {
-  e.preventDefault();
-  zone.classList.remove('dragover');
-  for (const file of e.dataTransfer.files) {
-    if (file.type.startsWith('image/')) await handleFileUpload(file);
-  }
-});
-fileInput.addEventListener('change', async (e) => {
-  for (const file of e.target.files) await handleFileUpload(file);
+thumbZone.addEventListener('click', () => thumbInput.click());
+thumbInput.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
   e.target.value = '';
-});
-
-async function handleFileUpload(file) {
+  thumbZone.innerHTML = '<i class="fas fa-spinner fa-spin" style="color:var(--gold);font-size:1.5rem;"></i>';
   const url = await uploadFile(file);
   if (url) {
-    uploadedImages.push(url);
-    renderPreviews();
+    thumbnailUrl = url;
+    thumbZone.style.display = 'none';
+    thumbPreview.innerHTML = '<div class="upload-preview" style="width:200px;"><img src="' + url + '" alt="썸네일"><button class="upload-preview-remove" onclick="removeThumb()">&times;</button></div>';
+  } else {
+    thumbZone.innerHTML = '<i class="fas fa-image"></i><p>클릭하여 썸네일 이미지를 업로드하세요</p>';
   }
-}
+});
 
-function renderPreviews() {
-  const container = document.getElementById('uploadPreviews');
-  container.innerHTML = uploadedImages.map((url, i) =>
-    '<div class="upload-preview"><img src="' + url + '"><button class="upload-preview-remove" onclick="removeImage(' + i + ')">&times;</button><div class="upload-preview-label">' + (i + 1) + '</div></div>'
-  ).join('');
-}
-
-function removeImage(idx) {
-  uploadedImages.splice(idx, 1);
-  renderPreviews();
+function removeThumb() {
+  thumbnailUrl = null;
+  thumbPreview.innerHTML = '';
+  thumbZone.style.display = '';
+  thumbZone.innerHTML = '<i class="fas fa-image"></i><p>클릭하여 썸네일 이미지를 업로드하세요</p>';
 }
 `}
 
@@ -686,6 +855,8 @@ async function uploadFile(file) {
   }
 }
 
+${seoEditorJS()}
+
 // ===== 글 등록 =====
 async function submitPost() {
   const title = document.getElementById('postTitle').value.trim();
@@ -703,10 +874,8 @@ async function submitPost() {
   }));
   const thumbnail_url = baSlots.after_intra || baSlots.before_intra || baSlots.after_pano || baSlots.before_pano || null;
   ` : `
-  const images = uploadedImages.map((url, i) => ({
-    url, type: 'content', sort_order: i
-  }));
-  const thumbnail_url = uploadedImages[0] || null;
+  const images = [];
+  const thumbnail_url = thumbnailUrl || null;
   `}
 
   try {
@@ -790,22 +959,19 @@ ${nav(cfg.navKey)}
       </div>
       <input type="file" id="slotFileInput" accept="image/*" style="display:none">
       ` : `
+      <!-- 썸네일 -->
       <div class="form-group">
-        <label class="form-label">이미지</label>
-        <div class="upload-zone" id="uploadZone">
-          <i class="fas fa-cloud-upload-alt"></i>
-          <p>클릭하거나 드래그하여 이미지를 업로드하세요</p>
-          <p class="upload-hint">JPG, PNG, WebP, GIF (최대 10MB)</p>
+        <label class="form-label">썸네일 이미지 <span style="font-size:0.65rem;color:var(--gray);font-weight:300;">(목록에 표시됩니다)</span></label>
+        <div class="upload-zone" id="thumbZone" style="padding:24px;">
+          <i class="fas fa-image"></i>
+          <p>클릭하여 썸네일 이미지를 업로드하세요</p>
         </div>
-        <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
-        <div class="upload-previews" id="uploadPreviews"></div>
+        <input type="file" id="thumbInput" accept="image/*" style="display:none">
+        <div id="thumbPreview" class="upload-previews"></div>
       </div>
       `}
 
-      <div class="form-group">
-        <label class="form-label">본문</label>
-        <textarea id="postContent" class="form-input form-textarea" placeholder="내용을 입력하세요 (HTML 가능)"></textarea>
-      </div>
+      ${seoEditorHTML()}
 
       <div class="form-actions">
         <a href="/${cfg.slug}" class="btn btn-ghost">취소</a>
@@ -867,37 +1033,35 @@ function loadSlot(type, url) {
   slotEl.onclick = () => triggerSlotUpload(type);
 }
 ` : `
-const uploadedImages = [];
+// ===== 썸네일 업로드 =====
+let thumbnailUrl = null;
 
-const zone = document.getElementById('uploadZone');
-const fileInput = document.getElementById('fileInput');
-zone.addEventListener('click', () => fileInput.click());
-zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
-zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-zone.addEventListener('drop', async (e) => {
-  e.preventDefault();
-  zone.classList.remove('dragover');
-  for (const file of e.dataTransfer.files) {
-    if (file.type.startsWith('image/')) await handleFileUpload(file);
+const thumbZone = document.getElementById('thumbZone');
+const thumbInput = document.getElementById('thumbInput');
+const thumbPreview = document.getElementById('thumbPreview');
+
+thumbZone.addEventListener('click', () => thumbInput.click());
+thumbInput.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  e.target.value = '';
+  thumbZone.innerHTML = '<i class="fas fa-spinner fa-spin" style="color:var(--gold);font-size:1.5rem;"></i>';
+  const url = await uploadFile(file);
+  if (url) {
+    thumbnailUrl = url;
+    thumbZone.style.display = 'none';
+    thumbPreview.innerHTML = '<div class="upload-preview" style="width:200px;"><img src="' + url + '" alt="썸네일"><button class="upload-preview-remove" onclick="removeThumb()">&times;</button></div>';
+  } else {
+    thumbZone.innerHTML = '<i class="fas fa-image"></i><p>클릭하여 썸네일 이미지를 업로드하세요</p>';
   }
 });
-fileInput.addEventListener('change', async (e) => {
-  for (const file of e.target.files) await handleFileUpload(file);
-  e.target.value = '';
-});
 
-async function handleFileUpload(file) {
-  const url = await uploadFile(file);
-  if (url) { uploadedImages.push(url); renderPreviews(); }
+function removeThumb() {
+  thumbnailUrl = null;
+  thumbPreview.innerHTML = '';
+  thumbZone.style.display = '';
+  thumbZone.innerHTML = '<i class="fas fa-image"></i><p>클릭하여 썸네일 이미지를 업로드하세요</p>';
 }
-
-function renderPreviews() {
-  document.getElementById('uploadPreviews').innerHTML = uploadedImages.map((url, i) =>
-    '<div class="upload-preview"><img src="' + url + '"><button class="upload-preview-remove" onclick="removeImage(' + i + ')">&times;</button><div class="upload-preview-label">' + (i + 1) + '</div></div>'
-  ).join('');
-}
-
-function removeImage(idx) { uploadedImages.splice(idx, 1); renderPreviews(); }
 `}
 
 // ===== 관리자 인증 =====
@@ -924,6 +1088,8 @@ async function uploadFile(file) {
   } catch { alert('업로드 오류'); return null; }
 }
 
+${seoEditorJS()}
+
 // 기존 데이터 로드
 async function loadExisting() {
   try {
@@ -934,13 +1100,18 @@ async function loadExisting() {
     document.getElementById('postTitle').value = data.post.title || '';
     document.getElementById('postContent').value = data.post.content || '';
 
-    const images = data.images || [];
     ${board === 'before-after' ? `
+    const images = data.images || [];
     images.forEach(img => loadSlot(img.image_type, img.image_url));
     ` : `
-    images.forEach(img => uploadedImages.push(img.image_url));
-    renderPreviews();
+    // 기존 썸네일 로드
+    if (data.post.thumbnail_url) {
+      thumbnailUrl = data.post.thumbnail_url;
+      thumbZone.style.display = 'none';
+      thumbPreview.innerHTML = '<div class="upload-preview" style="width:200px;"><img src="' + data.post.thumbnail_url + '" alt="썸네일"><button class="upload-preview-remove" onclick="removeThumb()">&times;</button></div>';
+    }
     `}
+    updatePreview();
   } catch (err) { console.error(err); }
 }
 
@@ -957,8 +1128,8 @@ async function updatePost() {
   const images = Object.entries(baSlots).map(([type, url], i) => ({ url, type, sort_order: i }));
   const thumbnail_url = baSlots.after_intra || baSlots.before_intra || baSlots.after_pano || baSlots.before_pano || null;
   ` : `
-  const images = uploadedImages.map((url, i) => ({ url, type: 'content', sort_order: i }));
-  const thumbnail_url = uploadedImages[0] || null;
+  const images = [];
+  const thumbnail_url = thumbnailUrl || null;
   `}
 
   try {

@@ -277,8 +277,9 @@ export function footer() {
 </footer>
 <!-- MOBILE BOTTOM BAR -->
 <div class="mob-bottom-bar">
-  <a href="tel:02-756-2828" class="mob-bottom-btn btn-call"><i class="fas fa-phone-alt"></i> 전화 상담</a>
-  <a href="https://blog.naver.com/yein2828" target="_blank" class="mob-bottom-btn btn-blog"><i class="fab fa-blogger-b"></i> 네이버 블로그</a>
+  <a href="tel:02-756-2828" class="mob-bottom-btn btn-call"><i class="fas fa-phone-alt"></i> 전화</a>
+  <a href="https://naver.me/G0DXGZbi" target="_blank" class="mob-bottom-btn btn-naver-m"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
+  <a href="https://blog.naver.com/yein2828" target="_blank" class="mob-bottom-btn btn-blog"><i class="fab fa-blogger-b"></i> 블로그</a>
 </div>`;
 }
 
@@ -475,6 +476,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   .mob-bottom-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 12px;font-family:var(--font-display);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--white);transition:all 0.3s;text-decoration:none;}
   .mob-bottom-btn i{font-size:0.9rem;}
   .mob-bottom-btn.btn-call{background:var(--gold);color:var(--black);}
+  .mob-bottom-btn.btn-naver-m{background:#03C75A;color:#fff;}
   .mob-bottom-btn.btn-blog{background:rgba(255,255,255,0.06);}
 }
 @media(max-width:480px){
