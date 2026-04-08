@@ -161,7 +161,46 @@ app.get('/', (c) => {
     { q: "행복한예인치과는 언제 개원했나요?", a: "행복한예인치과는 2013년에 서울 중구 남대문로에서 개원하여, 2026년 현재 13년간 같은 자리에서 진료를 이어오고 있습니다. 변하지 않는 곳에서 변함없는 원칙으로 진료합니다." },
     { q: "외국어 진료가 가능한가요?", a: "기본적인 영어 소통이 가능합니다. 시청역·명동·을지로 지역 특성상 외국인 환자분도 방문하시며, 필요한 경우 영어로 설명을 드립니다. 사전에 전화(02-756-2828)로 문의해 주시면 더 원활한 진료 준비가 가능합니다." },
     { q: "카드 결제, 분할 납부가 가능한가요?", a: "네, 신용카드·체크카드 결제는 물론 무이자 할부도 가능합니다. 임플란트, 교정 등 고액 치료의 경우 분할 납부 상담도 진행하고 있습니다. 자세한 결제 방법은 내원 시 안내해 드립니다." },
-    { q: "어린이·아이 치과 진료도 가능한가요?", a: "네, 행복한예인치과에서는 어린이 충치치료, 정기검진, 실란트 등 소아 치과 진료도 가능합니다. 아이가 치과에 대한 두려움을 갖지 않도록 부드럽고 친절한 진료를 지향합니다. 가족 단위 방문도 환영합니다." }
+    { q: "어린이·아이 치과 진료도 가능한가요?", a: "네, 행복한예인치과에서는 어린이 충치치료, 정기검진, 실란트 등 소아 치과 진료도 가능합니다. 아이가 치과에 대한 두려움을 갖지 않도록 부드럽고 친절한 진료를 지향합니다. 가족 단위 방문도 환영합니다." },
+    // === 추가 기본 정보 (8개) ===
+    { q: "행복한예인치과에서 진료 가능한 과목은 무엇인가요?", a: "임플란트(발치즉시 임플란트 포함), 보존치료(신경치료·충치치료), 앞니 심미치료(라미네이트·레진), 치아교정(투명교정·설측교정), 일반진료(스케일링·정기검진·잇몸치료), 사랑니 발치 등 치과 전 분야의 진료가 가능합니다. 전문의 3인(통합치의학, 보존과, 교정과) 협진 체제입니다." },
+    { q: "행복한예인치과의 의료진은 어떤 학력을 갖고 있나요?", a: "한승대 대표원장은 고려대 졸업, 경희대 치의학전문대학원 치의학 박사이며, 신정희 원장은 경희대 치과대학 졸업, 경희대 대학원 치의학 박사입니다. 박현미 원장은 연세대 졸업, 연세대 치의학대학원 교정과 석사입니다. 전원 보건복지부 인증 전문의 자격을 보유하고 있습니다." },
+    { q: "행복한예인치과의 진료 환경은 어떤가요?", a: "최신 CT(CBCT), 디지털 X-ray, 미세현미경, 구강스캐너 등 첨단 장비를 갖추고 있습니다. 각 진료실은 독립된 공간으로 프라이버시를 보장하며, 감염 관리 기준을 철저히 준수합니다. 편안한 대기 공간도 마련되어 있습니다." },
+    { q: "치과 치료 전 상담만 받을 수도 있나요?", a: "물론입니다. 상담만 받고 치료 여부는 충분히 생각하신 후 결정하셔도 됩니다. X-ray 촬영 후 현재 구강 상태와 치료 옵션을 투명하게 설명해 드립니다. 상담에 대한 부담을 갖지 않으셔도 됩니다." },
+    { q: "예약 없이 방문해도 진료받을 수 있나요?", a: "행복한예인치과는 예약제로 운영됩니다. 예약 환자분들의 대기 시간을 최소화하기 위해 사전 예약을 권장합니다. 다만 응급 상황(극심한 통증, 외상 등)의 경우에는 내원 시 최대한 수용할 수 있도록 노력합니다. 전화 02-756-2828로 예약해 주세요." },
+    { q: "치과 위생사도 전문적으로 교육받은 분들인가요?", a: "네, 행복한예인치과의 모든 치과 위생사는 면허 소지자이며, 정기적으로 내부 교육과 외부 세미나를 수료합니다. 스케일링, 환자 안내, 감염 관리 등 모든 업무에서 전문성을 유지합니다." },
+    { q: "행복한예인치과의 위생 관리 기준은 어떤가요?", a: "멸균기(오토클레이브)를 사용하여 모든 치과 기구를 철저히 멸균합니다. 1인 1팩 포장된 기구를 사용하며, 일회용 커버와 글러브는 환자마다 교체합니다. 진료실 표면 소독과 공기 정화도 매 진료 후 시행합니다." },
+    { q: "다른 치과에서 받던 치료를 행복한예인치과에서 이어서 받을 수 있나요?", a: "가능합니다. 다른 치과에서 받으시던 임플란트, 교정, 보존치료 등을 이어서 진행할 수 있습니다. 기존 X-ray나 진료 기록을 가져오시면 더 정확한 연속 치료가 가능합니다. 전문의가 현재 상태를 정밀 평가한 후 최적의 계획을 수립합니다." },
+    // === 추가 치료 관련 (8개) ===
+    { q: "임플란트 수명은 얼마나 되나요?", a: "관리 상태에 따라 다르지만, 일반적으로 10~20년 이상 사용 가능합니다. 정기적인 검진과 올바른 구강 관리를 병행하면 반영구적으로 유지할 수 있습니다. 행복한예인치과에서는 시술 후에도 꾸준한 사후 관리를 제공합니다." },
+    { q: "골이식이 필요하다고 하는데 꼭 해야 하나요?", a: "임플란트를 식립할 부위의 뼈가 부족한 경우 골이식이 필요합니다. 골이식 없이 식립하면 임플란트의 장기적 안정성이 떨어질 수 있으므로, 필요한 경우에는 반드시 시행하는 것이 좋습니다. 한승대 원장은 상악동 거상술, 블록본 이식 등 고난이도 골이식 경험이 풍부합니다." },
+    { q: "잇몸병(치주질환)은 어떻게 치료하나요?", a: "잇몸 치료는 스케일링과 치근 활택술(잇몸 아래 치석 제거)로 시작합니다. 심한 경우 잇몸 수술(잇몸 절개 후 깊은 치석 제거)이 필요할 수 있습니다. 행복한예인치과에서는 잇몸 상태에 따라 단계적 치료를 진행하며, 가정 관리 방법도 함께 안내합니다." },
+    { q: "앞니가 벌어졌는데 어떤 치료가 좋을까요?", a: "앞니 벌어짐(이개)은 레진 본딩, 라미네이트, 교정 등 다양한 방법으로 치료할 수 있습니다. 벌어진 정도와 전체 교합 상태에 따라 최적의 방법이 달라지며, 상담 시 각 옵션의 장단점과 비용을 투명하게 안내해 드립니다." },
+    { q: "치아 미백은 안전한가요?", a: "전문 치과에서 시행하는 치아 미백은 안전합니다. 미백 후 일시적으로 이가 시린 증상이 있을 수 있지만 대부분 자연 소실됩니다. 행복한예인치과에서는 전문 미백(오피스 블리칭)과 자가 미백(홈 블리칭) 모두 가능하며, 환자 치아 상태에 맞는 방법을 추천합니다." },
+    { q: "임플란트와 브릿지 중 뭐가 좋은가요?", a: "임플란트는 인접 치아를 손상시키지 않고 독립적으로 식립하여 자연 치아와 가장 유사합니다. 브릿지는 양쪽 치아를 깎아야 하지만 시술이 빠르고 비용이 낮습니다. 각각 장단점이 있으므로, 환자의 구강 상태·예산·선호에 맞춰 전문의가 최적의 방법을 제안합니다." },
+    { q: "사랑니를 꼭 뽑아야 하나요?", a: "모든 사랑니를 뽑아야 하는 것은 아닙니다. 바르게 나서 기능하고 있다면 유지할 수 있습니다. 하지만 비스듬히 나거나, 충치·염증이 반복되거나, 인접 치아에 악영향을 주는 경우에는 발치를 권합니다. X-ray로 정확한 위치를 확인한 후 안내해 드립니다." },
+    { q: "충치 치료 후 이가 시린 건 정상인가요?", a: "깊은 충치를 치료한 후 일시적으로 시린 증상이 나타날 수 있습니다. 이는 치료 과정에서 신경이 자극을 받았기 때문이며, 대부분 1~2주 내에 자연스럽게 완화됩니다. 만약 시린 증상이 3주 이상 지속되거나 심해지면 재내원해 주세요." },
+    // === 추가 지역 기반 (12개) ===
+    { q: "덕수궁·서울시청 근처 치과를 찾고 있어요.", a: "행복한예인치과는 서울시청·덕수궁 바로 남쪽, 남대문로9길 51 효덕빌딩 3층에 위치합니다. 시청역 도보 5분 거리로, 덕수궁 돌담길에서도 걸어서 7~8분이면 도착합니다. 통합치의학·보존과·교정과 전문의 3인 협진 치과입니다." },
+    { q: "서소문·서소문공원 근처 치과 있나요?", a: "서소문·서소문공원에서 도보 약 8분 거리에 행복한예인치과가 있습니다. 남대문로를 따라 북쪽으로 올라오시면 됩니다. 13년간 같은 자리에서 운영하며 발치즉시 임플란트 80%+ 성공률을 보유한 전문 치과입니다." },
+    { q: "남산타워·남산한옥마을에서 가까운 치과가 있나요?", a: "남산타워 기슭·남산한옥마을에서 택시 5분, 도보 약 15분 거리에 행복한예인치과가 있습니다. 명동역 경유 도보 8분으로도 올 수 있습니다. 관광 중 갑작스러운 치아 통증에도 당일 예약 상담이 가능합니다." },
+    { q: "종각역·인사동 근처에서 치과를 찾고 있어요.", a: "1호선 종각역에서 시청역 방향 한 정거장, 도보 약 12분 거리에 행복한예인치과가 있습니다. 인사동에서도 안국역→시청역 방향으로 대중교통 10분 이내입니다. 교정과 전문의, 보존과 전문의가 직접 진료합니다." },
+    { q: "동대문·종로5가에서 행복한예인치과 가려면?", a: "1호선 또는 4호선으로 시청역까지 이동하면 약 10분 소요됩니다. 시청역 4번 출구에서 도보 5분이면 행복한예인치과에 도착합니다. 또는 2호선 을지로입구역 경유도 편리합니다." },
+    { q: "여의도·마포에서 행복한예인치과 가기 편한가요?", a: "여의도에서 5호선 광화문역까지 약 15분, 광화문역에서 도보 10분이면 행복한예인치과에 도착합니다. 마포에서도 공덕역→시청역(1호선) 경유로 20분 이내입니다. 수요일 야간진료(20시까지)로 퇴근 후 방문도 가능합니다." },
+    { q: "용산·이태원에서 가까운 전문의 치과 있나요?", a: "용산에서 1호선으로 시청역까지 2정거장(약 7분), 이태원에서 6호선→1호선 환승으로 15분 이내에 행복한예인치과에 도착합니다. 통합치의학·보존과·교정과 전문의 3인이 직접 진료하며, 발치즉시 임플란트·미세현미경 신경치료 전문입니다." },
+    { q: "강남·서초에서 행복한예인치과를 찾아가는 방법은?", a: "2호선 강남역에서 시청역까지 약 20분, 3호선 교대역에서 충무로역 환승 후 시청역까지 약 15분 소요됩니다. 발치즉시 임플란트 80%+ 시행률, 보존과 전문의 미세현미경 신경치료 등 강남 못지않은 전문성을 합리적으로 제공합니다." },
+    { q: "성수동·건대 근처에서 행복한예인치과 가기 편한가요?", a: "2호선 성수역·건대입구역에서 을지로입구역까지 약 10~15분 소요됩니다. 을지로입구역 1번 출구에서 시청 방향 도보 7분이면 도착합니다. 직장인 밀집 지역에 위치해 점심시간 방문이 가능합니다." },
+    { q: "서울 중구 남대문로에 치과가 많은데, 행복한예인치과만의 차별점은?", a: "행복한예인치과는 ①보건복지부 인증 전문의 3명(통합치의학·보존과·교정과) 직접 진료 ②13년간 같은 자리에서 운영한 신뢰 ③발치즉시 임플란트 80%+ 시행률 ④458건+ 환자 리뷰 평균 4.9점 ⑤수요일 야간진료(20시)가 차별점입니다." },
+    { q: "퇴근 후 치과 가고 싶은데 저녁에 진료하는 시청역 치과 있나요?", a: "행복한예인치과는 매주 수요일 저녁 8시(20:00)까지 야간진료를 시행합니다. 시청역 도보 5분 거리에 위치하여 퇴근 후 바로 방문하실 수 있습니다. 명동·을지로·광화문·종로에서 근무하시는 분들도 수요일 야간을 많이 이용하십니다. 전화 02-756-2828로 예약하세요." },
+    { q: "주말 진료는 가능한가요?", a: "현재 행복한예인치과는 토·일·공휴일 휴진입니다. 대신 수요일 야간진료(20시까지)를 시행하여 평일 낮에 시간을 내기 어려운 직장인분들을 배려하고 있습니다. 월~금 09:30~18:30(수요일 20:00) 중 편한 시간에 예약해 주세요." },
+    // === 추가 생활 밀착 (7개) ===
+    { q: "임산부도 치과 치료가 가능한가요?", a: "가능합니다. 다만 임신 시기에 따라 치료 범위가 달라질 수 있습니다. 일반적으로 임신 중기(4~6개월)가 가장 안전한 치료 시기이며, 임신 초기와 후기에는 응급 치료 위주로 진행합니다. 스케일링과 간단한 충치치료는 임신 중에도 가능합니다. 상담 시 임신 사실을 반드시 알려주세요." },
+    { q: "고령자(어르신) 임플란트도 가능한가요?", a: "가능합니다. 65세 이상 어르신은 임플란트 건강보험 적용(상·하악 각 1개)도 받으실 수 있습니다. 전신 건강 상태(당뇨, 고혈압 등)를 사전에 확인하고, 안전한 시술 계획을 수립합니다. 한승대 원장은 고령 환자의 임플란트 경험이 풍부합니다." },
+    { q: "치실과 치간칫솔, 꼭 써야 하나요?", a: "칫솔만으로는 치아 사이의 치태를 완전히 제거하기 어렵습니다. 치실이나 치간칫솔을 병용하면 충치와 잇몸병 예방에 매우 효과적입니다. 행복한예인치과에서는 환자의 치아 간격에 맞는 치간 관리 도구와 올바른 사용법을 안내해 드립니다." },
+    { q: "전동칫솔이 일반 칫솔보다 좋은가요?", a: "전동칫솔은 일정한 압력과 회전으로 치태 제거에 효과적이며, 특히 손 동작이 불편한 분이나 교정 중인 분에게 유용합니다. 다만 올바른 사용법이 중요합니다. 일반 칫솔이든 전동칫솔이든 올바른 칫솔질 습관이 핵심이며, 내원 시 맞춤 칫솔질 교육을 제공합니다." },
+    { q: "이를 너무 오래 안 갈았는데 지금 와도 괜찮을까요?", a: "물론입니다. 오랫동안 치과를 미루신 분들일수록 빨리 오시는 것이 중요합니다. 행복한예인치과에서는 판단 없이 현재 상태를 객관적으로 설명해 드리고, 우선순위에 따라 치료 계획을 세워드립니다. 편안한 마음으로 내원해 주세요." },
+    { q: "직장인인데 치료 기간이 오래 걸리면 어떡하죠?", a: "행복한예인치과는 직장인의 바쁜 일정을 고려하여 효율적인 치료 계획을 수립합니다. 발치즉시 임플란트로 내원 횟수를 최소화하고, 한 번 방문 시 가능한 여러 치료를 병행합니다. 점심시간 방문과 수요일 야간진료(20시)도 활용하실 수 있습니다." },
+    { q: "치과 치료비 영수증으로 연말정산 세액공제가 가능한가요?", a: "네, 치과 치료비는 의료비 세액공제 대상입니다. 임플란트, 교정, 라미네이트 등 비급여 항목도 포함됩니다. 행복한예인치과에서 국세청에 자동으로 자료를 제출하며, 별도의 영수증이 필요하신 경우에도 발급해 드립니다." }
   ];
 
   const faqJsonLd = JSON.stringify({
@@ -1366,6 +1405,154 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">어린이 치과 진료도 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">네, 어린이 충치치료, 정기검진, 실란트 등 소아 치과 진료도 가능합니다. 아이가 치과에 대한 두려움을 갖지 않도록 부드럽고 친절한 진료를 지향합니다. 가족 단위 방문도 환영합니다.</p></div>
+      </div>
+
+      <!-- 추가 기본 정보 (8개) -->
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">행복한예인치과에서 진료 가능한 과목은?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">임플란트, 보존치료(신경치료·충치치료), 앞니 심미치료(라미네이트·레진), 치아교정(투명교정·설측교정), 일반진료(스케일링·정기검진·잇몸치료), 사랑니 발치 등 치과 전 분야가 가능합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">의료진의 학력이 궁금해요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">한승대 원장(고려대 졸업, 경희대 치의학 박사), 신정희 원장(경희대 졸업, 경희대 치의학 박사), 박현미 원장(연세대 졸업, 연세대 교정과 석사). 전원 보건복지부 인증 전문의입니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">진료 환경과 장비는 어떤가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">최신 CT(CBCT), 디지털 X-ray, 미세현미경, 구강스캐너 등 첨단 장비를 갖추고 있으며, 독립된 진료실로 프라이버시를 보장하고 철저한 감염 관리를 시행합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">상담만 받을 수도 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">물론입니다. 상담만 받고 치료 여부는 충분히 생각하신 후 결정하셔도 됩니다. X-ray 촬영 후 현재 상태와 치료 옵션을 투명하게 설명해 드립니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">예약 없이 방문해도 되나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">예약제 운영이므로 사전 예약을 권장합니다. 응급 상황(극심한 통증, 외상)은 내원 시 최대한 수용합니다. 전화 02-756-2828로 예약해 주세요.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">치과 위생사도 전문 교육을 받나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">네, 전 직원이 면허 소지자이며 정기적으로 내부 교육과 외부 세미나를 수료합니다. 스케일링, 환자 안내, 감염 관리 등 모든 업무에서 전문성을 유지합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">위생·감염 관리 기준은 어떤가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">오토클레이브로 기구를 철저히 멸균하며, 1인 1팩 포장 기구 사용, 일회용 커버·글러브 환자마다 교체, 진료실 표면 소독과 공기 정화를 매 진료 후 시행합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">다른 치과에서 받던 치료를 이어서 받을 수 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">가능합니다. 임플란트, 교정, 보존치료 등을 이어서 진행할 수 있습니다. 기존 X-ray나 진료 기록을 가져오시면 더 정확한 연속 치료가 가능합니다.</p></div>
+      </div>
+
+      <!-- 추가 치료 안내 (8개) -->
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">임플란트 수명은 얼마나 되나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">관리에 따라 10~20년 이상 사용 가능하며, 정기 검진과 올바른 구강 관리를 병행하면 반영구적으로 유지됩니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">골이식이 필요하다는데 꼭 해야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">뼈가 부족한 경우 임플란트 장기 안정성을 위해 골이식이 필요합니다. 한승대 원장은 상악동 거상술, 블록본 이식 등 고난이도 골이식 경험이 풍부합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">잇몸병(치주질환) 치료는 어떻게 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">스케일링과 치근 활택술로 시작하며, 심한 경우 잇몸 수술이 필요할 수 있습니다. 단계적 치료와 함께 가정 관리 방법도 안내합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">앞니가 벌어졌는데 어떤 치료가 좋을까요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">레진 본딩, 라미네이트, 교정 등 다양한 방법이 있으며, 벌어진 정도와 교합 상태에 따라 최적의 방법이 달라집니다. 상담 시 각 옵션의 장단점과 비용을 안내합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">치아 미백은 안전한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">전문 치과에서 시행하는 미백은 안전합니다. 일시적 시림이 있을 수 있으나 자연 소실됩니다. 오피스 블리칭과 홈 블리칭 모두 가능합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">임플란트와 브릿지 중 뭐가 좋은가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">임플란트는 인접 치아 비손상, 브릿지는 빠른 시술과 낮은 비용이 장점입니다. 구강 상태·예산·선호에 맞춰 전문의가 최적의 방법을 제안합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">사랑니를 꼭 뽑아야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">바르게 나서 기능하면 유지 가능하지만, 비스듬히 나거나 충치·염증이 반복되면 발치를 권합니다. X-ray로 정확한 위치 확인 후 안내합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">충치 치료 후 이가 시린 건 정상인가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">깊은 충치 치료 후 일시적 시림은 정상이며 1~2주 내 완화됩니다. 3주 이상 지속되면 재내원해 주세요.</p></div>
+      </div>
+
+      <!-- 추가 지역 기반 (12개) -->
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">덕수궁·서울시청 근처 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">행복한예인치과는 서울시청·덕수궁 바로 남쪽, 시청역 도보 5분 거리입니다. 덕수궁 돌담길에서도 7~8분이면 도착합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">서소문·서소문공원 근처 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">서소문에서 도보 약 8분 거리에 행복한예인치과가 있습니다. 발치즉시 임플란트 80%+ 성공률의 전문 치과입니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">남산타워·남산한옥마을에서 가까운 치과가 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">남산에서 택시 5분, 도보 약 15분, 명동역 경유 도보 8분으로도 올 수 있습니다. 관광 중 갑작스러운 통증에도 당일 예약 상담 가능합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">종각역·인사동 근처에서 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">종각역에서 시청역 한 정거장, 도보 약 12분입니다. 인사동에서도 대중교통 10분 이내. 교정·보존과 전문의가 직접 진료합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">동대문·종로5가에서 행복한예인치과 가려면?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">1호선 또는 4호선으로 시청역까지 약 10분, 시청역 4번 출구에서 도보 5분이면 도착합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">여의도·마포에서 행복한예인치과 가기 편한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">여의도에서 5호선 광화문역까지 약 15분, 광화문역에서 도보 10분. 마포에서도 공덕역→시청역 경유 20분 이내입니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">용산·이태원에서 가까운 전문의 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">용산에서 1호선으로 시청역까지 2정거장(약 7분), 이태원에서 6호선→1호선 환승 15분 이내에 도착합니다. 전문의 3인 협진 치과입니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">강남·서초에서 행복한예인치과를 찾아가는 방법은?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">2호선 강남역에서 시청역까지 약 20분, 3호선 교대역에서 충무로 환승 후 약 15분. 강남 못지않은 전문성을 합리적으로 제공합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">성수동·건대에서 행복한예인치과 가기 편한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">2호선으로 을지로입구역까지 10~15분, 을지로입구역 1번 출구에서 시청 방향 도보 7분이면 도착합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">서울 중구 남대문로에서 행복한예인치과의 차별점은?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">전문의 3명 직접 진료, 13년간 같은 자리 운영, 발치즉시 임플란트 80%+ 시행률, 458건+ 리뷰 평균 4.9점, 수요일 야간진료가 차별점입니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">퇴근 후 저녁에 진료하는 시청역 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">행복한예인치과는 매주 수요일 20시까지 야간진료합니다. 시청역 도보 5분 거리. 전화 02-756-2828로 예약하세요.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">주말 진료는 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">토·일·공휴일 휴진입니다. 대신 수요일 야간진료(20시까지)를 운영합니다. 월~금 09:30~18:30(수요일 20:00) 중 예약해 주세요.</p></div>
+      </div>
+
+      <!-- 추가 직장인·생활 (7개) -->
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">임산부도 치과 치료가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">가능합니다. 임신 중기(4~6개월)가 가장 안전한 치료 시기이며, 스케일링과 간단한 충치치료는 임신 중에도 가능합니다. 상담 시 임신 사실을 반드시 알려주세요.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">고령자(어르신) 임플란트도 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">가능합니다. 65세 이상은 임플란트 건강보험 적용(상·하악 각 1개)도 받으실 수 있습니다. 전신 건강 상태 확인 후 안전한 시술 계획을 수립합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">치실과 치간칫솔, 꼭 써야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">칫솔만으로는 치아 사이 치태를 완전히 제거하기 어렵습니다. 치실이나 치간칫솔 병용이 충치·잇몸병 예방에 매우 효과적입니다. 맞춤 도구와 사용법을 안내합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">전동칫솔이 일반 칫솔보다 좋은가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">전동칫솔은 일정한 압력과 회전으로 치태 제거에 효과적이지만, 올바른 사용법이 중요합니다. 칫솔 종류보다 올바른 습관이 핵심이며, 내원 시 맞춤 교육을 제공합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">오래 치과를 안 갔는데 지금 와도 괜찮을까요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">물론입니다. 오랫동안 미루신 분들일수록 빨리 오시는 것이 중요합니다. 판단 없이 현재 상태를 설명해 드리고 우선순위에 따라 치료 계획을 세워드립니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">직장인인데 치료 기간이 오래 걸리면 어떡하죠?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">발치즉시 임플란트로 내원 횟수를 최소화하고, 한 번 방문 시 여러 치료를 병행합니다. 점심시간 방문과 수요일 야간진료(20시)도 활용하실 수 있습니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">치과 치료비로 연말정산 세액공제가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">네, 치과 치료비는 의료비 세액공제 대상입니다. 임플란트, 교정, 라미네이트 등 비급여도 포함됩니다. 국세청 자동 제출하며, 별도 영수증도 발급 가능합니다.</p></div>
       </div>
     </div>
   </div>
