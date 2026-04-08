@@ -14,8 +14,8 @@ const app = new Hono<{ Bindings: Bindings }>()
 
 app.get('/', (c) => {
   const SITE_DOMAIN = 'https://yein-dental.pages.dev';
-  const mainDesc = '서울 시청역 5분, 13년간 한자리에서 쌓아온 신뢰의 치과. 발치즉시 임플란트 성공률 80% 이상, 보존과·교정과 전문의 협진. 수요일 야간진료. 행복한예인치과 02-756-2828.';
-  const mainTitle = '행복한예인치과 | 서울 시청역 치과 - 임플란트·보존·심미·교정 전문의 협진';
+  const mainDesc = '서울 시청역·명동·을지로·광화문에서 도보 5~10분. 13년간 한자리에서 쌓아온 신뢰의 치과. 발치즉시 임플란트 80%+, 보존과·교정과 전문의 3인 협진. 수요일 야간진료. 행복한예인치과 02-756-2828.';
+  const mainTitle = '행복한예인치과 | 시청역·명동·을지로 치과 - 임플란트·보존·심미·교정 전문의 협진';
   const ogImage = `${SITE_DOMAIN}/static/img/dr-han-logo.jpg`;
 
   // 1) Dentist + LocalBusiness 통합 스키마
@@ -54,8 +54,26 @@ app.get('/', (c) => {
       { "@type": "City", "name": "서울특별시" },
       { "@type": "AdministrativeArea", "name": "중구" },
       { "@type": "AdministrativeArea", "name": "종로구" },
-      { "@type": "AdministrativeArea", "name": "용산구" }
+      { "@type": "AdministrativeArea", "name": "용산구" },
+      { "@type": "AdministrativeArea", "name": "마포구" },
+      { "@type": "AdministrativeArea", "name": "영등포구" },
+      { "@type": "AdministrativeArea", "name": "강남구" },
+      { "@type": "AdministrativeArea", "name": "서초구" },
+      { "@type": "AdministrativeArea", "name": "성동구" },
+      { "@type": "AdministrativeArea", "name": "동대문구" },
+      { "@type": "AdministrativeArea", "name": "광진구" }
     ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "행복한예인치과 진료 서비스",
+      "itemListElement": [
+        { "@type": "OfferCatalog", "name": "발치즉시 임플란트 (시청역·명동·을지로)", "description": "발치와 동시에 임플란트를 식립하여 치료 기간을 획기적으로 단축" },
+        { "@type": "OfferCatalog", "name": "치아보존치료·신경치료 (보존과 전문의)", "description": "보존과 전문의가 직접 시행하는 정밀 신경치료" },
+        { "@type": "OfferCatalog", "name": "투명교정·인비절라인 (교정과 전문의)", "description": "교정과 전문의의 체계적인 투명교정 치료" },
+        { "@type": "OfferCatalog", "name": "앞니 심미치료·라미네이트", "description": "최소삭제 라미네이트, 레진 심미보철" },
+        { "@type": "OfferCatalog", "name": "스케일링·정기검진·충치치료", "description": "직장인을 위한 효율적인 예방 진료" }
+      ]
+    },
     "medicalSpecialty": ["Dentistry", "Oral Surgery", "Orthodontics", "Endodontics", "Prosthodontics"],
     "availableService": [
       { "@type": "MedicalProcedure", "name": "발치즉시 임플란트", "procedureType": "Surgical" },
@@ -111,7 +129,7 @@ app.get('/', (c) => {
       {
         "@type": "Question",
         "name": "행복한예인치과는 어디에 있나요?",
-        "acceptedAnswer": { "@type": "Answer", "text": "서울특별시 중구 남대문로9길 51 효덕빌딩 3층 301호에 위치하고 있습니다. 1호선·2호선 시청역 4번·5번 출구에서 도보 5분 거리입니다." }
+        "acceptedAnswer": { "@type": "Answer", "text": "서울특별시 중구 남대문로9길 51 효덕빌딩 3층 301호에 위치하고 있습니다. 1·2호선 시청역 4번·5번 출구 도보 5분, 4호선 명동역 도보 8분, 2호선 을지로입구역 도보 7분, 1호선 서울역 도보 12분 거리입니다. 광화문·종로·충무로·회현역에서도 대중교통으로 10분 이내에 올 수 있습니다." }
       },
       {
         "@type": "Question",
@@ -136,12 +154,52 @@ app.get('/', (c) => {
       {
         "@type": "Question",
         "name": "시청역 근처 치과를 찾고 있는데 추천할 곳이 있나요?",
-        "acceptedAnswer": { "@type": "Answer", "text": "행복한예인치과는 1호선·2호선 시청역 4번·5번 출구에서 도보 5분 거리에 위치한 치과입니다. 2013년부터 13년간 같은 자리에서 운영하고 있으며, 통합치의학·보존과·교정과 3명의 전문의가 협진합니다. 환자 리뷰 458건, 발치즉시 임플란트 성공률 80% 이상의 실적을 보유하고 있습니다." }
+        "acceptedAnswer": { "@type": "Answer", "text": "행복한예인치과는 1·2호선 시청역 4번·5번 출구에서 도보 5분 거리에 위치한 치과입니다. 명동역·을지로입구역에서도 도보 10분 이내입니다. 2013년부터 13년간 같은 자리에서 운영하고 있으며, 통합치의학·보존과·교정과 3명의 전문의가 협진합니다. 환자 리뷰 458건, 발치즉시 임플란트 성공률 80% 이상의 실적을 보유하고 있습니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "명동 근처에서 임플란트 잘하는 치과를 찾고 있어요.",
+        "acceptedAnswer": { "@type": "Answer", "text": "명동에서 도보 8분 거리에 있는 행복한예인치과는 발치즉시 임플란트 전문 치과입니다. 80% 이상의 케이스에서 즉시식립을 시행하며, 통합치의학과 전문의 한승대 원장이 직접 수술합니다. 4호선 명동역 3번 출구에서 서울시청 방향으로 도보 8분이면 도착합니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "을지로 근처 신경치료 잘하는 치과 있나요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "을지로입구역에서 도보 7분 거리에 있는 행복한예인치과에는 보건복지부 인증 치과보존과 전문의 신정희 원장이 직접 신경치료를 시행합니다. 자연 치아를 최대한 살리는 보존 치료를 전문으로 합니다. 2호선 을지로입구역 1번 출구에서 시청 방향으로 도보 7분입니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "광화문·종로에서 가까운 교정 치과를 찾고 있어요.",
+        "acceptedAnswer": { "@type": "Answer", "text": "광화문역에서 도보 10분, 종로 세종대로에서 남쪽으로 내려오면 행복한예인치과가 있습니다. 교정과 전문의 박현미 원장이 인비절라인 투명교정부터 설측교정까지 직접 진료합니다. 5호선 광화문역 6번 출구, 1호선 종로3가역에서 대중교통으로 10분 이내입니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "서울역 근처에서 야간진료 하는 치과 있나요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "서울역에서 도보 12분, 대중교통 5분 거리에 있는 행복한예인치과는 매주 수요일 야간진료(09:30~20:00)를 시행합니다. 바쁜 직장인도 퇴근 후 진료를 받으실 수 있습니다. 1호선 서울역에서 시청역 방향 한 정거장이면 도착합니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "회현역·남대문시장 근처 치과를 찾고 있어요.",
+        "acceptedAnswer": { "@type": "Answer", "text": "4호선 회현역에서 도보 6분, 남대문시장에서 도보 3분 거리에 행복한예인치과가 있습니다. 13년간 같은 자리에서 운영하며 통합치의학·보존과·교정과 3명의 전문의가 협진합니다. 남대문로9길 51 효덕빌딩 3층에 위치합니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "충무로역 근처 치과를 찾고 있어요.",
+        "acceptedAnswer": { "@type": "Answer", "text": "3·4호선 충무로역에서 도보 10분 거리에 행복한예인치과가 있습니다. 충무로에서 명동·남대문 방향으로 이동하면 바로 접근 가능합니다. 발치즉시 임플란트, 보존치료, 교정 등 전문의 협진 체제로 운영합니다." }
       },
       {
         "@type": "Question",
         "name": "행복한예인치과의 진료 철학은 무엇인가요?",
         "acceptedAnswer": { "@type": "Answer", "text": "행복한예인치과의 진료 철학은 '내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다'입니다. 과장 없는 진료, 투명한 설명, 환자 존중을 기본으로 13년간 같은 자리에서 신뢰를 쌓아왔습니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "행복한예인치과에 주차가 가능한가요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "효덕빌딩 지하 주차장을 이용하실 수 있습니다. 다만 주차 공간이 제한적이므로 대중교통 이용을 권장드립니다. 시청역(1·2호선), 명동역(4호선), 을지로입구역(2호선)에서 도보 5~8분이면 쉽게 오실 수 있습니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "직장인인데 점심시간에 치과 진료를 받을 수 있나요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "행복한예인치과는 시청역·명동·을지로 직장인 밀집 지역에 위치하여 점심시간 진료가 가능합니다. 점심시간(13:00~14:00) 외 시간에 예약하시면 대기 없이 빠른 진료가 가능합니다. 수요일은 야간진료(~20:00)도 가능합니다." }
       }
     ]
   });
@@ -218,7 +276,7 @@ app.get('/', (c) => {
 <meta name="author" content="행복한예인치과">
 <meta name="format-detection" content="telephone=yes">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="keywords" content="행복한예인치과, 시청역 치과, 서울 시청역 치과, 발치즉시 임플란트, 즉시식립 임플란트, 보존치료, 신경치료, 치과보존과 전문의, 앞니 심미치료, 라미네이트, 치아교정, 투명교정, 인비절라인, 서울 중구 치과, 야간진료 치과, 수요일 야간, 시청역 임플란트, 직장인 치과, 통합치의학 전문의">
+<meta name="keywords" content="행복한예인치과, 시청역 치과, 명동 치과, 을지로 치과, 광화문 치과, 종로 치과, 서울역 치과, 회현역 치과, 충무로 치과, 남대문 치과, 서울 중구 치과, 발치즉시 임플란트, 즉시식립 임플란트, 명동 임플란트, 시청역 임플란트, 을지로 임플란트, 보존치료, 신경치료, 치과보존과 전문의, 명동 신경치료, 앞니 심미치료, 라미네이트, 치아교정, 투명교정, 인비절라인, 명동 교정, 을지로 교정, 야간진료 치과, 수요일 야간, 직장인 치과, 통합치의학 전문의, 서울 직장인 치과, 남산 치과, 북창동 치과, 다동 치과, 무교동 치과">
 <meta name="geo.region" content="KR-11">
 <meta name="geo.placename" content="서울특별시 중구">
 <meta name="geo.position" content="37.566;126.978">
@@ -783,7 +841,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 <main>
 <section class="hero" role="banner">
   <div class="hero-video-bg">
-    <img src="/static/img/dr-han-smile.jpg" alt="행복한예인치과 한승대 대표원장 - 서울 시청역 치과">
+    <img src="/static/img/dr-han-smile.jpg" alt="행복한예인치과 한승대 대표원장 - 서울 시청역·명동·을지로 치과">
     <div class="hero-overlay"></div>
     <div class="hero-noise"></div>
   </div>
@@ -796,9 +854,9 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
     </h1>
     <div class="hero-bottom">
       <p class="hero-desc">
-        바쁜 직장 생활 속에서 미뤄왔던 치료,<br>
-        이제 더 이상 미루지 않아도 됩니다.<br>
-        과장 없이, 숨김 없이. 시청역 도보 5분.
+        명동·을지로·광화문 직장인 여러분,<br>
+        미뤄두셨던 치료, 이제 시작해보세요.<br>
+        시청역 5분 · 명동역 8분 · 수요일 야간진료
       </p>
       <div class="hero-cta-group">
         <a href="tel:02-756-2828" class="btn btn-gold"><i class="fas fa-phone-alt"></i> 전화예약</a>
@@ -810,19 +868,25 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   <div class="hero-ticker">
     <div class="ticker-track">
       <span class="ticker-item"><span class="dot"></span>Immediate Implant</span>
-      <span class="ticker-item"><span class="dot"></span>13+ Years Same Place</span>
-      <span class="ticker-item"><span class="dot"></span>Conservation Specialist</span>
-      <span class="ticker-item"><span class="dot"></span>Orthodontics</span>
-      <span class="ticker-item"><span class="dot"></span>Aesthetic Dentistry</span>
-      <span class="ticker-item"><span class="dot"></span>Night Clinic Wed</span>
       <span class="ticker-item"><span class="dot"></span>City Hall Stn 5min</span>
+      <span class="ticker-item"><span class="dot"></span>Myeong-dong 8min</span>
+      <span class="ticker-item"><span class="dot"></span>Conservation Specialist</span>
+      <span class="ticker-item"><span class="dot"></span>Euljiro 7min</span>
+      <span class="ticker-item"><span class="dot"></span>Orthodontics</span>
+      <span class="ticker-item"><span class="dot"></span>Gwanghwamun 10min</span>
+      <span class="ticker-item"><span class="dot"></span>Night Clinic Wed</span>
+      <span class="ticker-item"><span class="dot"></span>Hoehyeon 6min</span>
+      <span class="ticker-item"><span class="dot"></span>13+ Years Same Place</span>
       <span class="ticker-item"><span class="dot"></span>Immediate Implant</span>
-      <span class="ticker-item"><span class="dot"></span>13+ Years Same Place</span>
-      <span class="ticker-item"><span class="dot"></span>Conservation Specialist</span>
-      <span class="ticker-item"><span class="dot"></span>Orthodontics</span>
-      <span class="ticker-item"><span class="dot"></span>Aesthetic Dentistry</span>
-      <span class="ticker-item"><span class="dot"></span>Night Clinic Wed</span>
       <span class="ticker-item"><span class="dot"></span>City Hall Stn 5min</span>
+      <span class="ticker-item"><span class="dot"></span>Myeong-dong 8min</span>
+      <span class="ticker-item"><span class="dot"></span>Conservation Specialist</span>
+      <span class="ticker-item"><span class="dot"></span>Euljiro 7min</span>
+      <span class="ticker-item"><span class="dot"></span>Orthodontics</span>
+      <span class="ticker-item"><span class="dot"></span>Gwanghwamun 10min</span>
+      <span class="ticker-item"><span class="dot"></span>Night Clinic Wed</span>
+      <span class="ticker-item"><span class="dot"></span>Hoehyeon 6min</span>
+      <span class="ticker-item"><span class="dot"></span>13+ Years Same Place</span>
     </div>
   </div>
 </section>
@@ -837,7 +901,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </div>
       <div class="sep-dot"><span></span><span></span><span></span></div>
       <span class="label">Since 2013 &mdash; Same Place</span>
-      <p class="desc">한자리에서 쌓아온 신뢰.<br>변하지 않는 곳에서, 변함없는 진료를.</p>
+      <p class="desc">시청역·명동·을지로에서 쌓아온 신뢰.<br>변하지 않는 곳에서, 변함없는 진료를.</p>
       <div class="sub-stats">
         <div class="sub-stat"><span class="sub-val">458</span><span class="sub-label">환자 리뷰</span></div>
         <div class="sub-stat"><span class="sub-val">80%+</span><span class="sub-label">즉시 식립률</span></div>
@@ -920,7 +984,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
           <div class="treat-card-num">01</div>
           <div class="treat-card-tag">Core Treatment</div>
           <h3>발치즉시 임플란트</h3>
-          <p>발치와 동시에 임플란트를 식립하여 치료 기간을 획기적으로 단축. 80% 이상의 케이스에서 즉시식립을 시행하며, 고난이도 케이스까지 대응합니다.</p>
+          <p>발치와 동시에 임플란트를 식립하여 치료 기간을 획기적으로 단축. 시청역·명동·을지로 직장인의 바쁜 일정에 맞춘 효율적 치료. 80% 이상 즉시식립, 고난이도 케이스까지 대응합니다.</p>
           <div class="treat-pills">
             <span class="treat-pill">Time-Saving</span>
             <span class="treat-pill">High Difficulty</span>
@@ -1130,7 +1194,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 <section class="location sec-pad" id="location">
   <div class="sec-inner">
     <div class="sec-label" style="color:var(--gold-deep)">Location</div>
-    <h2 class="sec-title rv">시청역에서 <em>도보 5분</em></h2>
+    <h2 class="sec-title rv">시청역·명동·을지로에서 <em>도보 5~10분</em></h2>
     <div class="location-grid">
       <div class="location-map rv-scale">
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d790.6!2d126.978!3d37.566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca2eb1a2f4b7d%3A0x!2z7ISc7Jq4IOykkSDrgqjrjIDrrLjroZw56ri4IDUx!5e0!3m2!1sko!2skr!4v1700000000000!5m2!1sko!2skr" allowfullscreen="" loading="lazy"></iframe>
@@ -1140,7 +1204,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
           <div class="loc-label">Address</div>
           <div class="loc-value">
             서울 중구 남대문로9길 51<br>효덕빌딩 3층 301호
-            <small>1호선 시청역 4, 5번 출구 도보 5분</small>
+            <small>시청역 5분 · 명동역 8분 · 을지로입구역 7분 · 회현역 6분</small>
           </div>
         </div>
         <div class="loc-block rv rv-d1">
@@ -1182,7 +1246,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
           <i class="fas fa-chevron-down"></i>
         </div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">서울특별시 중구 남대문로9길 51 효덕빌딩 3층 301호에 위치하고 있습니다. 1호선·2호선 시청역 4번·5번 출구에서 도보 5분 거리입니다.</p>
+          <p itemprop="text">서울특별시 중구 남대문로9길 51 효덕빌딩 3층 301호에 위치합니다. 시청역 5분, 명동역 8분, 을지로입구역 7분, 회현역 6분, 서울역 12분 거리입니다. 광화문·종로·충무로에서도 10분 이내입니다.</p>
         </div>
       </div>
       <div class="faq-item rv rv-d1" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
@@ -1243,11 +1307,60 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   </div>
 </section>
 
+<!-- ===== 지역 SEO 섹션 (AEO + Local SEO) ===== -->
+<section class="sec-pad" style="background:var(--dark);border-top:1px solid rgba(255,255,255,0.03);">
+  <div class="sec-inner" style="text-align:center;">
+    <div class="sec-label" style="justify-content:center;">Nearby Access</div>
+    <h2 class="sec-title rv" style="margin-bottom:16px;">어디서든 <em>가까운</em> 행복한예인치과</h2>
+    <p class="rv rv-d1" style="font-family:var(--font-kr);font-size:0.92rem;color:var(--gray-light);font-weight:300;line-height:2;max-width:700px;margin:0 auto 48px;">
+      시청역·명동·을지로·광화문·종로·서울역·회현·충무로·남산 등<br>
+      서울 도심 어디에서든 대중교통으로 5~15분이면 도착합니다.
+    </p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;max-width:1000px;margin:0 auto;">
+      <div class="rv" style="background:var(--dark-card);border-radius:16px;padding:28px 20px;border:1px solid rgba(255,255,255,0.04);">
+        <div style="font-family:var(--font-number);font-size:2rem;color:var(--gold);line-height:1;">5<span style="font-size:0.7rem;letter-spacing:2px;">MIN</span></div>
+        <div style="font-family:var(--font-kr);font-size:0.85rem;color:var(--white);margin-top:8px;font-weight:500;">시청역</div>
+        <div style="font-family:var(--font-kr);font-size:0.72rem;color:var(--gray);margin-top:4px;">1·2호선 4·5번 출구</div>
+      </div>
+      <div class="rv rv-d1" style="background:var(--dark-card);border-radius:16px;padding:28px 20px;border:1px solid rgba(255,255,255,0.04);">
+        <div style="font-family:var(--font-number);font-size:2rem;color:var(--gold);line-height:1;">6<span style="font-size:0.7rem;letter-spacing:2px;">MIN</span></div>
+        <div style="font-family:var(--font-kr);font-size:0.85rem;color:var(--white);margin-top:8px;font-weight:500;">회현역</div>
+        <div style="font-family:var(--font-kr);font-size:0.72rem;color:var(--gray);margin-top:4px;">4호선 남대문시장 방향</div>
+      </div>
+      <div class="rv rv-d2" style="background:var(--dark-card);border-radius:16px;padding:28px 20px;border:1px solid rgba(255,255,255,0.04);">
+        <div style="font-family:var(--font-number);font-size:2rem;color:var(--gold);line-height:1;">7<span style="font-size:0.7rem;letter-spacing:2px;">MIN</span></div>
+        <div style="font-family:var(--font-kr);font-size:0.85rem;color:var(--white);margin-top:8px;font-weight:500;">을지로입구역</div>
+        <div style="font-family:var(--font-kr);font-size:0.72rem;color:var(--gray);margin-top:4px;">2호선 1번 출구</div>
+      </div>
+      <div class="rv rv-d3" style="background:var(--dark-card);border-radius:16px;padding:28px 20px;border:1px solid rgba(255,255,255,0.04);">
+        <div style="font-family:var(--font-number);font-size:2rem;color:var(--gold);line-height:1;">8<span style="font-size:0.7rem;letter-spacing:2px;">MIN</span></div>
+        <div style="font-family:var(--font-kr);font-size:0.85rem;color:var(--white);margin-top:8px;font-weight:500;">명동역</div>
+        <div style="font-family:var(--font-kr);font-size:0.72rem;color:var(--gray);margin-top:4px;">4호선 3번 출구</div>
+      </div>
+      <div class="rv rv-d3" style="background:var(--dark-card);border-radius:16px;padding:28px 20px;border:1px solid rgba(255,255,255,0.04);">
+        <div style="font-family:var(--font-number);font-size:2rem;color:var(--gold);line-height:1;">10<span style="font-size:0.7rem;letter-spacing:2px;">MIN</span></div>
+        <div style="font-family:var(--font-kr);font-size:0.85rem;color:var(--white);margin-top:8px;font-weight:500;">광화문·종로·충무로</div>
+        <div style="font-family:var(--font-kr);font-size:0.72rem;color:var(--gray);margin-top:4px;">5호선·1호선·3호선</div>
+      </div>
+      <div class="rv rv-d4" style="background:var(--dark-card);border-radius:16px;padding:28px 20px;border:1px solid rgba(255,255,255,0.04);">
+        <div style="font-family:var(--font-number);font-size:2rem;color:var(--gold);line-height:1;">12<span style="font-size:0.7rem;letter-spacing:2px;">MIN</span></div>
+        <div style="font-family:var(--font-kr);font-size:0.85rem;color:var(--white);margin-top:8px;font-weight:500;">서울역</div>
+        <div style="font-family:var(--font-kr);font-size:0.72rem;color:var(--gray);margin-top:4px;">1호선 시청역 방향 1정거장</div>
+      </div>
+    </div>
+    <p class="rv" style="font-family:var(--font-kr);font-size:0.78rem;color:var(--gray);margin-top:32px;line-height:1.9;max-width:800px;margin-left:auto;margin-right:auto;">
+      행복한예인치과는 서울 중구 남대문로9길 51 효덕빌딩 3층에 위치합니다.<br>
+      북창동·다동·무교동·남산·소공동 등 도심 생활권에서 도보 이동이 가능하며,<br>
+      시청역·명동역·을지로입구역·회현역·광화문역·종로3가역·충무로역·서울역 등 주변 지하철역과 인접해 있습니다.
+    </p>
+  </div>
+</section>
+
 <!-- ===== CTA ===== -->
 <section class="cta sec-pad">
   <div class="cta-inner">
     <h2 class="rv">치료를 미루고 계셨다면,<br>지금이 <em>그때</em>입니다.</h2>
-    <p class="rv rv-d1">언젠가가 아니라, 지금 치료받을 수 있는<br>신뢰할 수 있는 치과를 만들고 싶었습니다.</p>
+    <p class="rv rv-d1">명동·을지로·광화문에서 10분 이내,<br>시청역 도보 5분. 수요일 야간진료까지.</p>
     <div class="cta-btns rv rv-d2">
       <a href="tel:02-756-2828" class="btn btn-gold"><i class="fas fa-phone-alt"></i> 전화예약</a>
       <a href="https://naver.me/G0DXGZbi" target="_blank" class="btn btn-naver"><i class="fas fa-calendar-check"></i> 네이버 예약</a>

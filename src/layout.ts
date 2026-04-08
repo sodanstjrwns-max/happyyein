@@ -78,8 +78,31 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
       { "@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "09:30", "closes": "20:00" }
     ],
     "priceRange": "$$",
-    "areaServed": { "@type": "City", "name": "Seoul" },
-    "sameAs": ["https://blog.naver.com/yein2828"]
+    "areaServed": [
+      { "@type": "City", "name": "서울특별시" },
+      { "@type": "AdministrativeArea", "name": "중구" },
+      { "@type": "AdministrativeArea", "name": "종로구" },
+      { "@type": "AdministrativeArea", "name": "용산구" },
+      { "@type": "AdministrativeArea", "name": "성동구" },
+      { "@type": "AdministrativeArea", "name": "마포구" },
+      { "@type": "AdministrativeArea", "name": "영등포구" },
+      { "@type": "AdministrativeArea", "name": "강남구" },
+      { "@type": "AdministrativeArea", "name": "서초구" },
+      { "@type": "AdministrativeArea", "name": "동대문구" },
+      { "@type": "AdministrativeArea", "name": "광진구" }
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "행복한예인치과 진료 서비스",
+      "itemListElement": [
+        { "@type": "OfferCatalog", "name": "시청역·명동 발치즉시 임플란트", "description": "발치와 동시에 임플란트를 식립. 80% 이상 즉시식립." },
+        { "@type": "OfferCatalog", "name": "을지로·광화문 치아보존·신경치료", "description": "보존과 전문의 직접 시행하는 정밀 신경치료." },
+        { "@type": "OfferCatalog", "name": "명동·종로 투명교정·인비절라인", "description": "교정과 전문의의 체계적인 투명교정 치료." },
+        { "@type": "OfferCatalog", "name": "서울 중구 앞니 심미치료·라미네이트", "description": "최소삭제 라미네이트, 레진 심미보철." },
+        { "@type": "OfferCatalog", "name": "시청역 직장인 스케일링·정기검진", "description": "수요일 야간진료 포함 예방 진료." }
+      ]
+    },
+    "sameAs": ["https://blog.naver.com/yein2828", "https://naver.me/G0DXGZbi"]
   };
 
   // BreadcrumbList JSON-LD
@@ -253,7 +276,7 @@ export function footer() {
 <section class="cta sec-pad">
   <div class="cta-inner">
     <h2 class="rv">치료를 미루고 계셨다면,<br>지금이 <em>그때</em>입니다.</h2>
-    <p class="rv rv-d1">언젠가가 아니라, 지금 치료받을 수 있는<br>신뢰할 수 있는 치과를 만들고 싶었습니다.</p>
+    <p class="rv rv-d1">시청역·명동·을지로·광화문에서 10분 이내,<br>회현·충무로·서울역에서도 가까운 행복한예인치과.</p>
     <div class="cta-btns rv rv-d2">
       <a href="tel:02-756-2828" class="btn btn-gold"><i class="fas fa-phone-alt"></i> 전화예약</a>
       <a href="https://naver.me/G0DXGZbi" target="_blank" class="btn btn-naver"><i class="fas fa-calendar-check"></i> 네이버 예약</a>

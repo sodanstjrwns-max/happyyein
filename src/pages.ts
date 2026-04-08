@@ -5,7 +5,7 @@ import { head, nav, footer, scripts } from './layout'
 // PHILOSOPHY PAGE
 // ===========================
 export function philosophyPage(): string {
-  return `${head({ title: '진료 철학', description: '행복한예인치과의 진료 철학 - 내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다. 한승대 원장의 13년간의 치과 철학. 과장 없는 진료, 환자 존중, 장기적 관계.', path: '/philosophy', ogImage: '/static/img/dr-han-logo.jpg', keywords: '치과 진료 철학, 행복한예인치과 철학, 한승대 원장, 신뢰할 수 있는 치과, 시청역 치과 철학', breadcrumbs: [{ name: '홈', url: '/' }, { name: '진료 철학', url: '/philosophy' }] })}
+  return `${head({ title: '진료 철학', description: '시청역·명동·을지로에서 13년, 행복한예인치과의 진료 철학. 내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다. 과장 없는 진료, 환자 존중, 장기적 관계. 서울 중구 남대문로 02-756-2828', path: '/philosophy', ogImage: '/static/img/dr-han-logo.jpg', keywords: '치과 진료 철학, 행복한예인치과 철학, 한승대 원장, 시청역 치과 철학, 명동 치과, 을지로 치과, 광화문 치과, 서울 중구 치과, 신뢰할 수 있는 치과, 직장인 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '진료 철학', url: '/philosophy' }] })}
 ${nav('philosophy')}
 
 <!-- HERO -->
@@ -57,7 +57,7 @@ ${nav('philosophy')}
         <div class="philo-value-num">02</div>
         <div class="philo-value-content">
           <h3><i class="fas fa-hand-holding-heart"></i> 환자의 시간을 존중</h3>
-          <p>바쁜 직장인분들이 많은 시청역 근처. 예약 시간을 철저히 지키고, 대기 시간을 최소화합니다. 발치즉시 임플란트로 내원 횟수를 줄이고, 효율적인 치료 동선을 설계합니다.</p>
+          <p>시청역·명동·을지로·광화문 직장인분들이 많이 찾는 행복한예인치과. 예약 시간을 철저히 지키고, 대기 시간을 최소화합니다. 발치즉시 임플란트로 내원 횟수를 줄이고, 수요일 야간진료(20시까지)로 퇴근 후에도 진료가 가능합니다.</p>
         </div>
       </div>
       <div class="philo-value-item rv rv-d2">
@@ -89,7 +89,7 @@ ${nav('philosophy')}
         <div class="story-year">2013</div>
         <div class="story-text">
           <h4>행복한예인치과 개원</h4>
-          <p>서울 중구 남대문로, 시청역 도보 5분 거리에 문을 열었습니다. "내 가족에게 권할 수 있는 치료"라는 원칙으로 시작했습니다.</p>
+          <p>서울 중구 남대문로, 시청역·명동·을지로 직장인 밀집 지역에 문을 열었습니다. "내 가족에게 권할 수 있는 치료"라는 원칙으로 시작했습니다.</p>
         </div>
       </div>
       <div class="story-item rv rv-d1">
@@ -154,7 +154,7 @@ ${scripts()}`;
 // DOCTORS PAGE
 // ===========================
 export function doctorsPage(): string {
-  return `${head({ title: '의료진 소개', description: '행복한예인치과 의료진 - 한승대 대표원장(통합치의학 전문의, 치의학 박사), 신정희 원장(보존과 전문의, 치의학 박사), 박현미 원장(교정 전문의). 각 분야 전문의 협진 시스템.', path: '/doctors', ogImage: '/static/img/dr-han-profile.jpg', keywords: '행복한예인치과 의료진, 한승대 원장, 치과 전문의, 보존과 전문의, 교정과 전문의, 시청역 치과 전문의', breadcrumbs: [{ name: '홈', url: '/' }, { name: '의료진 소개', url: '/doctors' }] })}
+  return `${head({ title: '의료진 소개', description: '시청역·명동·을지로 전문의 협진 치과 | 행복한예인치과 의료진. 한승대 대표원장(통합치의학 전문의, 치의학 박사), 신정희 원장(보존과 전문의), 박현미 원장(교정 전문의). 시청역 5분, 명동역 8분. 02-756-2828', path: '/doctors', ogImage: '/static/img/dr-han-profile.jpg', keywords: '행복한예인치과 의료진, 한승대 원장, 시청역 치과 전문의, 명동 치과 전문의, 을지로 치과, 광화문 치과, 보존과 전문의, 교정과 전문의, 서울 중구 치과, 직장인 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '의료진 소개', url: '/doctors' }] })}
 ${nav('doctors')}
 
 <!-- HERO -->
@@ -171,7 +171,7 @@ ${nav('doctors')}
   <div class="sub-hero-content">
     <div class="sub-hero-tag">Our Doctors</div>
     <h1>각 분야<br><em>전문의</em> 협진</h1>
-    <p class="sub-hero-desc">통합치의학, 보존과, 교정과 전문의가 한 곳에서 협진합니다.<br>분야별 전문성으로 최적의 치료 결과를 만들어 갑니다.</p>
+    <p class="sub-hero-desc">시청역·명동·을지로에서 도보 5~8분.<br>통합치의학, 보존과, 교정과 전문의 3인이 한 곳에서 협진합니다.</p>
   </div>
 </section>
 
@@ -317,7 +317,7 @@ ${scripts()}`;
 // EXPERIENCE PAGE
 // ===========================
 export function experiencePage(): string {
-  return `${head({ title: '환자 경험', description: '행복한예인치과 환자 경험 - 치과를 다녀간 뒤 안도감을 느끼셨으면. 부드러운 마취, X-ray 앞 투명한 설명, 직장인 맞춤 효율적 예약, 꾸준한 사후 케어.', path: '/experience', ogImage: '/static/img/consult-2.jpg', keywords: '치과 환자 경험, 통증 없는 치과, 치과 후기, 편안한 치과, 직장인 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '환자 경험', url: '/experience' }] })}
+  return `${head({ title: '환자 경험', description: '시청역·명동·을지로 직장인이 믿고 찾는 행복한예인치과. 치과를 다녀간 뒤 안도감을 느끼셨으면. 부드러운 마취, X-ray 앞 투명한 설명, 수요일 야간진료. 시청역 5분·명동역 8분. 02-756-2828', path: '/experience', ogImage: '/static/img/consult-2.jpg', keywords: '치과 환자 경험, 시청역 치과 후기, 명동 치과 후기, 을지로 치과, 광화문 치과, 통증 없는 치과, 편안한 치과, 직장인 치과, 야간진료 치과, 서울 중구 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '환자 경험', url: '/experience' }] })}
 ${nav('experience')}
 
 <!-- HERO -->
@@ -378,8 +378,8 @@ ${nav('experience')}
         <div class="exp-pillar-num">03</div>
         <h3>Time-Efficient</h3>
         <h4>바쁜 직장인을 기준으로 설계된 진료 프로세스</h4>
-        <p>시청역 도보 5분, 바쁜 직장인 환자분들이 많습니다. 예약 시간을 지키고, 대기 시간을 최소화합니다. 발치즉시 임플란트로 내원 횟수 자체를 줄입니다.</p>
-        <p>수요일 야간진료(20시까지)로 퇴근 후에도 치료받으실 수 있습니다. 효율적인 예약 시스템으로 시간을 아껴드립니다.</p>
+        <p>시청역·명동·을지로·광화문 직장인 밀집 지역에 위치. 시청역 도보 5분, 명동역 8분, 을지로입구역 7분 거리입니다. 예약 시간을 지키고, 대기 시간을 최소화합니다. 발치즉시 임플란트로 내원 횟수 자체를 줄입니다.</p>
+        <p>수요일 야간진료(20시까지)로 퇴근 후에도 치료받으실 수 있습니다. 광화문·종로·회현·충무로·서울역에서도 대중교통 10분 이내. 효율적인 예약 시스템으로 시간을 아껴드립니다.</p>
       </div>
     </div>
 
@@ -432,7 +432,7 @@ ${nav('experience')}
       </div>
       <div class="review-card rv rv-d2">
         <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-        <p>"시청역 근처라 점심시간에 다닐 수 있어서 좋고, 예약 시간 잘 지켜주셔서 대기가 거의 없어요."</p>
+        <p>"시청역·명동 근처라 점심시간에 다닐 수 있어서 좋고, 예약 시간 잘 지켜주셔서 대기가 거의 없어요. 을지로 사무실에서도 가까워요."</p>
         <span class="review-author">&mdash; 20대 회사원</span>
       </div>
     </div>
@@ -448,7 +448,7 @@ ${scripts()}`;
 // LOCATION PAGE
 // ===========================
 export function locationPage(): string {
-  return `${head({ title: '오시는 길', description: '행복한예인치과 오시는 길 - 서울 중구 남대문로9길 51 효덕빌딩 3층 301호. 1호선 시청역 4·5번 출구 도보 5분. 전화 02-756-2828. 수요일 야간진료 20시.', path: '/location', keywords: '행복한예인치과 위치, 시청역 치과, 서울 중구 치과, 시청역 도보 5분, 야간진료 치과, 수요일 야간', breadcrumbs: [{ name: '홈', url: '/' }, { name: '오시는 길', url: '/location' }] })}
+  return `${head({ title: '오시는 길', description: '행복한예인치과 오시는 길 - 시청역 5분·명동역 8분·을지로입구역 7분·회현역 6분·광화문역 10분·서울역 12분. 서울 중구 남대문로9길 51 효덕빌딩 3층. 수요일 야간진료. 02-756-2828', path: '/location', keywords: '행복한예인치과 위치, 시청역 치과, 명동 치과, 을지로 치과, 광화문 치과, 종로 치과, 회현역 치과, 충무로 치과, 서울역 치과, 남대문 치과, 서울 중구 치과, 시청역 도보 5분, 명동역 도보 8분, 야간진료 치과, 직장인 치과, 북창동 치과, 다동 치과, 무교동 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '오시는 길', url: '/location' }] })}
 ${nav('location')}
 
 <!-- HERO -->
@@ -464,8 +464,8 @@ ${nav('location')}
   </div>
   <div class="sub-hero-content">
     <div class="sub-hero-tag">Location & Contact</div>
-    <h1>시청역에서<br><em>도보 5분</em></h1>
-    <p class="sub-hero-desc">서울 중구 남대문로9길 51 효덕빌딩 3층 301호</p>
+    <h1>시청역·명동·을지로에서<br><em>도보 5~8분</em></h1>
+    <p class="sub-hero-desc">서울 중구 남대문로9길 51 효덕빌딩 3층 301호<br>광화문·종로·회현·충무로·서울역에서도 10분 이내</p>
   </div>
 </section>
 
@@ -482,7 +482,7 @@ ${nav('location')}
           <div>
             <h4>Address</h4>
             <p>서울 중구 남대문로9길 51<br>효덕빌딩 3층 301호</p>
-            <span class="loc-detail">1호선 시청역 4, 5번 출구 도보 5분</span>
+            <span class="loc-detail">시청역 5분 · 명동역 8분 · 을지로입구역 7분 · 회현역 6분</span>
           </div>
         </div>
         <div class="loc-info-card rv rv-d1">
@@ -523,8 +523,13 @@ ${nav('location')}
       <div class="dir-card rv">
         <div class="dir-icon"><i class="fas fa-subway"></i></div>
         <h4>지하철</h4>
-        <p><strong>1호선 시청역</strong> 4번, 5번 출구<br>도보 약 5분</p>
-        <p><strong>2호선 시청역</strong> 10번 출구<br>도보 약 7분</p>
+        <p><strong>1·2호선 시청역</strong> 4·5번 출구 도보 5분</p>
+        <p><strong>4호선 명동역</strong> 3번 출구 도보 8분</p>
+        <p><strong>2호선 을지로입구역</strong> 1번 출구 도보 7분</p>
+        <p><strong>4호선 회현역</strong> 남대문시장 방향 도보 6분</p>
+        <p><strong>5호선 광화문역</strong> 6번 출구 도보 10분</p>
+        <p><strong>3·4호선 충무로역</strong> 도보 10분</p>
+        <p><strong>1호선 서울역</strong> 도보 12분 (1정거장)</p>
       </div>
       <div class="dir-card rv rv-d1">
         <div class="dir-icon"><i class="fas fa-bus"></i></div>
