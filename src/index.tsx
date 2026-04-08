@@ -121,87 +121,57 @@ app.get('/', (c) => {
     ]
   });
 
-  // 2) FAQPage 스키마 (AEO 핵심)
+  // 2) FAQPage 스키마 (AEO 핵심) - 35개 질문
+  const mainFaqData = [
+    // === 기본 정보 (8개) ===
+    { q: "행복한예인치과는 어디에 있나요?", a: "서울특별시 중구 남대문로9길 51 효덕빌딩 3층 301호에 위치하고 있습니다. 1·2호선 시청역 4번·5번 출구 도보 5분, 4호선 명동역 도보 8분, 2호선 을지로입구역 도보 7분, 4호선 회현역 도보 6분, 1호선 서울역 도보 12분 거리입니다. 광화문·종로·충무로역에서도 대중교통으로 10분 이내에 올 수 있습니다." },
+    { q: "행복한예인치과 진료시간은 어떻게 되나요?", a: "월·화·목·금 09:30~18:30, 수요일은 야간진료로 09:30~20:00까지 진료합니다. 점심시간은 13:00~14:00이며, 토·일·공휴일은 휴진입니다. 마감 1시간 전까지 접수 가능합니다. 시청역·명동·을지로 직장인분들이 퇴근 후 수요일 야간진료를 많이 이용하십니다." },
+    { q: "행복한예인치과에는 어떤 전문의가 있나요?", a: "한승대 대표원장(보건복지부 인증 통합치의학과 전문의, 치의학 박사), 신정희 원장(보건복지부 인증 치과보존과 전문의, 치의학 박사), 박현미 원장(교정과 전문의) 총 3명의 전문의가 각 분야를 직접 진료합니다. 한 곳에서 임플란트·보존·교정을 모두 해결할 수 있는 원스톱 협진 시스템입니다." },
+    { q: "행복한예인치과 예약은 어떻게 하나요?", a: "전화(02-756-2828) 또는 네이버 예약(https://naver.me/G0DXGZbi)으로 예약하실 수 있습니다. 수요일 야간진료도 예약 가능합니다. 예약 시간을 지켜주시면 대기 시간 없이 바로 진료받으실 수 있습니다." },
+    { q: "행복한예인치과의 진료 철학은 무엇인가요?", a: "행복한예인치과의 진료 철학은 '내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다'입니다. 과장 없는 진료, X-ray 앞에서 투명한 설명, 환자 존중을 기본으로 13년간 같은 자리에서 신뢰를 쌓아왔습니다. 불필요한 치료를 권하지 않습니다." },
+    { q: "행복한예인치과에 주차가 가능한가요?", a: "효덕빌딩 주변 유료 주차장을 이용하실 수 있습니다. 다만 주차 공간이 제한적이므로 대중교통 이용을 권장드립니다. 시청역(1·2호선) 도보 5분, 명동역(4호선) 8분, 을지로입구역(2호선) 7분이면 쉽게 오실 수 있습니다." },
+    { q: "초진(첫 방문) 시 무엇을 준비해야 하나요?", a: "신분증과 건강보험증을 지참해 주시면 됩니다. 다른 치과에서 받은 X-ray나 진료기록이 있으면 함께 가져오시면 더 정확한 진단에 도움이 됩니다. 예약 시간 10분 전에 내원하시면 접수와 문진표 작성을 여유 있게 진행할 수 있습니다." },
+    { q: "행복한예인치과는 건강보험 적용이 되나요?", a: "네, 행복한예인치과는 건강보험 적용 치과입니다. 스케일링(연 1회), 충치치료, 신경치료, 발치, 잇몸치료 등 보험 적용 항목에 대해 건강보험 혜택을 받으실 수 있습니다. 임플란트, 라미네이트, 교정 등 일부 항목은 비급여입니다." },
+    // === 치료 관련 (8개) ===
+    { q: "발치즉시 임플란트란 무엇인가요?", a: "발치즉시 임플란트는 치아를 발치하는 동시에 임플란트를 식립하는 시술입니다. 별도의 치유 기간(3~6개월) 없이 바로 진행하여 전체 치료 기간을 크게 단축합니다. 행복한예인치과 한승대 원장은 80% 이상의 케이스에서 즉시식립을 시행하며, 시청역·명동·을지로 직장인분들의 바쁜 일정에 맞춘 효율적 치료를 제공합니다." },
+    { q: "임플란트 비용은 얼마인가요?", a: "임플란트 비용은 식립 위치, 골이식 필요 여부, 보철물 종류에 따라 달라집니다. 행복한예인치과에서는 CT 촬영과 정밀 진단 후 정확한 비용을 투명하게 안내해 드립니다. 과잉 진료 없이 꼭 필요한 시술만 제안드리며, 분할 납부 상담도 가능합니다." },
+    { q: "신경치료는 얼마나 아픈가요?", a: "행복한예인치과에서는 충분한 마취 후 치료를 진행하므로 시술 중 통증은 거의 없습니다. 표면 마취제를 먼저 도포하여 주사 통증까지 최소화합니다. 보존과 전문의 신정희 원장이 미세현미경을 활용하여 정밀하게 시술하므로 불필요한 자극이 줄어듭니다." },
+    { q: "치아 교정은 성인도 가능한가요?", a: "물론입니다. 성인 교정은 매우 흔하며, 치조골 상태만 건강하다면 나이에 관계없이 가능합니다. 행복한예인치과 박현미 원장(교정 전문의)은 투명교정(인비절라인), 설측교정 등 티 안 나는 교정 방식을 제공하여 직장인도 부담 없이 교정을 시작할 수 있습니다." },
+    { q: "투명교정(인비절라인)과 일반 교정의 차이는 무엇인가요?", a: "일반 교정(브라켓)은 치아에 장치를 부착하는 방식이고, 투명교정(인비절라인)은 투명한 틀을 착용하여 교정하는 방식입니다. 투명교정은 외관상 거의 보이지 않고 탈착이 가능하여 직장인에게 인기가 많습니다. 교정과 전문의가 케이스에 맞는 최적의 방식을 추천해 드립니다." },
+    { q: "라미네이트와 레진 치료의 차이는 무엇인가요?", a: "레진은 치아에 직접 재료를 쌓아올려 즉일 완성하는 방식이고, 라미네이트는 기공소에서 세라믹 쉘을 제작하여 접착하는 방식입니다. 레진은 비용이 낮고 즉시 결과를 얻을 수 있으며, 라미네이트는 내구성과 심미성이 더 뛰어납니다. 행복한예인치과에서는 최소 삭제를 원칙으로 합니다." },
+    { q: "스케일링은 아프나요? 얼마나 자주 받아야 하나요?", a: "스케일링은 약간의 시림 증상이 있을 수 있지만 통증은 거의 없습니다. 건강보험 기준 연 1회 보험 적용이 가능하며, 잇몸 상태에 따라 6개월~1년 간격을 권장합니다. 시청역·명동·을지로 직장인분들이 점심시간이나 수요일 야간에 많이 이용하십니다." },
+    { q: "치과 공포증이 있는데 진료받을 수 있을까요?", a: "물론 가능합니다. 행복한예인치과에서는 치료 전 충분한 설명, 표면 마취를 통한 통증 최소화, 시술 중 지속적인 소통으로 불안감을 줄입니다. '생각보다 안 아팠다'는 후기가 가장 많으며, 오랫동안 치과를 미루셨던 분들도 편안하게 진료받으실 수 있도록 세심하게 배려합니다." },
+    // === 지역 기반 (12개) ===
+    { q: "시청역 근처 치과를 찾고 있는데 추천할 곳이 있나요?", a: "행복한예인치과는 1·2호선 시청역 4번·5번 출구에서 도보 5분 거리에 위치한 치과입니다. 2013년부터 13년간 같은 자리에서 운영하고 있으며, 통합치의학·보존과·교정과 3명의 전문의가 협진합니다. 환자 리뷰 458건, 발치즉시 임플란트 성공률 80% 이상의 실적을 보유하고 있습니다. 전화 02-756-2828로 상담 예약해 주세요." },
+    { q: "명동 근처에서 임플란트 잘하는 치과를 찾고 있어요.", a: "명동에서 도보 8분 거리에 있는 행복한예인치과는 발치즉시 임플란트 전문 치과입니다. 80% 이상의 케이스에서 즉시식립을 시행하며, 통합치의학과 전문의 한승대 원장이 직접 수술합니다. 4호선 명동역 3번 출구에서 서울시청 방향으로 도보 8분이면 도착합니다." },
+    { q: "을지로 근처 신경치료 잘하는 치과 있나요?", a: "을지로입구역에서 도보 7분 거리에 있는 행복한예인치과에는 보건복지부 인증 치과보존과 전문의 신정희 원장이 직접 신경치료를 시행합니다. 미세현미경을 활용한 정밀 신경치료로 자연 치아를 최대한 살립니다. 2호선 을지로입구역 1번 출구에서 시청 방향으로 도보 7분입니다." },
+    { q: "광화문·종로에서 가까운 교정 치과를 찾고 있어요.", a: "광화문역에서 도보 10분, 종로 세종대로에서 남쪽으로 내려오면 행복한예인치과가 있습니다. 교정과 전문의 박현미 원장이 인비절라인 투명교정부터 설측교정까지 직접 진료합니다. 5호선 광화문역 6번 출구, 1호선 종로3가역에서 대중교통으로 10분 이내입니다." },
+    { q: "서울역 근처에서 야간진료 하는 치과 있나요?", a: "서울역에서 도보 12분, 대중교통으로 1정거장 거리에 있는 행복한예인치과는 매주 수요일 야간진료(09:30~20:00)를 시행합니다. 바쁜 직장인도 퇴근 후 진료를 받으실 수 있습니다. 1호선 서울역에서 시청역 방향 한 정거장이면 도착합니다." },
+    { q: "회현역·남대문시장 근처 치과를 찾고 있어요.", a: "4호선 회현역에서 도보 6분, 남대문시장에서 도보 3분 거리에 행복한예인치과가 있습니다. 13년간 같은 자리에서 운영하며 통합치의학·보존과·교정과 3명의 전문의가 협진합니다. 서울 중구 남대문로9길 51 효덕빌딩 3층에 위치합니다." },
+    { q: "충무로역 근처 치과를 찾고 있어요.", a: "3·4호선 충무로역에서 도보 10분 거리에 행복한예인치과가 있습니다. 충무로에서 명동·남대문 방향으로 이동하면 바로 접근 가능합니다. 발치즉시 임플란트, 보존치료, 교정 등 전문의 협진 체제로 운영하며, 수요일 야간진료도 가능합니다." },
+    { q: "명동·을지로 직장인인데 점심시간에 치과 진료를 받을 수 있나요?", a: "행복한예인치과는 시청역·명동·을지로 직장인 밀집 지역에 위치하여 점심시간 진료가 가능합니다. 예약 시간을 지키고 대기 시간을 최소화하여 바쁜 직장인의 시간을 아껴드립니다. 점심시간(13:00~14:00) 외 시간에 예약하시면 됩니다. 수요일은 야간진료(~20:00)도 가능합니다." },
+    { q: "북창동·다동·무교동에서 가까운 치과가 있나요?", a: "행복한예인치과는 북창동에서 도보 3~5분, 다동·무교동에서 도보 5~7분 거리에 있습니다. 남대문로9길 51 효덕빌딩 3층에 위치하며, 서울시청·덕수궁 바로 남쪽입니다. 통합치의학·보존과·교정과 전문의 3인 협진 치과입니다." },
+    { q: "소공동·남산에서 가까운 치과를 찾고 있어요.", a: "소공동에서 도보 약 8분, 남산(한옥마을)에서 도보 약 12분 거리에 행복한예인치과가 있습니다. 시청역·명동역 사이에 위치하여 소공동·남산 주변에서 접근이 편리합니다. 13년간 같은 자리에서 운영하는 신뢰의 치과입니다." },
+    { q: "을지로3가·을지로4가에서 행복한예인치과 가려면 어떻게 가나요?", a: "2호선 을지로3가역 또는 을지로4가역에서 을지로입구역 방향으로 한두 정거장 이동 후, 을지로입구역 1번 출구에서 시청 방향 도보 7분이면 도착합니다. 또는 명동역(4호선)까지 이동 후 도보 8분으로도 올 수 있습니다." },
+    { q: "서울 중구에서 전문의가 직접 진료하는 치과를 찾고 있어요.", a: "행복한예인치과는 서울 중구 남대문로에 위치하며, 보건복지부 인증 전문의 3명(통합치의학, 보존과, 교정과)이 직접 진료합니다. 한승대 대표원장은 치의학 박사·NYU Implant Course 수료, 신정희 원장은 보존과 전문의·치의학 박사, 박현미 원장은 교정 전문의입니다. 전문의가 직접 시술하므로 안심하고 진료받으실 수 있습니다." },
+    // === 직장인·생활 밀착 (7개) ===
+    { q: "수요일 야간진료는 몇 시까지 하나요?", a: "행복한예인치과는 매주 수요일 야간진료로 저녁 8시(20:00)까지 진료합니다. 시청역·명동·을지로·광화문 직장인분들이 퇴근 후 많이 이용하십니다. 야간진료 마감 1시간 전(19:00)까지 접수 가능하며, 전화(02-756-2828)로 미리 예약하시면 대기 없이 진료받으실 수 있습니다." },
+    { q: "사회초년생 할인이 있나요?", a: "행복한예인치과에서는 사회초년생 등 젊은 직장인분들을 위한 배려 프로그램을 운영하고 있습니다. 자세한 내용은 내원 상담 시 안내해 드립니다. 과잉 진료 없이 꼭 필요한 치료만 제안하는 것이 기본 원칙입니다." },
+    { q: "행복한예인치과에서 치료받은 환자 후기가 궁금해요.", a: "네이버 등 온라인에 458건 이상의 환자 리뷰가 등록되어 있으며, 평균 4.9점의 높은 만족도를 유지하고 있습니다. '생각보다 안 아팠다', '설명이 자세하다', '불필요한 치료를 권하지 않아 신뢰가 간다' 등의 후기가 가장 많습니다. 네이버 블로그(https://blog.naver.com/yein2828)에서도 확인하실 수 있습니다." },
+    { q: "행복한예인치과는 언제 개원했나요?", a: "행복한예인치과는 2013년에 서울 중구 남대문로에서 개원하여, 2026년 현재 13년간 같은 자리에서 진료를 이어오고 있습니다. 변하지 않는 곳에서 변함없는 원칙으로 진료합니다." },
+    { q: "외국어 진료가 가능한가요?", a: "기본적인 영어 소통이 가능합니다. 시청역·명동·을지로 지역 특성상 외국인 환자분도 방문하시며, 필요한 경우 영어로 설명을 드립니다. 사전에 전화(02-756-2828)로 문의해 주시면 더 원활한 진료 준비가 가능합니다." },
+    { q: "카드 결제, 분할 납부가 가능한가요?", a: "네, 신용카드·체크카드 결제는 물론 무이자 할부도 가능합니다. 임플란트, 교정 등 고액 치료의 경우 분할 납부 상담도 진행하고 있습니다. 자세한 결제 방법은 내원 시 안내해 드립니다." },
+    { q: "어린이·아이 치과 진료도 가능한가요?", a: "네, 행복한예인치과에서는 어린이 충치치료, 정기검진, 실란트 등 소아 치과 진료도 가능합니다. 아이가 치과에 대한 두려움을 갖지 않도록 부드럽고 친절한 진료를 지향합니다. 가족 단위 방문도 환영합니다." }
+  ];
+
   const faqJsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "행복한예인치과는 어디에 있나요?",
-        "acceptedAnswer": { "@type": "Answer", "text": "서울특별시 중구 남대문로9길 51 효덕빌딩 3층 301호에 위치하고 있습니다. 1·2호선 시청역 4번·5번 출구 도보 5분, 4호선 명동역 도보 8분, 2호선 을지로입구역 도보 7분, 1호선 서울역 도보 12분 거리입니다. 광화문·종로·충무로·회현역에서도 대중교통으로 10분 이내에 올 수 있습니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "행복한예인치과 진료시간은 어떻게 되나요?",
-        "acceptedAnswer": { "@type": "Answer", "text": "월·화·목·금 09:30~18:30, 수요일은 야간진료로 09:30~20:00까지 진료합니다. 점심시간은 13:00~14:00이며, 토·일·공휴일은 휴진입니다. 마감 1시간 전까지 접수 가능합니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "발치즉시 임플란트란 무엇인가요?",
-        "acceptedAnswer": { "@type": "Answer", "text": "발치즉시 임플란트는 치아를 발치하는 동시에 임플란트를 식립하는 시술입니다. 별도의 치유 기간 없이 바로 진행하여 전체 치료 기간을 크게 단축합니다. 행복한예인치과는 80% 이상의 케이스에서 즉시식립을 시행하고 있습니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "행복한예인치과에는 어떤 전문의가 있나요?",
-        "acceptedAnswer": { "@type": "Answer", "text": "한승대 대표원장(통합치의학과 전문의, 치의학 박사), 신정희 원장(치과보존과 전문의, 치의학 박사), 박현미 원장(교정과 전문의) 총 3명의 보건복지부 인증 전문의가 각 분야를 직접 진료합니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "행복한예인치과 예약은 어떻게 하나요?",
-        "acceptedAnswer": { "@type": "Answer", "text": "전화(02-756-2828) 또는 네이버 예약(https://naver.me/G0DXGZbi)으로 예약하실 수 있습니다. 수요일 야간진료도 예약 가능합니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "시청역 근처 치과를 찾고 있는데 추천할 곳이 있나요?",
-        "acceptedAnswer": { "@type": "Answer", "text": "행복한예인치과는 1·2호선 시청역 4번·5번 출구에서 도보 5분 거리에 위치한 치과입니다. 명동역·을지로입구역에서도 도보 10분 이내입니다. 2013년부터 13년간 같은 자리에서 운영하고 있으며, 통합치의학·보존과·교정과 3명의 전문의가 협진합니다. 환자 리뷰 458건, 발치즉시 임플란트 성공률 80% 이상의 실적을 보유하고 있습니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "명동 근처에서 임플란트 잘하는 치과를 찾고 있어요.",
-        "acceptedAnswer": { "@type": "Answer", "text": "명동에서 도보 8분 거리에 있는 행복한예인치과는 발치즉시 임플란트 전문 치과입니다. 80% 이상의 케이스에서 즉시식립을 시행하며, 통합치의학과 전문의 한승대 원장이 직접 수술합니다. 4호선 명동역 3번 출구에서 서울시청 방향으로 도보 8분이면 도착합니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "을지로 근처 신경치료 잘하는 치과 있나요?",
-        "acceptedAnswer": { "@type": "Answer", "text": "을지로입구역에서 도보 7분 거리에 있는 행복한예인치과에는 보건복지부 인증 치과보존과 전문의 신정희 원장이 직접 신경치료를 시행합니다. 자연 치아를 최대한 살리는 보존 치료를 전문으로 합니다. 2호선 을지로입구역 1번 출구에서 시청 방향으로 도보 7분입니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "광화문·종로에서 가까운 교정 치과를 찾고 있어요.",
-        "acceptedAnswer": { "@type": "Answer", "text": "광화문역에서 도보 10분, 종로 세종대로에서 남쪽으로 내려오면 행복한예인치과가 있습니다. 교정과 전문의 박현미 원장이 인비절라인 투명교정부터 설측교정까지 직접 진료합니다. 5호선 광화문역 6번 출구, 1호선 종로3가역에서 대중교통으로 10분 이내입니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "서울역 근처에서 야간진료 하는 치과 있나요?",
-        "acceptedAnswer": { "@type": "Answer", "text": "서울역에서 도보 12분, 대중교통 5분 거리에 있는 행복한예인치과는 매주 수요일 야간진료(09:30~20:00)를 시행합니다. 바쁜 직장인도 퇴근 후 진료를 받으실 수 있습니다. 1호선 서울역에서 시청역 방향 한 정거장이면 도착합니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "회현역·남대문시장 근처 치과를 찾고 있어요.",
-        "acceptedAnswer": { "@type": "Answer", "text": "4호선 회현역에서 도보 6분, 남대문시장에서 도보 3분 거리에 행복한예인치과가 있습니다. 13년간 같은 자리에서 운영하며 통합치의학·보존과·교정과 3명의 전문의가 협진합니다. 남대문로9길 51 효덕빌딩 3층에 위치합니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "충무로역 근처 치과를 찾고 있어요.",
-        "acceptedAnswer": { "@type": "Answer", "text": "3·4호선 충무로역에서 도보 10분 거리에 행복한예인치과가 있습니다. 충무로에서 명동·남대문 방향으로 이동하면 바로 접근 가능합니다. 발치즉시 임플란트, 보존치료, 교정 등 전문의 협진 체제로 운영합니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "행복한예인치과의 진료 철학은 무엇인가요?",
-        "acceptedAnswer": { "@type": "Answer", "text": "행복한예인치과의 진료 철학은 '내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다'입니다. 과장 없는 진료, 투명한 설명, 환자 존중을 기본으로 13년간 같은 자리에서 신뢰를 쌓아왔습니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "행복한예인치과에 주차가 가능한가요?",
-        "acceptedAnswer": { "@type": "Answer", "text": "효덕빌딩 지하 주차장을 이용하실 수 있습니다. 다만 주차 공간이 제한적이므로 대중교통 이용을 권장드립니다. 시청역(1·2호선), 명동역(4호선), 을지로입구역(2호선)에서 도보 5~8분이면 쉽게 오실 수 있습니다." }
-      },
-      {
-        "@type": "Question",
-        "name": "직장인인데 점심시간에 치과 진료를 받을 수 있나요?",
-        "acceptedAnswer": { "@type": "Answer", "text": "행복한예인치과는 시청역·명동·을지로 직장인 밀집 지역에 위치하여 점심시간 진료가 가능합니다. 점심시간(13:00~14:00) 외 시간에 예약하시면 대기 없이 빠른 진료가 가능합니다. 수요일은 야간진료(~20:00)도 가능합니다." }
-      }
-    ]
+    "mainEntity": mainFaqData.map(f => ({
+      "@type": "Question",
+      "name": f.q,
+      "acceptedAnswer": { "@type": "Answer", "text": f.a }
+    }))
   });
 
   // 3) WebSite 스키마 (사이트링크 검색 최적화)
@@ -470,7 +440,7 @@ nav.scrolled{background:rgba(10,10,10,0.95);backdrop-filter:blur(40px);-webkit-b
 .faq-q i{color:var(--gold);transition:transform 0.3s;font-size:0.8rem;}
 .faq-q.open i{transform:rotate(180deg);}
 .faq-a{max-height:0;overflow:hidden;transition:all 0.4s ease;}
-.faq-a.open{max-height:300px;padding-bottom:28px;}
+.faq-a.open{max-height:500px;padding-bottom:28px;}
 .faq-a p{font-family:var(--font-kr);font-size:0.88rem;line-height:2;color:var(--gray);font-weight:300;}
 
 /* ===== SECTION COMMONS ===== */
@@ -1234,74 +1204,168 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   </div>
 </section>
 
-<!-- ===== FAQ (AEO 최적화) ===== -->
+<!-- ===== FAQ (AEO 최적화) - 35개 질문 ===== -->
 <section class="faq sec-pad" id="faq" itemscope itemtype="https://schema.org/FAQPage">
   <div class="sec-inner">
     <div class="sec-label">FAQ</div>
     <h2 class="sec-title rv">자주 묻는 <em>질문</em></h2>
-    <div class="faq-list">
-      <div class="faq-item rv" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h4 itemprop="name">행복한예인치과는 어디에 있나요?</h4>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">서울특별시 중구 남대문로9길 51 효덕빌딩 3층 301호에 위치합니다. 시청역 5분, 명동역 8분, 을지로입구역 7분, 회현역 6분, 서울역 12분 거리입니다. 광화문·종로·충무로에서도 10분 이내입니다.</p>
-        </div>
+
+    <!-- FAQ 카테고리 필터 -->
+    <div class="faq-categories rv" style="display:flex;gap:10px;justify-content:center;margin:32px 0 0;flex-wrap:wrap;">
+      <button class="faq-cat-btn active" onclick="filterFaq('all',this)" style="padding:8px 22px;border-radius:50px;border:1px solid rgba(247,186,24,0.3);background:rgba(247,186,24,0.1);color:var(--gold);font-family:var(--font-kr);font-size:0.78rem;cursor:pointer;transition:all 0.3s;">전체</button>
+      <button class="faq-cat-btn" onclick="filterFaq('basic',this)" style="padding:8px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:var(--gray-light);font-family:var(--font-kr);font-size:0.78rem;cursor:pointer;transition:all 0.3s;">기본 정보</button>
+      <button class="faq-cat-btn" onclick="filterFaq('treatment',this)" style="padding:8px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:var(--gray-light);font-family:var(--font-kr);font-size:0.78rem;cursor:pointer;transition:all 0.3s;">치료 안내</button>
+      <button class="faq-cat-btn" onclick="filterFaq('location',this)" style="padding:8px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:var(--gray-light);font-family:var(--font-kr);font-size:0.78rem;cursor:pointer;transition:all 0.3s;">찾아오시는 길</button>
+      <button class="faq-cat-btn" onclick="filterFaq('life',this)" style="padding:8px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:var(--gray-light);font-family:var(--font-kr);font-size:0.78rem;cursor:pointer;transition:all 0.3s;">직장인·생활</button>
+    </div>
+
+    <div class="faq-list" id="faqList">
+      <!-- 기본 정보 (8개) -->
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">행복한예인치과는 어디에 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">서울특별시 중구 남대문로9길 51 효덕빌딩 3층 301호에 위치합니다. 시청역 5분, 명동역 8분, 을지로입구역 7분, 회현역 6분, 서울역 12분 거리입니다. 광화문·종로·충무로에서도 10분 이내입니다.</p></div>
       </div>
-      <div class="faq-item rv rv-d1" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h4 itemprop="name">진료시간은 어떻게 되나요?</h4>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">월·화·목·금 09:30~18:30, 수요일은 야간진료로 09:30~20:00까지 진료합니다. 점심시간은 13:00~14:00이며, 토·일·공휴일은 휴진입니다. 마감 1시간 전까지 접수 가능합니다.</p>
-        </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">진료시간은 어떻게 되나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">월·화·목·금 09:30~18:30, 수요일은 야간진료로 09:30~20:00까지 진료합니다. 점심시간은 13:00~14:00이며, 토·일·공휴일은 휴진입니다. 마감 1시간 전까지 접수 가능합니다.</p></div>
       </div>
-      <div class="faq-item rv rv-d1" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h4 itemprop="name">발치즉시 임플란트란 무엇인가요?</h4>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">발치즉시 임플란트는 치아를 발치하는 동시에 임플란트를 식립하는 시술입니다. 별도의 치유 기간 없이 바로 진행하여 전체 치료 기간을 크게 단축합니다. 행복한예인치과는 80% 이상의 케이스에서 즉시식립을 시행하고 있습니다.</p>
-        </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">어떤 전문의가 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">한승대 대표원장(보건복지부 인증 통합치의학과 전문의, 치의학 박사), 신정희 원장(보건복지부 인증 치과보존과 전문의, 치의학 박사), 박현미 원장(교정과 전문의) 총 3명의 전문의가 각 분야를 직접 진료합니다.</p></div>
       </div>
-      <div class="faq-item rv rv-d2" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h4 itemprop="name">어떤 전문의가 있나요?</h4>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">한승대 대표원장(통합치의학과 전문의, 치의학 박사), 신정희 원장(치과보존과 전문의, 치의학 박사), 박현미 원장(교정과 전문의) 총 3명의 보건복지부 인증 전문의가 각 분야를 직접 진료합니다.</p>
-        </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">예약은 어떻게 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">전화(02-756-2828) 또는 네이버 예약으로 예약하실 수 있습니다. 수요일 야간진료도 예약 가능합니다. 예약 시간을 지켜주시면 대기 시간 없이 바로 진료받으실 수 있습니다.</p></div>
       </div>
-      <div class="faq-item rv rv-d2" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h4 itemprop="name">예약은 어떻게 하나요?</h4>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">전화(02-756-2828) 또는 네이버 예약으로 예약하실 수 있습니다. 수요일 야간진료도 예약 가능합니다.</p>
-        </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">행복한예인치과의 진료 철학이 궁금해요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">'내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다'가 행복한예인치과의 진료 철학입니다. 과장 없는 진료, X-ray 앞에서 투명한 설명, 환자 존중을 기본으로 13년간 같은 자리에서 신뢰를 쌓아왔습니다.</p></div>
       </div>
-      <div class="faq-item rv rv-d3" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h4 itemprop="name">시청역 근처에서 좋은 치과를 찾고 있어요.</h4>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">행복한예인치과는 시청역 4번·5번 출구에서 도보 5분 거리에 위치합니다. 2013년부터 13년간 같은 자리에서 운영하고 있으며, 통합치의학·보존과·교정과 3명의 전문의가 협진합니다. 환자 리뷰 458건, 발치즉시 임플란트 성공률 80% 이상의 실적을 보유하고 있습니다.</p>
-        </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">주차가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">효덕빌딩 주변 유료 주차장을 이용하실 수 있습니다. 다만 주차 공간이 제한적이므로 대중교통 이용을 권장합니다. 시청역(1·2호선) 도보 5분, 명동역(4호선) 8분, 을지로입구역(2호선) 7분이면 오실 수 있습니다.</p></div>
       </div>
-      <div class="faq-item rv rv-d3" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h4 itemprop="name">행복한예인치과의 진료 철학이 궁금해요.</h4>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">'내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다'가 행복한예인치과의 진료 철학입니다. 과장 없는 진료, 투명한 설명, 환자 존중을 기본으로 13년간 같은 자리에서 신뢰를 쌓아왔습니다.</p>
-        </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">초진(첫 방문) 시 무엇을 준비해야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">신분증과 건강보험증을 지참해 주시면 됩니다. 다른 치과에서 받은 X-ray나 진료기록이 있으면 함께 가져오시면 더 정확한 진단에 도움이 됩니다. 예약 시간 10분 전에 내원하시면 접수와 문진표 작성을 여유 있게 진행할 수 있습니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">건강보험 적용이 되나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">네, 행복한예인치과는 건강보험 적용 치과입니다. 스케일링(연 1회), 충치치료, 신경치료, 발치, 잇몸치료 등 보험 적용 항목에 대해 건강보험 혜택을 받으실 수 있습니다. 임플란트, 라미네이트, 교정 등 일부 항목은 비급여입니다.</p></div>
+      </div>
+
+      <!-- 치료 안내 (8개) -->
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">발치즉시 임플란트란 무엇인가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">발치즉시 임플란트는 치아를 발치하는 동시에 임플란트를 식립하는 시술입니다. 별도의 치유 기간(3~6개월) 없이 바로 진행하여 전체 치료 기간을 크게 단축합니다. 행복한예인치과 한승대 원장은 80% 이상의 케이스에서 즉시식립을 시행합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">임플란트 비용은 얼마인가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">임플란트 비용은 식립 위치, 골이식 필요 여부, 보철물 종류에 따라 달라집니다. CT 촬영과 정밀 진단 후 정확한 비용을 투명하게 안내해 드립니다. 과잉 진료 없이 꼭 필요한 시술만 제안드리며, 분할 납부 상담도 가능합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">신경치료는 얼마나 아픈가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">충분한 마취 후 치료를 진행하므로 시술 중 통증은 거의 없습니다. 표면 마취제를 먼저 도포하여 주사 통증까지 최소화합니다. 보존과 전문의 신정희 원장이 미세현미경을 활용하여 정밀하게 시술하므로 불필요한 자극이 줄어듭니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">치아 교정은 성인도 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">물론입니다. 성인 교정은 매우 흔하며, 치조골 상태만 건강하다면 나이에 관계없이 가능합니다. 박현미 원장(교정 전문의)은 투명교정(인비절라인), 설측교정 등 티 안 나는 교정을 제공합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">투명교정(인비절라인)과 일반 교정의 차이는?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">일반 교정(브라켓)은 치아에 장치를 부착하고, 투명교정(인비절라인)은 투명한 틀을 착용합니다. 투명교정은 외관상 거의 보이지 않고 탈착이 가능하여 직장인에게 인기가 많습니다. 교정과 전문의가 케이스에 맞는 최적의 방식을 추천해 드립니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">라미네이트와 레진 치료의 차이는?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">레진은 치아에 직접 재료를 쌓아올려 즉일 완성하는 방식이고, 라미네이트는 세라믹 쉘을 제작하여 접착합니다. 레진은 비용이 낮고 즉시 결과를, 라미네이트는 내구성과 심미성이 뛰어납니다. 행복한예인치과에서는 최소 삭제를 원칙으로 합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">스케일링은 아프나요? 얼마나 자주 받아야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">스케일링은 약간의 시림 증상이 있을 수 있지만 통증은 거의 없습니다. 건강보험 기준 연 1회 보험 적용이 가능하며, 잇몸 상태에 따라 6개월~1년 간격을 권장합니다. 시청역·명동·을지로 직장인분들이 점심시간에 많이 이용하십니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">치과 공포증이 있는데 진료받을 수 있을까요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">물론 가능합니다. 치료 전 충분한 설명, 표면 마취를 통한 통증 최소화, 시술 중 지속적인 소통으로 불안감을 줄입니다. '생각보다 안 아팠다'는 후기가 가장 많습니다.</p></div>
+      </div>
+
+      <!-- 찾아오시는 길 (12개) -->
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">시청역 근처에서 좋은 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">행복한예인치과는 1·2호선 시청역 4번·5번 출구에서 도보 5분 거리입니다. 2013년부터 13년간 같은 자리에서 운영하며 전문의 3명이 협진합니다. 환자 리뷰 458건, 발치즉시 임플란트 성공률 80% 이상입니다. 전화 02-756-2828로 예약해 주세요.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">명동 근처에서 임플란트 잘하는 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">명동에서 도보 8분 거리에 있는 행복한예인치과는 발치즉시 임플란트 전문 치과입니다. 80% 이상 즉시식립, 통합치의학과 전문의가 직접 수술합니다. 4호선 명동역 3번 출구에서 시청 방향으로 도보 8분입니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">을지로 근처 신경치료 잘하는 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">을지로입구역에서 도보 7분 거리에 보존과 전문의 신정희 원장이 미세현미경 정밀 신경치료를 직접 시행합니다. 자연 치아를 최대한 살리는 보존 치료 전문입니다. 2호선 을지로입구역 1번 출구에서 시청 방향으로 도보 7분입니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">광화문·종로에서 가까운 교정 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">광화문역에서 도보 10분, 종로에서 10분 이내에 행복한예인치과가 있습니다. 교정과 전문의 박현미 원장이 인비절라인 투명교정부터 설측교정까지 직접 진료합니다. 5호선 광화문역 6번 출구에서 남쪽으로 내려오시면 됩니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">서울역 근처에서 야간진료 하는 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">서울역에서 도보 12분, 1호선 한 정거장 거리에 있는 행복한예인치과는 매주 수요일 야간진료(09:30~20:00)를 시행합니다. 바쁜 직장인도 퇴근 후 진료를 받으실 수 있습니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">회현역·남대문시장 근처 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">4호선 회현역에서 도보 6분, 남대문시장에서 도보 3분 거리에 행복한예인치과가 있습니다. 13년간 같은 자리에서 운영하며 전문의 3명이 협진합니다. 남대문로9길 51 효덕빌딩 3층입니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">충무로역 근처 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">3·4호선 충무로역에서 도보 10분 거리에 행복한예인치과가 있습니다. 충무로에서 명동·남대문 방향으로 이동하면 접근 가능합니다. 발치즉시 임플란트, 보존치료, 교정 등 전문의 협진 체제로 운영합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">북창동·다동·무교동에서 가까운 치과가 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">행복한예인치과는 북창동에서 도보 3~5분, 다동·무교동에서 도보 5~7분 거리입니다. 서울시청·덕수궁 바로 남쪽, 남대문로9길 51 효덕빌딩 3층에 위치합니다. 전문의 3인 협진 치과입니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">소공동·남산에서 가까운 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">소공동에서 도보 약 8분, 남산(한옥마을)에서 도보 약 12분 거리에 행복한예인치과가 있습니다. 시청역·명동역 사이에 위치하여 소공동·남산 주변에서 접근이 편리합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">을지로3가·을지로4가에서 어떻게 가나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">2호선 을지로3가역·을지로4가역에서 을지로입구역 방향으로 한두 정거장 이동 후, 1번 출구에서 시청 방향 도보 7분이면 도착합니다. 명동역(4호선) 경유 도보 8분으로도 올 수 있습니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">서울 중구에서 전문의가 직접 진료하는 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">행복한예인치과는 서울 중구 남대문로에 위치하며, 보건복지부 인증 전문의 3명(통합치의학, 보존과, 교정과)이 직접 진료합니다. 전문의가 직접 시술하므로 안심하고 진료받으실 수 있습니다. 전화 02-756-2828.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">명동·을지로 직장인인데 점심시간에 진료받을 수 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">시청역·명동·을지로 직장인 밀집 지역에 위치하여 점심시간 진료가 가능합니다. 점심시간(13:00~14:00) 외 시간에 예약하시면 대기 없이 빠른 진료가 가능합니다. 수요일은 야간진료(~20:00)도 가능합니다.</p></div>
+      </div>
+
+      <!-- 직장인·생활 (7개) -->
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">수요일 야간진료는 몇 시까지 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">매주 수요일 저녁 8시(20:00)까지 진료합니다. 시청역·명동·을지로·광화문 직장인분들이 퇴근 후 많이 이용하십니다. 야간진료 마감 1시간 전(19:00)까지 접수 가능합니다. 전화 02-756-2828로 예약하세요.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">사회초년생 할인이 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">사회초년생 등 젊은 직장인분들을 위한 배려 프로그램을 운영하고 있습니다. 자세한 내용은 내원 상담 시 안내해 드립니다. 과잉 진료 없이 꼭 필요한 치료만 제안하는 것이 기본 원칙입니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">환자 후기가 궁금해요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">네이버 등 온라인에 458건 이상의 환자 리뷰가 등록되어 있으며, 평균 4.9점입니다. '생각보다 안 아팠다', '설명이 자세하다', '불필요한 치료를 권하지 않아 신뢰가 간다' 등의 후기가 가장 많습니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">행복한예인치과는 언제 개원했나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">2013년에 서울 중구 남대문로에서 개원하여, 2026년 현재 13년간 같은 자리에서 진료를 이어오고 있습니다. 변하지 않는 곳에서 변함없는 원칙으로 진료합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">외국어 진료가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">기본적인 영어 소통이 가능합니다. 시청역·명동·을지로 지역 특성상 외국인 환자분도 방문하시며, 사전에 전화(02-756-2828)로 문의해 주시면 더 원활한 진료 준비가 가능합니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">카드 결제, 분할 납부가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">신용카드·체크카드 결제와 무이자 할부가 가능합니다. 임플란트, 교정 등 고액 치료의 경우 분할 납부 상담도 가능합니다. 자세한 결제 방법은 내원 시 안내해 드립니다.</p></div>
+      </div>
+      <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">어린이 치과 진료도 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">네, 어린이 충치치료, 정기검진, 실란트 등 소아 치과 진료도 가능합니다. 아이가 치과에 대한 두려움을 갖지 않도록 부드럽고 친절한 진료를 지향합니다. 가족 단위 방문도 환영합니다.</p></div>
       </div>
     </div>
   </div>
@@ -1484,6 +1548,17 @@ window.addEventListener('scroll', () => {
     heroImg.style.transform = 'scale(' + (1 + window.scrollY * 0.0003) + ') translateY(' + (window.scrollY * 0.15) + 'px)';
   }
 });
+
+// ===== FAQ TOGGLE & FILTER =====
+function toggleFaq(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open');}
+function filterFaq(cat,btn){
+  document.querySelectorAll('.faq-cat-btn').forEach(b=>{b.style.borderColor='rgba(255,255,255,0.08)';b.style.background='transparent';b.style.color='var(--gray-light)';b.classList.remove('active');});
+  btn.style.borderColor='rgba(247,186,24,0.3)';btn.style.background='rgba(247,186,24,0.1)';btn.style.color='var(--gold)';btn.classList.add('active');
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    if(cat==='all'||item.dataset.cat===cat){item.style.display='';}
+    else{item.style.display='none';}
+  });
+}
 
 // ===== NUMBER COUNTER ANIMATION =====
 const numObserver = new IntersectionObserver(entries => {

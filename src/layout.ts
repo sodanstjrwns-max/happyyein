@@ -577,7 +577,7 @@ const subpageCSS = `
 .faq-q i{color:var(--gold);transition:transform 0.3s;font-size:0.8rem;}
 .faq-q.open i{transform:rotate(180deg);}
 .faq-a{max-height:0;overflow:hidden;transition:all 0.4s ease;}
-.faq-a.open{max-height:300px;padding-bottom:28px;}
+.faq-a.open{max-height:500px;padding-bottom:28px;}
 .faq-a p{font-family:var(--font-kr);font-size:0.88rem;line-height:2;color:var(--gray);font-weight:300;}
 
 /* ===== OTHER TREATMENTS NAV ===== */

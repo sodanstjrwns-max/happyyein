@@ -5,7 +5,16 @@ import { head, nav, footer, scripts } from './layout'
 // PHILOSOPHY PAGE
 // ===========================
 export function philosophyPage(): string {
-  return `${head({ title: '진료 철학', description: '시청역·명동·을지로에서 13년, 행복한예인치과의 진료 철학. 내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다. 과장 없는 진료, 환자 존중, 장기적 관계. 서울 중구 남대문로 02-756-2828', path: '/philosophy', ogImage: '/static/img/dr-han-logo.jpg', keywords: '치과 진료 철학, 행복한예인치과 철학, 한승대 원장, 시청역 치과 철학, 명동 치과, 을지로 치과, 광화문 치과, 서울 중구 치과, 신뢰할 수 있는 치과, 직장인 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '진료 철학', url: '/philosophy' }] })}
+  const philoFaq = [
+    { q: '행복한예인치과의 진료 철학은 무엇인가요?', a: '"내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다"가 행복한예인치과의 핵심 철학입니다. 불필요한 치료를 권하지 않고, X-ray 앞에서 투명하게 설명하며, 환자의 시간과 선택을 존중합니다.' },
+    { q: '왜 13년간 같은 자리에서 진료하시나요?', a: '병원이 이전하면 환자와의 관계가 끊기기 쉽습니다. 13년간 시청역·명동·을지로 같은 자리에서 진료를 이어온 것은, 장기적인 신뢰 관계를 가장 중요하게 생각하기 때문입니다. 변하지 않는 곳에서 변함없는 원칙으로 진료합니다.' },
+    { q: '과잉 진료를 하지 않는다는 것은 어떤 의미인가요?', a: '안 해도 되는 치료는 "안 해도 됩니다"라고 솔직하게 말씀드립니다. CT와 X-ray를 함께 보면서 현재 상태를 투명하게 설명하고, 정말 필요한 치료만 제안합니다. "여기서는 안 해도 되는 건 안 해도 된다고 말해줘서 좋다"는 후기가 이를 증명합니다.' },
+    { q: '환자의 시간을 존중한다는 것은 구체적으로 어떤 것인가요?', a: '예약 시간을 철저히 지키고 대기 시간을 최소화합니다. 발치즉시 임플란트로 내원 횟수를 줄이고, 수요일 야간진료(20시까지)로 퇴근 후에도 치료가 가능합니다. 시청역·명동·을지로 직장인 밀집 지역에 위치하여 이동 시간도 최소화합니다.' },
+    { q: '행복한예인치과는 어떻게 신뢰를 쌓아왔나요?', a: '13년간 같은 자리에서 과장 없는 진료, 458건 이상의 환자 리뷰(평균 4.9점), 보건복지부 인증 전문의 3명의 직접 진료. 이 세 가지가 행복한예인치과가 쌓아온 신뢰의 기반입니다.' },
+    { q: '한승대 대표원장의 진료 스타일은 어떤가요?', a: '한승대 원장은 "환자분의 상황과 선택을 존중합니다. 과장하지 않고, 숨김없이 설명하겠습니다"를 신조로 진료합니다. 통합치의학과 전문의·치의학 박사로서 학술적 근거에 기반한 진료를 시행하며, 고난이도 임플란트도 직접 시술합니다.' },
+  ];
+  const philoFaqJsonLd = { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": philoFaq.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })) };
+  return `${head({ title: '진료 철학', description: '시청역·명동·을지로에서 13년, 행복한예인치과의 진료 철학. 내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다. 과장 없는 진료, 환자 존중, 장기적 관계. 서울 중구 남대문로 02-756-2828', path: '/philosophy', ogImage: '/static/img/dr-han-logo.jpg', keywords: '치과 진료 철학, 행복한예인치과 철학, 한승대 원장, 시청역 치과 철학, 명동 치과, 을지로 치과, 광화문 치과, 서울 중구 치과, 신뢰할 수 있는 치과, 직장인 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '진료 철학', url: '/philosophy' }], jsonLd: [philoFaqJsonLd] })}
 ${nav('philosophy')}
 
 <!-- HERO -->
@@ -145,6 +154,24 @@ ${nav('philosophy')}
   </div>
 </section>
 
+<!-- FAQ -->
+<section class="faq sec-pad">
+  <div class="sec-inner">
+    <div class="sec-label">FAQ</div>
+    <h2 class="sec-title rv">진료 철학에 관한 <em>질문</em></h2>
+    <div class="faq-list">
+      ${philoFaq.map(f => `
+      <div class="faq-item rv">
+        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h4>${f.q}</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-a"><p>${f.a}</p></div>
+      </div>`).join('')}
+    </div>
+  </div>
+</section>
+
 ${footer()}
 ${scripts()}`;
 }
@@ -154,7 +181,16 @@ ${scripts()}`;
 // DOCTORS PAGE
 // ===========================
 export function doctorsPage(): string {
-  return `${head({ title: '의료진 소개', description: '시청역·명동·을지로 전문의 협진 치과 | 행복한예인치과 의료진. 한승대 대표원장(통합치의학 전문의, 치의학 박사), 신정희 원장(보존과 전문의), 박현미 원장(교정 전문의). 시청역 5분, 명동역 8분. 02-756-2828', path: '/doctors', ogImage: '/static/img/dr-han-profile.jpg', keywords: '행복한예인치과 의료진, 한승대 원장, 시청역 치과 전문의, 명동 치과 전문의, 을지로 치과, 광화문 치과, 보존과 전문의, 교정과 전문의, 서울 중구 치과, 직장인 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '의료진 소개', url: '/doctors' }] })}
+  const docFaq = [
+    { q: '한승대 대표원장의 전문 분야는 무엇인가요?', a: '한승대 대표원장은 보건복지부 인증 통합치의학과 전문의이자 치의학 박사입니다. 발치즉시 임플란트, 고난이도 임플란트(상악동 거상술, 골이식), 전악 임플란트 재건, 앞니 심미 치료(레진, 라미네이트)를 전문으로 합니다. 경희대 치의학전문대학원 졸업, NYU Implant Institute Course 수료의 경력을 보유하고 있습니다.' },
+    { q: '신정희 원장의 전문 분야는 무엇인가요?', a: '신정희 원장은 보건복지부 인증 치과보존과 전문의이자 치의학 박사입니다. 미세현미경을 활용한 정밀 신경치료, 보존 수복, 충치 치료를 전문으로 합니다. 경희대 치과대학 졸업, 경희대 치과보존과 레지던트 수료, 경희대 치과보존과 외래강사를 역임했습니다.' },
+    { q: '박현미 원장의 전문 분야는 무엇인가요?', a: '박현미 원장은 교정과 전문의로, 인비절라인 투명교정, 설측교정, 세라믹 교정, 성인 교정을 전문으로 합니다. 연세대 졸업, 연세대 치의학대학원 교정과 석사, 에이플러스치과병원 교정과 전임의, Columbia University CE 수료의 경력을 보유합니다.' },
+    { q: '전문의 협진의 장점은 무엇인가요?', a: '한 환자에게 임플란트, 보존치료, 교정이 동시에 필요할 수 있습니다. 전문의 협진 시스템에서는 각 분야 전문의가 함께 논의하여 최적의 치료 방향을 결정합니다. 다른 병원을 전전하지 않아도 되므로 환자의 시간과 비용을 절약합니다.' },
+    { q: '전문의와 일반 치과의사의 차이는 무엇인가요?', a: '전문의는 치과의사 면허 취득 후 해당 분야에서 추가로 3~4년간의 수련(레지던트 과정)을 이수하고, 보건복지부 인증 시험에 합격한 의사입니다. 해당 분야에 대한 깊은 전문 지식과 수술 경험을 갖추고 있어 더 정확하고 안전한 치료가 가능합니다.' },
+    { q: '시청역·명동 근처에서 전문의가 직접 진료하는 치과가 있나요?', a: '행복한예인치과는 시청역 도보 5분, 명동역 8분 거리에 위치하며, 3명의 보건복지부 인증 전문의(통합치의학, 보존과, 교정과)가 직접 진료합니다. 을지로입구역 7분, 광화문·종로·회현·충무로에서도 10분 이내입니다.' },
+  ];
+  const docFaqJsonLd = { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": docFaq.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })) };
+  return `${head({ title: '의료진 소개', description: '시청역·명동·을지로 전문의 협진 치과 | 행복한예인치과 의료진. 한승대 대표원장(통합치의학 전문의, 치의학 박사), 신정희 원장(보존과 전문의), 박현미 원장(교정 전문의). 시청역 5분, 명동역 8분. 02-756-2828', path: '/doctors', ogImage: '/static/img/dr-han-profile.jpg', keywords: '행복한예인치과 의료진, 한승대 원장, 시청역 치과 전문의, 명동 치과 전문의, 을지로 치과, 광화문 치과, 보존과 전문의, 교정과 전문의, 서울 중구 치과, 직장인 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '의료진 소개', url: '/doctors' }], jsonLd: [docFaqJsonLd] })}
 ${nav('doctors')}
 
 <!-- HERO -->
@@ -308,6 +344,24 @@ ${nav('doctors')}
   </div>
 </section>
 
+<!-- FAQ -->
+<section class="faq sec-pad">
+  <div class="sec-inner">
+    <div class="sec-label">FAQ</div>
+    <h2 class="sec-title rv">의료진에 관한 <em>질문</em></h2>
+    <div class="faq-list">
+      ${docFaq.map(f => `
+      <div class="faq-item rv">
+        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h4>${f.q}</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-a"><p>${f.a}</p></div>
+      </div>`).join('')}
+    </div>
+  </div>
+</section>
+
 ${footer()}
 ${scripts()}`;
 }
@@ -317,7 +371,16 @@ ${scripts()}`;
 // EXPERIENCE PAGE
 // ===========================
 export function experiencePage(): string {
-  return `${head({ title: '환자 경험', description: '시청역·명동·을지로 직장인이 믿고 찾는 행복한예인치과. 치과를 다녀간 뒤 안도감을 느끼셨으면. 부드러운 마취, X-ray 앞 투명한 설명, 수요일 야간진료. 시청역 5분·명동역 8분. 02-756-2828', path: '/experience', ogImage: '/static/img/consult-2.jpg', keywords: '치과 환자 경험, 시청역 치과 후기, 명동 치과 후기, 을지로 치과, 광화문 치과, 통증 없는 치과, 편안한 치과, 직장인 치과, 야간진료 치과, 서울 중구 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '환자 경험', url: '/experience' }] })}
+  const expFaq = [
+    { q: '정말 아프지 않나요?', a: '표면 마취제를 먼저 도포하고, 충분한 마취 후 치료합니다. 대부분의 환자분들이 "생각보다 안 아팠다"고 말씀하시며, 이것이 가장 많은 후기입니다. 시술 중 불편하시면 언제든 손을 들어 알려주세요.' },
+    { q: '치과가 무서운데 어떻게 하면 좋을까요?', a: '많은 분들이 같은 걱정을 하고 오십니다. 행복한예인치과에서는 치료 전 충분한 설명, 단계별 안내, 시술 중 지속적인 소통으로 불안감을 최소화합니다. 오랜만에 치과에 오시는 분들도 편안하게 진료받으실 수 있도록 세심하게 배려합니다.' },
+    { q: '대기 시간이 긴가요?', a: '행복한예인치과는 예약제로 운영되며, 예약 시간을 철저히 지킵니다. 대부분 5분 이내에 진료가 시작됩니다. 시청역·명동·을지로 직장인분들의 소중한 시간을 아끼기 위해 효율적인 예약 시스템을 운영합니다.' },
+    { q: '치료 후 문제가 생기면 어떻게 하나요?', a: '치료 후 궁금한 점이나 불편한 증상이 있으면 전화(02-756-2828)로 바로 상담 가능합니다. 필요한 경우 우선적으로 내원 예약을 잡아드립니다. 13년간 같은 자리에서 진료하며 사후 관리에도 책임을 다합니다.' },
+    { q: '직장인인데 진료 시간에 맞추기 어려워요.', a: '시청역 도보 5분, 명동역 8분, 을지로입구역 7분 거리에 위치하여 점심시간에 방문 가능합니다. 수요일은 야간진료(20시까지)로 퇴근 후에도 치료받으실 수 있습니다. 광화문·종로·회현·충무로·서울역에서도 10분 이내입니다.' },
+    { q: '치료 비용이 투명한가요?', a: '행복한예인치과에서는 치료 전 비용을 투명하게 안내합니다. 숨겨진 추가 비용 없이, 상담 시 안내받은 금액 그대로 진행됩니다. 불필요한 치료를 권하지 않아 과잉 비용이 발생하지 않습니다.' },
+  ];
+  const expFaqJsonLd = { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": expFaq.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })) };
+  return `${head({ title: '환자 경험', description: '시청역·명동·을지로 직장인이 믿고 찾는 행복한예인치과. 치과를 다녀간 뒤 안도감을 느끼셨으면. 부드러운 마취, X-ray 앞 투명한 설명, 수요일 야간진료. 시청역 5분·명동역 8분. 02-756-2828', path: '/experience', ogImage: '/static/img/consult-2.jpg', keywords: '치과 환자 경험, 시청역 치과 후기, 명동 치과 후기, 을지로 치과, 광화문 치과, 통증 없는 치과, 편안한 치과, 직장인 치과, 야간진료 치과, 서울 중구 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '환자 경험', url: '/experience' }], jsonLd: [expFaqJsonLd] })}
 ${nav('experience')}
 
 <!-- HERO -->
@@ -439,6 +502,24 @@ ${nav('experience')}
   </div>
 </section>
 
+<!-- FAQ -->
+<section class="faq sec-pad">
+  <div class="sec-inner">
+    <div class="sec-label">FAQ</div>
+    <h2 class="sec-title rv">환자 경험에 관한 <em>질문</em></h2>
+    <div class="faq-list">
+      ${expFaq.map(f => `
+      <div class="faq-item rv">
+        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h4>${f.q}</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-a"><p>${f.a}</p></div>
+      </div>`).join('')}
+    </div>
+  </div>
+</section>
+
 ${footer()}
 ${scripts()}`;
 }
@@ -448,7 +529,19 @@ ${scripts()}`;
 // LOCATION PAGE
 // ===========================
 export function locationPage(): string {
-  return `${head({ title: '오시는 길', description: '행복한예인치과 오시는 길 - 시청역 5분·명동역 8분·을지로입구역 7분·회현역 6분·광화문역 10분·서울역 12분. 서울 중구 남대문로9길 51 효덕빌딩 3층. 수요일 야간진료. 02-756-2828', path: '/location', keywords: '행복한예인치과 위치, 시청역 치과, 명동 치과, 을지로 치과, 광화문 치과, 종로 치과, 회현역 치과, 충무로 치과, 서울역 치과, 남대문 치과, 서울 중구 치과, 시청역 도보 5분, 명동역 도보 8분, 야간진료 치과, 직장인 치과, 북창동 치과, 다동 치과, 무교동 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '오시는 길', url: '/location' }] })}
+  const locFaq = [
+    { q: '시청역에서 행복한예인치과까지 걸어서 얼마나 걸리나요?', a: '1·2호선 시청역 4번 또는 5번 출구에서 도보 약 5분 거리입니다. 출구에서 남대문 방향으로 직진하시면 남대문로9길 51 효덕빌딩 3층에 위치합니다.' },
+    { q: '명동역에서 어떻게 찾아가나요?', a: '4호선 명동역 3번 출구에서 서울시청 방향으로 도보 약 8분입니다. 명동 거리를 지나 남대문시장 방향으로 오시면 쉽게 찾으실 수 있습니다.' },
+    { q: '을지로입구역에서 어떻게 가나요?', a: '2호선 을지로입구역 1번 출구에서 시청 방향으로 도보 약 7분입니다. 남대문로를 따라 남쪽으로 내려오시면 됩니다.' },
+    { q: '광화문역·종로에서 얼마나 걸리나요?', a: '5호선 광화문역 6번 출구에서 도보 약 10분, 세종대로를 따라 남쪽으로 내려오시면 됩니다. 1호선 종로3가역에서도 대중교통으로 10분 이내에 도착 가능합니다.' },
+    { q: '서울역에서 가깝나요?', a: '1호선 서울역에서 시청역 방향으로 한 정거장이며, 도보로는 약 12분 거리입니다. 대중교통 이용 시 5분 이내에 도착 가능합니다.' },
+    { q: '회현역·남대문시장에서 어떻게 찾아가나요?', a: '4호선 회현역에서 도보 약 6분, 남대문시장에서 도보 약 3분 거리입니다. 남대문시장 근처에서 가장 가까운 전문의 협진 치과입니다.' },
+    { q: '충무로역에서 갈 수 있나요?', a: '3·4호선 충무로역에서 명동·남대문 방향으로 도보 약 10분 거리입니다. 명동역 경유로도 오실 수 있습니다.' },
+    { q: '주차는 가능한가요?', a: '효덕빌딩 주변 유료 주차장을 이용하실 수 있습니다. 다만 도심 특성상 주차 공간이 제한적이므로 대중교통 이용을 권장드립니다. 시청역·명동역·을지로입구역·회현역 모두 도보 5~8분 거리입니다.' },
+    { q: '북창동·다동·무교동에서 가까운가요?', a: '네, 행복한예인치과는 북창동에서 도보 3~5분, 다동·무교동에서 도보 5~7분 거리입니다. 서울시청·덕수궁 바로 남쪽에 위치하여 도심 생활권에서 도보 이동이 가능합니다.' },
+  ];
+  const locFaqJsonLd = { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": locFaq.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })) };
+  return `${head({ title: '오시는 길', description: '행복한예인치과 오시는 길 - 시청역 5분·명동역 8분·을지로입구역 7분·회현역 6분·광화문역 10분·서울역 12분. 서울 중구 남대문로9길 51 효덕빌딩 3층. 수요일 야간진료. 02-756-2828', path: '/location', keywords: '행복한예인치과 위치, 시청역 치과, 명동 치과, 을지로 치과, 광화문 치과, 종로 치과, 회현역 치과, 충무로 치과, 서울역 치과, 남대문 치과, 서울 중구 치과, 시청역 도보 5분, 명동역 도보 8분, 야간진료 치과, 직장인 치과, 북창동 치과, 다동 치과, 무교동 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '오시는 길', url: '/location' }], jsonLd: [locFaqJsonLd] })}
 ${nav('location')}
 
 <!-- HERO -->
@@ -571,6 +664,24 @@ ${nav('location')}
         <span class="clinic-info-label">팩스</span>
         <span class="clinic-info-value">02-754-8188</span>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq sec-pad">
+  <div class="sec-inner">
+    <div class="sec-label">FAQ</div>
+    <h2 class="sec-title rv">찾아오시는 길 <em>질문</em></h2>
+    <div class="faq-list">
+      ${locFaq.map(f => `
+      <div class="faq-item rv">
+        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h4>${f.q}</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-a"><p>${f.a}</p></div>
+      </div>`).join('')}
     </div>
   </div>
 </section>
