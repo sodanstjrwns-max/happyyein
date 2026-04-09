@@ -1,5 +1,35 @@
 // Treatment detail page data & renderer
 import { head, nav, footer, scripts } from './layout'
+import { terms } from './encyclopedia'
+
+// ===== 용어 자동 링크 함수 =====
+// 진료 페이지 텍스트에서 백과사전 용어를 찾아 자동으로 링크를 생성
+function linkTerms(text: string, currentSlug: string): string {
+  // 해당 진료와 관련된 용어만 필터 (성능 + 관련성)
+  const relevantTerms = terms
+    .filter(t => t.treatmentLink === currentSlug || !t.treatmentLink)
+    .sort((a, b) => b.term.length - a.term.length); // 긴 용어 먼저 (부분 매칭 방지)
+
+  let result = text;
+  const linked = new Set<string>(); // 같은 텍스트 블록에서 중복 링크 방지
+
+  for (const t of relevantTerms) {
+    if (linked.has(t.id)) continue;
+    // 이미 <a> 태그 안에 있거나 HTML 태그 속성 내부의 텍스트는 건너뜀
+    const regex = new RegExp(`(?<![가-힣a-zA-Z/])(${t.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?![가-힣a-zA-Z"<])`, 'g');
+    if (regex.test(result)) {
+      // 첫 번째 매칭만 링크 (과도한 링크 방지)
+      let replaced = false;
+      result = result.replace(regex, (match) => {
+        if (replaced) return match;
+        replaced = true;
+        linked.add(t.id);
+        return `<a href="/encyclopedia/${t.id}" class="enc-link" title="${t.short}">${match}</a>`;
+      });
+    }
+  }
+  return result;
+}
 
 interface TreatmentPage {
   slug: string;
@@ -377,7 +407,7 @@ ${nav('treatments')}
     <div class="treat-intro-text">
       <div class="sec-label" style="color:var(--gold-deep)">${t.tag}</div>
       <h2 class="rv">${t.introTitle}</h2>
-      ${t.introText.map(p => `<p class="rv rv-d1">${p}</p>`).join('')}
+      ${t.introText.map(p => `<p class="rv rv-d1">${linkTerms(p, t.slug)}</p>`).join('')}
       <div style="margin-top:32px;" class="rv rv-d2">
         <a href="tel:02-756-2828" class="btn btn-outline"><i class="fas fa-phone-alt"></i> 상담 예약</a>
       </div>
@@ -398,7 +428,7 @@ ${nav('treatments')}
       <div class="hl-card rv ${i > 0 ? 'rv-d' + i : ''}">
         <div class="hl-card-icon"><i class="${h.icon}"></i></div>
         <h3>${h.title}</h3>
-        <p>${h.desc}</p>
+        <p>${linkTerms(h.desc, t.slug)}</p>
       </div>`).join('')}
     </div>
   </div>
@@ -413,7 +443,7 @@ ${nav('treatments')}
       ${t.process.map((p, i) => `
       <div class="process-card rv ${i > 0 ? 'rv-d' + Math.min(i, 4) : ''}">
         <h4>${p.title}</h4>
-        <p>${p.desc}</p>
+        <p>${linkTerms(p.desc, t.slug)}</p>
       </div>`).join('')}
     </div>
   </div>
@@ -432,7 +462,7 @@ ${nav('treatments')}
           <i class="fas fa-chevron-down" aria-hidden="true"></i>
         </div>
         <div class="faq-a" id="treat-faq-${t.slug}-${i}" role="region" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">${f.a}</p>
+          <p itemprop="text">${linkTerms(f.a, t.slug)}</p>
         </div>
       </div>`).join('')}
     </div>

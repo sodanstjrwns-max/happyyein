@@ -8,6 +8,7 @@ import authApi, { requireAdmin } from './api-auth'
 import userAuthApi from './api-user-auth'
 import { adminLoginPage, adminDashboardPage } from './admin-pages'
 import { registerPage, loginPage } from './auth-pages'
+import { encyclopediaListPage, encyclopediaDetailPage } from './encyclopedia'
 
 type Bindings = { DB: D1Database; R2: R2Bucket }
 const app = new Hono<{ Bindings: Bindings }>()
@@ -1894,6 +1895,14 @@ app.get('/notice/write', (c) => c.html(boardWritePage('notice')))
 app.get('/notice/:id/edit', (c) => c.html(boardEditPage('notice')))
 app.get('/notice/:id', (c) => c.html(boardDetailPage('notice')))
 
+// 치과 백과사전
+app.get('/encyclopedia', (c) => c.html(encyclopediaListPage()))
+app.get('/encyclopedia/:id', (c) => {
+  const html = encyclopediaDetailPage(c.req.param('id'))
+  if (!html) return c.notFound()
+  return c.html(html)
+})
+
 app.get('/api/info', (c) => {
   return c.json({
     name: '행복한예인치과의원',
@@ -1975,6 +1984,7 @@ app.get('/sitemap.xml', (c) => {
     { loc: '/before-after', priority: '0.7', changefreq: 'weekly', images: [] },
     { loc: '/blog', priority: '0.7', changefreq: 'weekly', images: [] },
     { loc: '/notice', priority: '0.6', changefreq: 'weekly', images: [] },
+    { loc: '/encyclopedia', priority: '0.8', changefreq: 'weekly', images: [] },
   ];
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
