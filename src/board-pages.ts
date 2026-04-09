@@ -505,13 +505,24 @@ async function loadPosts(page = 1) {
     emptyEl.style.display = 'none';
 
     ${board === 'before-after' ? `
-    // 비포애프터 카드
+    // 비포애프터 카드 (Before/After 이미지 쌍 표시)
     listEl.innerHTML = '<div class="board-grid">' + data.posts.map(p => {
-      const thumb = p.thumbnail_url ? '<img src="' + p.thumbnail_url + '" alt="">' : '<div class="no-img"><i class="fas fa-image"></i></div>';
+      const imgs = p.images || [];
+      const beforeImg = imgs.find(i => i.image_type === 'before_intra') || imgs.find(i => i.image_type === 'before_pano');
+      const afterImg = imgs.find(i => i.image_type === 'after_intra') || imgs.find(i => i.image_type === 'after_pano');
+      const beforeHtml = beforeImg
+        ? '<img src="' + beforeImg.image_url + '" alt="치료 전">'
+        : (p.thumbnail_url ? '<img src="' + p.thumbnail_url + '" alt="">' : '<div class="no-img"><i class="fas fa-image"></i></div>');
+      const afterHtml = afterImg
+        ? '<img src="' + afterImg.image_url + '" alt="치료 후">'
+        : '<div class="no-img"><i class="fas fa-image"></i></div>';
       return '<a href="/' + BOARD_SLUG + '/' + p.id + '" class="ba-card rv">' +
-        '<div class="ba-photos"><div class="ba-photo">' + thumb + '</div></div>' +
+        '<div class="ba-photos">' +
+        '<div class="ba-photo">' + beforeHtml + '<span class="ba-photo-label">Before</span></div>' +
+        '<div class="ba-photo">' + afterHtml + '<span class="ba-photo-label after-label">After</span></div>' +
+        '</div>' +
         '<div class="ba-card-body"><h3>' + escHtml(p.title) + '</h3>' +
-        '<div class="ba-card-meta">' + formatDate(p.created_at) + ' &middot; <i class="fas fa-eye"></i> ' + p.view_count + '</div></div></a>';
+        '<div class="ba-card-meta">' + formatDate(p.created_at) + ' &middot; <i class="fas fa-eye"></i> ' + p.view_count + ' &middot; <i class="fas fa-images"></i> ' + p.image_count + '</div></div></a>';
     }).join('') + '</div>';
     ` : board === 'notice' ? `
     // 공지사항 테이블
@@ -528,10 +539,11 @@ async function loadPosts(page = 1) {
     // 블로그 카드
     listEl.innerHTML = '<div class="board-grid">' + data.posts.map(p => {
       const thumb = p.thumbnail_url ? '<img src="' + p.thumbnail_url + '" alt="">' : '<div class="no-img"><i class="fas fa-pen-nib"></i></div>';
+      // 본문 내 인라인 이미지 수 추출 (content에서 <img 태그 카운트)
       return '<a href="/' + BOARD_SLUG + '/' + p.id + '" class="board-card rv">' +
         '<div class="board-card-img">' + thumb + '</div>' +
         '<div class="board-card-body"><h3>' + escHtml(p.title) + '</h3>' +
-        '<div class="board-card-meta"><span><i class="far fa-calendar-alt"></i> ' + formatDate(p.created_at) + '</span><span><i class="fas fa-eye"></i> ' + p.view_count + '</span></div>' +
+        '<div class="board-card-meta"><span><i class="far fa-calendar-alt"></i> ' + formatDate(p.created_at) + '</span><span><i class="fas fa-eye"></i> ' + p.view_count + '</span>' + (p.thumbnail_url ? '<span><i class="fas fa-image"></i></span>' : '') + '</div>' +
         '<div class="board-card-author"><img src="/static/img/dr-han-profile.jpg" alt="한승대 대표원장"><div class="author-text"><span class="author-name">한승대 대표원장</span><span class="author-role">통합치의학과 전문의</span></div></div>' +
         '</div></a>';
     }).join('') + '</div>';

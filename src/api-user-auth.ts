@@ -161,8 +161,9 @@ userAuthApi.post('/register', async (c) => {
       { type: 'marketing_push', agreed: body.consents.marketing_push || false },
     ]
 
-    for (const consent of consentTypes) {
-      await db.prepare(
+    // batch로 한 번에 INSERT (성능 최적화)
+    const consentStmts = consentTypes.map(consent =>
+      db.prepare(
         `INSERT INTO user_consents (user_id, consent_type, is_agreed, agreed_at, ip_address, user_agent, consent_version)
          VALUES (?, ?, ?, ?, ?, ?, ?)`
       ).bind(
@@ -171,8 +172,9 @@ userAuthApi.post('/register', async (c) => {
         consent.agreed ? 1 : 0,
         consent.agreed ? now : null,
         ip, ua, '1.0'
-      ).run()
-    }
+      )
+    )
+    await db.batch(consentStmts)
 
     // JWT 토큰 발급
     const token = await createJWT({ id: userId, email: body.email, name: body.name, role: 'user' })

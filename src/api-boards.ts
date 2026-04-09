@@ -104,15 +104,26 @@ boards.get('/:board', async (c) => {
 
     const total = countResult?.total || 0
 
-    // 게시글 리스트
+    // 게시글 리스트 (비포애프터는 이미지 URL도 함께 가져옴)
     const { results: posts } = await c.env.DB.prepare(
       `SELECT p.id, p.board, p.title, p.thumbnail_url, p.view_count, p.created_at, p.updated_at,
-              (SELECT COUNT(*) FROM post_images WHERE post_id = p.id) as image_count
+              (SELECT COUNT(*) FROM post_images pi WHERE pi.post_id = p.id) as image_count
        FROM posts p
        WHERE p.board = ? AND p.is_published = 1
        ORDER BY p.created_at DESC
        LIMIT ? OFFSET ?`
     ).bind(board, limit, offset).all()
+
+    // 비포애프터인 경우 각 게시글의 이미지도 가져옴 (리스트 카드에 Before/After 표시)
+    if (board === 'before-after' && posts.length > 0) {
+      const postIds = posts.map(p => p.id)
+      for (const post of posts) {
+        const { results: imgs } = await c.env.DB.prepare(
+          'SELECT image_url, image_type FROM post_images WHERE post_id = ? ORDER BY sort_order ASC'
+        ).bind(post.id).all()
+        ;(post as any).images = imgs || []
+      }
+    }
 
     return c.json({
       posts,

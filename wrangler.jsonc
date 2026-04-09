@@ -5,8 +5,18 @@
   "pages_build_output_dir": "./dist",
   "compatibility_flags": [
     "nodejs_compat"
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "yein-dental-db",
+      "database_id": "local-dev-placeholder"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "yein-dental-images"
+    }
   ]
-  // D1, R2는 Cloudflare 대시보드에서 생성 후 바인딩 추가
-  // "d1_databases": [{ "binding": "DB", "database_name": "yein-dental-db", "database_id": "실제ID" }],
-  // "r2_buckets": [{ "binding": "R2", "bucket_name": "yein-dental-images" }]
 }
