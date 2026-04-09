@@ -354,7 +354,7 @@ ${nav('treatments')}
 <!-- HERO -->
 <section class="sub-hero">
   <div class="sub-hero-bg">
-    <img src="${t.heroImg}" alt="${t.title}">
+    <img src="${t.heroImg}" alt="${t.title} - 행복한예인치과 시청역 명동 을지로" width="1200" height="800" loading="eager" fetchpriority="high">
     <div class="sub-hero-overlay"></div>
   </div>
   <div class="sub-hero-breadcrumb">
@@ -383,7 +383,7 @@ ${nav('treatments')}
       </div>
     </div>
     <div class="treat-intro-img rv-scale">
-      <img src="${t.introImg}" alt="${t.title}">
+      <img src="${t.introImg}" alt="${t.title} 진료 과정 - 행복한예인치과" width="600" height="450" loading="lazy">
     </div>
   </div>
 </section>
@@ -425,14 +425,14 @@ ${nav('treatments')}
     <div class="sec-label">FAQ</div>
     <h2 class="sec-title rv">자주 묻는 <em>질문</em></h2>
     <div class="faq-list">
-      ${t.faq.map(f => `
-      <div class="faq-item rv">
-        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h4>${f.q}</h4>
-          <i class="fas fa-chevron-down"></i>
+      ${t.faq.map((f, i) => `
+      <div class="faq-item rv" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" aria-controls="treat-faq-${t.slug}-${i}" onclick="var o=this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.setAttribute('aria-expanded',o);" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <h4 itemprop="name">${f.q}</h4>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
         </div>
-        <div class="faq-a">
-          <p>${f.a}</p>
+        <div class="faq-a" id="treat-faq-${t.slug}-${i}" role="region" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">${f.a}</p>
         </div>
       </div>`).join('')}
     </div>

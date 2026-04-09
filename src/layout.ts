@@ -179,9 +179,15 @@ ${o.keywords ? `<meta name="keywords" content="${o.keywords}">` : ''}
 <!-- 구조화 데이터 (JSON-LD) -->
 ${jsonLdScripts.join('\n')}
 
-<!-- 폰트 & 아이콘 -->
+<!-- DNS Prefetch & Preconnect (성능 최적화) -->
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+<!-- 폰트 & 아이콘 -->
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
 <style>
@@ -221,9 +227,9 @@ export function nav(activeMenu?: string) {
 <!-- SCROLL PROGRESS -->
 <div class="scroll-progress" id="scrollProgress"></div>
 
-<nav id="nav">
+<nav id="nav" role="navigation" aria-label="메인 네비게이션">
   <div class="nav-inner">
-    <a href="/" class="nav-brand"><em>Yein</em> Dental</a>
+    <a href="/" class="nav-brand" aria-label="행복한예인치과 홈"><em>Yein</em> Dental</a>
     <div class="nav-links">
       ${items.map(item => {
         if (item.dropdown) {
@@ -284,7 +290,7 @@ export function footer() {
     </div>
   </div>
 </section>
-<footer>
+<footer role="contentinfo" aria-label="사이트 정보">
   <div class="footer-inner">
     <div class="footer-left">
       <strong>행복한예인치과의원</strong><br>

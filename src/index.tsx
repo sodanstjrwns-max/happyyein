@@ -12,6 +12,29 @@ import { registerPage, loginPage } from './auth-pages'
 type Bindings = { DB: D1Database; R2: R2Bucket }
 const app = new Hono<{ Bindings: Bindings }>()
 
+// ===== 보안 헤더 미들웨어 (SEO/보안 최적화) =====
+app.use('*', async (c, next) => {
+  await next()
+  // 보안 헤더
+  c.header('X-Content-Type-Options', 'nosniff')
+  c.header('X-Frame-Options', 'SAMEORIGIN')
+  c.header('X-XSS-Protection', '1; mode=block')
+  c.header('Referrer-Policy', 'strict-origin-when-cross-origin')
+  c.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self "https://map.naver.com" "https://maps.google.com"), payment=()')
+  c.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
+  c.header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://openapi.map.naver.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; connect-src 'self' https:; frame-src https://map.naver.com https://maps.google.com https://www.google.com;")
+  c.header('X-DNS-Prefetch-Control', 'on')
+  // 정적 리소스 캐싱
+  const path = c.req.path
+  if (path.startsWith('/static/')) {
+    c.header('Cache-Control', 'public, max-age=31536000, immutable')
+  } else if (path === '/robots.txt' || path === '/sitemap.xml') {
+    c.header('Cache-Control', 'public, max-age=86400')
+  } else {
+    c.header('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400')
+  }
+})
+
 app.get('/', (c) => {
   const SITE_DOMAIN = 'https://yein-dental.pages.dev';
   const mainDesc = '서울 시청역·명동·을지로·광화문에서 도보 5~10분. 13년간 한자리에서 쌓아온 신뢰의 치과. 발치즉시 임플란트 80%+, 보존과·교정과 전문의 3인 협진. 수요일 야간진료. 행복한예인치과 02-756-2828.';
@@ -223,7 +246,7 @@ app.get('/', (c) => {
     "publisher": { "@id": `${SITE_DOMAIN}/#organization` }
   });
 
-  // 4) WebPage 스키마
+  // 4) WebPage 스키마 (AEO: speakable 추가)
   const webpageJsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -234,11 +257,38 @@ app.get('/', (c) => {
     "isPartOf": { "@id": `${SITE_DOMAIN}/#website` },
     "about": { "@id": `${SITE_DOMAIN}/#organization` },
     "datePublished": "2013-01-01",
-    "dateModified": "2026-04-07",
-    "inLanguage": "ko"
+    "dateModified": "2026-04-09",
+    "inLanguage": "ko",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [".hero-title", ".hero-desc", ".faq-q h4", ".faq-a p"]
+    }
   });
 
-  // 5) BreadcrumbList 스키마
+  // 5) MedicalClinic 스키마 (AEO 강화)
+  const medicalClinicJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "MedicalClinic",
+    "name": "행복한예인치과",
+    "url": SITE_DOMAIN,
+    "medicalSpecialty": [
+      { "@type": "MedicalSpecialty", "name": "Dentistry" },
+      { "@type": "MedicalSpecialty", "name": "Orthodontics" },
+      { "@type": "MedicalSpecialty", "name": "Endodontics" },
+      { "@type": "MedicalSpecialty", "name": "Prosthodontics" }
+    ],
+    "availableService": [
+      { "@type": "MedicalTherapy", "name": "발치즉시 임플란트", "alternateName": "Immediate Implant Placement" },
+      { "@type": "MedicalTherapy", "name": "치아보존치료", "alternateName": "Endodontic Treatment" },
+      { "@type": "MedicalTherapy", "name": "투명교정", "alternateName": "Clear Aligner Orthodontics" },
+      { "@type": "MedicalTherapy", "name": "심미치료", "alternateName": "Cosmetic Dentistry" },
+      { "@type": "MedicalTherapy", "name": "예방치료", "alternateName": "Preventive Dentistry" }
+    ],
+    "isAcceptingNewPatients": true,
+    "smokingAllowed": false
+  });
+
+  // 6) BreadcrumbList 스키마
   const breadcrumbJsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -278,6 +328,7 @@ app.get('/', (c) => {
 
 <!-- Naver 검색 최적화 -->
 <meta name="naver-site-verification" content="">
+<meta name="google-site-verification" content="">
 <meta property="og:article:author" content="행복한예인치과">
 
 <!-- 추가 메타 -->
@@ -292,16 +343,29 @@ app.get('/', (c) => {
 <meta name="ICBM" content="37.566, 126.978">
 <link rel="icon" type="image/png" href="/static/img/logo.png">
 
+<!-- DNS Prefetch & Preconnect (성능 최적화) -->
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+<!-- 히어로 이미지 프리로드 (LCP 최적화) -->
+<link rel="preload" as="image" href="/static/img/dr-han-smile.jpg" fetchpriority="high">
+
+<!-- 폰트 프리로드 (렌더링 차단 방지) -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap">
+
 <!-- 구조화 데이터 (JSON-LD) - SEO + AEO -->
 <script type="application/ld+json">${orgJsonLd}</script>
 <script type="application/ld+json">${faqJsonLd}</script>
 <script type="application/ld+json">${websiteJsonLd}</script>
 <script type="application/ld+json">${webpageJsonLd}</script>
+<script type="application/ld+json">${medicalClinicJsonLd}</script>
 <script type="application/ld+json">${breadcrumbJsonLd}</script>
 
 <!-- 폰트 & 아이콘 -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
 <style>
@@ -850,7 +914,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 <main>
 <section class="hero" role="banner">
   <div class="hero-video-bg">
-    <img src="/static/img/dr-han-smile.jpg" alt="행복한예인치과 한승대 대표원장 - 서울 시청역·명동·을지로 치과">
+    <img src="/static/img/dr-han-smile.jpg" alt="행복한예인치과 한승대 대표원장 - 서울 시청역·명동·을지로 치과" width="1200" height="800" fetchpriority="high">
     <div class="hero-overlay"></div>
     <div class="hero-noise"></div>
   </div>
@@ -1001,12 +1065,12 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
           </div>
         </div>
         <div class="treat-featured-img">
-          <img src="/static/img/treat-1.jpg" alt="행복한예인치과 발치즉시 임플란트 시술 - 80% 이상 즉시식립">
+          <img src="/static/img/treat-1.jpg" alt="행복한예인치과 발치즉시 임플란트 시술 - 80% 이상 즉시식립" width="600" height="400" loading="lazy">
         </div>
       </a>
       <!-- Conservation -->
       <a href="/treatments/preservation" class="treat-card rv" style="text-decoration:none;color:inherit;">
-        <div class="treat-card-bg"><img src="/static/img/treat-2.jpg" alt="치아보존치료 - 보존과 전문의 직접 신경치료"></div>
+        <div class="treat-card-bg"><img src="/static/img/treat-2.jpg" alt="치아보존치료 - 보존과 전문의 직접 신경치료" width="600" height="400" loading="lazy"></div>
         <div class="treat-card-content">
           <div class="treat-card-num">02</div>
           <div class="treat-card-tag">Preservation</div>
@@ -1020,7 +1084,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </a>
       <!-- Aesthetic -->
       <a href="/treatments/aesthetic" class="treat-card rv rv-d1" style="text-decoration:none;color:inherit;">
-        <div class="treat-card-bg"><img src="/static/img/treat-3.jpg" alt="앞니 심미치료 - 최소삭제 라미네이트 레진"></div>
+        <div class="treat-card-bg"><img src="/static/img/treat-3.jpg" alt="앞니 심미치료 - 최소삭제 라미네이트 레진" width="600" height="400" loading="lazy"></div>
         <div class="treat-card-content">
           <div class="treat-card-num">03</div>
           <div class="treat-card-tag">Aesthetic</div>
@@ -1034,7 +1098,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </a>
       <!-- Orthodontics -->
       <a href="/treatments/orthodontics" class="treat-card rv" style="text-decoration:none;color:inherit;">
-        <div class="treat-card-bg"><img src="/static/img/treat-4.jpg" alt="치아교정 - 교정과 전문의 투명교정 설측교정"></div>
+        <div class="treat-card-bg"><img src="/static/img/treat-4.jpg" alt="치아교정 - 교정과 전문의 투명교정 설측교정" width="600" height="400" loading="lazy"></div>
         <div class="treat-card-content">
           <div class="treat-card-num">04</div>
           <div class="treat-card-tag">Orthodontics</div>
@@ -1048,7 +1112,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </a>
       <!-- General -->
       <a href="/treatments/general" class="treat-card rv rv-d1" style="text-decoration:none;color:inherit;">
-        <div class="treat-card-bg"><img src="/static/img/treat-5.jpg" alt="일반 예방 치료 - 정기검진 스케일링 충치치료"></div>
+        <div class="treat-card-bg"><img src="/static/img/treat-5.jpg" alt="일반 예방 치료 - 정기검진 스케일링 충치치료" width="600" height="400" loading="lazy"></div>
         <div class="treat-card-content">
           <div class="treat-card-num">05</div>
           <div class="treat-card-tag">General Care</div>
@@ -1072,7 +1136,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
     <div class="team-grid">
       <div class="team-card lead rv">
         <div class="team-photo">
-          <img src="/static/img/dr-han-profile.jpg" alt="한승대 대표원장 - 통합치의학과 전문의 치의학박사">
+          <img src="/static/img/dr-han-profile.jpg" alt="한승대 대표원장 - 통합치의학과 전문의 치의학박사" width="400" height="533" loading="lazy">
           <div class="team-photo-overlay"></div>
           <div class="team-badge">Lead Doctor</div>
         </div>
@@ -1129,9 +1193,9 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   <div class="exp-grid">
     <div class="exp-images">
       <div class="exp-images-grid">
-        <img src="/static/img/consult-2.jpg" alt="행복한예인치과 환자 상담 장면">
-        <img src="/static/img/xray-1.jpg" alt="X-ray 디지털 진단 장비">
-        <img src="/static/img/treat-2.jpg" alt="행복한예인치과 보존 치료 진료">
+        <img src="/static/img/consult-2.jpg" alt="행복한예인치과 환자 상담 장면" width="600" height="400" loading="lazy">
+        <img src="/static/img/xray-1.jpg" alt="X-ray 디지털 진단 장비" width="600" height="400" loading="lazy">
+        <img src="/static/img/treat-2.jpg" alt="행복한예인치과 보존 치료 진료" width="600" height="400" loading="lazy">
       </div>
     </div>
     <div class="exp-text">
@@ -1175,27 +1239,27 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 <!-- ===== PHOTO MARQUEE ===== -->
 <div class="photo-marquee">
   <div class="photo-track">
-    <img src="/static/img/consult-1.jpg" alt="행복한예인치과 환자 상담">
-    <img src="/static/img/treat-6.jpg" alt="치과 치료 시술 장면">
-    <img src="/static/img/treat-4.jpg" alt="교정 치료 진행">
-    <img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 로고">
-    <img src="/static/img/consult-3.jpg" alt="X-ray 진단 상담">
-    <img src="/static/img/treat-7.jpg" alt="정밀 치과 시술">
-    <img src="/static/img/treat-5.jpg" alt="예방 치료 스케일링">
-    <img src="/static/img/xray-3.jpg" alt="파노라마 X-ray 촬영">
-    <img src="/static/img/dr-han-front.jpg" alt="한승대 원장 진료">
-    <img src="/static/img/xray-2.jpg" alt="구강내 진단 촬영">
+    <img src="/static/img/consult-1.jpg" alt="행복한예인치과 환자 상담" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-6.jpg" alt="치과 치료 시술 장면" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-4.jpg" alt="교정 치료 진행" width="390" height="260" loading="lazy">
+    <img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 로고" width="390" height="260" loading="lazy">
+    <img src="/static/img/consult-3.jpg" alt="X-ray 진단 상담" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-7.jpg" alt="정밀 치과 시술" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-5.jpg" alt="예방 치료 스케일링" width="390" height="260" loading="lazy">
+    <img src="/static/img/xray-3.jpg" alt="파노라마 X-ray 촬영" width="390" height="260" loading="lazy">
+    <img src="/static/img/dr-han-front.jpg" alt="한승대 원장 진료" width="390" height="260" loading="lazy">
+    <img src="/static/img/xray-2.jpg" alt="구강내 진단 촬영" width="390" height="260" loading="lazy">
     <!-- duplicate for seamless loop -->
-    <img src="/static/img/consult-1.jpg" alt="행복한예인치과 환자 상담">
-    <img src="/static/img/treat-6.jpg" alt="치과 치료 시술 장면">
-    <img src="/static/img/treat-4.jpg" alt="교정 치료 진행">
-    <img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 로고">
-    <img src="/static/img/consult-3.jpg" alt="X-ray 진단 상담">
-    <img src="/static/img/treat-7.jpg" alt="정밀 치과 시술">
-    <img src="/static/img/treat-5.jpg" alt="예방 치료 스케일링">
-    <img src="/static/img/xray-3.jpg" alt="파노라마 X-ray 촬영">
-    <img src="/static/img/dr-han-front.jpg" alt="한승대 원장 진료">
-    <img src="/static/img/xray-2.jpg" alt="구강내 진단 촬영">
+    <img src="/static/img/consult-1.jpg" alt="행복한예인치과 환자 상담" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-6.jpg" alt="치과 치료 시술 장면" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-4.jpg" alt="교정 치료 진행" width="390" height="260" loading="lazy">
+    <img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 로고" width="390" height="260" loading="lazy">
+    <img src="/static/img/consult-3.jpg" alt="X-ray 진단 상담" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-7.jpg" alt="정밀 치과 시술" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-5.jpg" alt="예방 치료 스케일링" width="390" height="260" loading="lazy">
+    <img src="/static/img/xray-3.jpg" alt="파노라마 X-ray 촬영" width="390" height="260" loading="lazy">
+    <img src="/static/img/dr-han-front.jpg" alt="한승대 원장 진료" width="390" height="260" loading="lazy">
+    <img src="/static/img/xray-2.jpg" alt="구강내 진단 촬영" width="390" height="260" loading="lazy">
   </div>
 </div>
 
@@ -1206,7 +1270,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
     <h2 class="sec-title rv">시청역·명동·을지로에서 <em>도보 5~10분</em></h2>
     <div class="location-grid">
       <div class="location-map rv-scale">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d790.6!2d126.978!3d37.566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca2eb1a2f4b7d%3A0x!2z7ISc7Jq4IOykkSDrgqjrjIDrrLjroZw56ri4IDUx!5e0!3m2!1sko!2skr!4v1700000000000!5m2!1sko!2skr" allowfullscreen="" loading="lazy"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d790.6!2d126.978!3d37.566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca2eb1a2f4b7d%3A0x!2z7ISc7Jq4IOykkSDrgqjrjIDrrLjroZw56ri4IDUx!5e0!3m2!1sko!2skr!4v1700000000000!5m2!1sko!2skr" allowfullscreen="" loading="lazy" title="행복한예인치과 위치 - 서울 중구 남대문로9길 51"></iframe>
       </div>
       <div class="loc-info">
         <div class="loc-block rv">
@@ -1261,297 +1325,297 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
     <div class="faq-list" id="faqList">
       <!-- 기본 정보 (8개) -->
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">행복한예인치과는 어디에 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">행복한예인치과는 어디에 있나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">서울특별시 중구 남대문로9길 51 효덕빌딩 3층 301호에 위치합니다. 시청역 5분, 명동역 8분, 을지로입구역 7분, 회현역 6분, 서울역 12분 거리입니다. 광화문·종로·충무로에서도 10분 이내입니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">진료시간은 어떻게 되나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">진료시간은 어떻게 되나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">월·화·목·금 09:30~18:30, 수요일은 야간진료로 09:30~20:00까지 진료합니다. 점심시간은 13:00~14:00이며, 토·일·공휴일은 휴진입니다. 마감 1시간 전까지 접수 가능합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">어떤 전문의가 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">어떤 전문의가 있나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">한승대 대표원장(보건복지부 인증 통합치의학과 전문의, 치의학 박사), 신정희 원장(보건복지부 인증 치과보존과 전문의, 치의학 박사), 박현미 원장(교정과 전문의) 총 3명의 전문의가 각 분야를 직접 진료합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">예약은 어떻게 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">예약은 어떻게 하나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">전화(02-756-2828) 또는 네이버 예약으로 예약하실 수 있습니다. 수요일 야간진료도 예약 가능합니다. 예약 시간을 지켜주시면 대기 시간 없이 바로 진료받으실 수 있습니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">행복한예인치과의 진료 철학이 궁금해요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">행복한예인치과의 진료 철학이 궁금해요.</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">'내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다'가 행복한예인치과의 진료 철학입니다. 과장 없는 진료, X-ray 앞에서 투명한 설명, 환자 존중을 기본으로 13년간 같은 자리에서 신뢰를 쌓아왔습니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">주차가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">주차가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">효덕빌딩 주변 유료 주차장을 이용하실 수 있습니다. 다만 주차 공간이 제한적이므로 대중교통 이용을 권장합니다. 시청역(1·2호선) 도보 5분, 명동역(4호선) 8분, 을지로입구역(2호선) 7분이면 오실 수 있습니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">초진(첫 방문) 시 무엇을 준비해야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">초진(첫 방문) 시 무엇을 준비해야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">신분증과 건강보험증을 지참해 주시면 됩니다. 다른 치과에서 받은 X-ray나 진료기록이 있으면 함께 가져오시면 더 정확한 진단에 도움이 됩니다. 예약 시간 10분 전에 내원하시면 접수와 문진표 작성을 여유 있게 진행할 수 있습니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">건강보험 적용이 되나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">건강보험 적용이 되나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">네, 행복한예인치과는 건강보험 적용 치과입니다. 스케일링(연 1회), 충치치료, 신경치료, 발치, 잇몸치료 등 보험 적용 항목에 대해 건강보험 혜택을 받으실 수 있습니다. 임플란트, 라미네이트, 교정 등 일부 항목은 비급여입니다.</p></div>
       </div>
 
       <!-- 치료 안내 (8개) -->
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">발치즉시 임플란트란 무엇인가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">발치즉시 임플란트란 무엇인가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">발치즉시 임플란트는 치아를 발치하는 동시에 임플란트를 식립하는 시술입니다. 별도의 치유 기간(3~6개월) 없이 바로 진행하여 전체 치료 기간을 크게 단축합니다. 행복한예인치과 한승대 원장은 80% 이상의 케이스에서 즉시식립을 시행합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">임플란트 비용은 얼마인가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">임플란트 비용은 얼마인가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">임플란트 비용은 식립 위치, 골이식 필요 여부, 보철물 종류에 따라 달라집니다. CT 촬영과 정밀 진단 후 정확한 비용을 투명하게 안내해 드립니다. 과잉 진료 없이 꼭 필요한 시술만 제안드리며, 분할 납부 상담도 가능합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">신경치료는 얼마나 아픈가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">신경치료는 얼마나 아픈가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">충분한 마취 후 치료를 진행하므로 시술 중 통증은 거의 없습니다. 표면 마취제를 먼저 도포하여 주사 통증까지 최소화합니다. 보존과 전문의 신정희 원장이 미세현미경을 활용하여 정밀하게 시술하므로 불필요한 자극이 줄어듭니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">치아 교정은 성인도 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">치아 교정은 성인도 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">물론입니다. 성인 교정은 매우 흔하며, 치조골 상태만 건강하다면 나이에 관계없이 가능합니다. 박현미 원장(교정 전문의)은 투명교정(인비절라인), 설측교정 등 티 안 나는 교정을 제공합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">투명교정(인비절라인)과 일반 교정의 차이는?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">투명교정(인비절라인)과 일반 교정의 차이는?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">일반 교정(브라켓)은 치아에 장치를 부착하고, 투명교정(인비절라인)은 투명한 틀을 착용합니다. 투명교정은 외관상 거의 보이지 않고 탈착이 가능하여 직장인에게 인기가 많습니다. 교정과 전문의가 케이스에 맞는 최적의 방식을 추천해 드립니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">라미네이트와 레진 치료의 차이는?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">라미네이트와 레진 치료의 차이는?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">레진은 치아에 직접 재료를 쌓아올려 즉일 완성하는 방식이고, 라미네이트는 세라믹 쉘을 제작하여 접착합니다. 레진은 비용이 낮고 즉시 결과를, 라미네이트는 내구성과 심미성이 뛰어납니다. 행복한예인치과에서는 최소 삭제를 원칙으로 합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">스케일링은 아프나요? 얼마나 자주 받아야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">스케일링은 아프나요? 얼마나 자주 받아야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">스케일링은 약간의 시림 증상이 있을 수 있지만 통증은 거의 없습니다. 건강보험 기준 연 1회 보험 적용이 가능하며, 잇몸 상태에 따라 6개월~1년 간격을 권장합니다. 시청역·명동·을지로 직장인분들이 점심시간에 많이 이용하십니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">치과 공포증이 있는데 진료받을 수 있을까요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">치과 공포증이 있는데 진료받을 수 있을까요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">물론 가능합니다. 치료 전 충분한 설명, 표면 마취를 통한 통증 최소화, 시술 중 지속적인 소통으로 불안감을 줄입니다. '생각보다 안 아팠다'는 후기가 가장 많습니다.</p></div>
       </div>
 
       <!-- 찾아오시는 길 (12개) -->
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">시청역 근처에서 좋은 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">시청역 근처에서 좋은 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">행복한예인치과는 1·2호선 시청역 4번·5번 출구에서 도보 5분 거리입니다. 2013년부터 13년간 같은 자리에서 운영하며 전문의 3명이 협진합니다. 환자 리뷰 458건, 발치즉시 임플란트 성공률 80% 이상입니다. 전화 02-756-2828로 예약해 주세요.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">명동 근처에서 임플란트 잘하는 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">명동 근처에서 임플란트 잘하는 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">명동에서 도보 8분 거리에 있는 행복한예인치과는 발치즉시 임플란트 전문 치과입니다. 80% 이상 즉시식립, 통합치의학과 전문의가 직접 수술합니다. 4호선 명동역 3번 출구에서 시청 방향으로 도보 8분입니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">을지로 근처 신경치료 잘하는 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">을지로 근처 신경치료 잘하는 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">을지로입구역에서 도보 7분 거리에 보존과 전문의 신정희 원장이 미세현미경 정밀 신경치료를 직접 시행합니다. 자연 치아를 최대한 살리는 보존 치료 전문입니다. 2호선 을지로입구역 1번 출구에서 시청 방향으로 도보 7분입니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">광화문·종로에서 가까운 교정 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">광화문·종로에서 가까운 교정 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">광화문역에서 도보 10분, 종로에서 10분 이내에 행복한예인치과가 있습니다. 교정과 전문의 박현미 원장이 인비절라인 투명교정부터 설측교정까지 직접 진료합니다. 5호선 광화문역 6번 출구에서 남쪽으로 내려오시면 됩니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">서울역 근처에서 야간진료 하는 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">서울역 근처에서 야간진료 하는 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">서울역에서 도보 12분, 1호선 한 정거장 거리에 있는 행복한예인치과는 매주 수요일 야간진료(09:30~20:00)를 시행합니다. 바쁜 직장인도 퇴근 후 진료를 받으실 수 있습니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">회현역·남대문시장 근처 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">회현역·남대문시장 근처 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">4호선 회현역에서 도보 6분, 남대문시장에서 도보 3분 거리에 행복한예인치과가 있습니다. 13년간 같은 자리에서 운영하며 전문의 3명이 협진합니다. 남대문로9길 51 효덕빌딩 3층입니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">충무로역 근처 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">충무로역 근처 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">3·4호선 충무로역에서 도보 10분 거리에 행복한예인치과가 있습니다. 충무로에서 명동·남대문 방향으로 이동하면 접근 가능합니다. 발치즉시 임플란트, 보존치료, 교정 등 전문의 협진 체제로 운영합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">북창동·다동·무교동에서 가까운 치과가 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">북창동·다동·무교동에서 가까운 치과가 있나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">행복한예인치과는 북창동에서 도보 3~5분, 다동·무교동에서 도보 5~7분 거리입니다. 서울시청·덕수궁 바로 남쪽, 남대문로9길 51 효덕빌딩 3층에 위치합니다. 전문의 3인 협진 치과입니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">소공동·남산에서 가까운 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">소공동·남산에서 가까운 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">소공동에서 도보 약 8분, 남산(한옥마을)에서 도보 약 12분 거리에 행복한예인치과가 있습니다. 시청역·명동역 사이에 위치하여 소공동·남산 주변에서 접근이 편리합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">을지로3가·을지로4가에서 어떻게 가나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">을지로3가·을지로4가에서 어떻게 가나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">2호선 을지로3가역·을지로4가역에서 을지로입구역 방향으로 한두 정거장 이동 후, 1번 출구에서 시청 방향 도보 7분이면 도착합니다. 명동역(4호선) 경유 도보 8분으로도 올 수 있습니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">서울 중구에서 전문의가 직접 진료하는 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">서울 중구에서 전문의가 직접 진료하는 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">행복한예인치과는 서울 중구 남대문로에 위치하며, 보건복지부 인증 전문의 3명(통합치의학, 보존과, 교정과)이 직접 진료합니다. 전문의가 직접 시술하므로 안심하고 진료받으실 수 있습니다. 전화 02-756-2828.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">명동·을지로 직장인인데 점심시간에 진료받을 수 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">명동·을지로 직장인인데 점심시간에 진료받을 수 있나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">시청역·명동·을지로 직장인 밀집 지역에 위치하여 점심시간 진료가 가능합니다. 점심시간(13:00~14:00) 외 시간에 예약하시면 대기 없이 빠른 진료가 가능합니다. 수요일은 야간진료(~20:00)도 가능합니다.</p></div>
       </div>
 
       <!-- 직장인·생활 (7개) -->
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">수요일 야간진료는 몇 시까지 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">수요일 야간진료는 몇 시까지 하나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">매주 수요일 저녁 8시(20:00)까지 진료합니다. 시청역·명동·을지로·광화문 직장인분들이 퇴근 후 많이 이용하십니다. 야간진료 마감 1시간 전(19:00)까지 접수 가능합니다. 전화 02-756-2828로 예약하세요.</p></div>
       </div>
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">사회초년생 할인이 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">사회초년생 할인이 있나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">사회초년생 등 젊은 직장인분들을 위한 배려 프로그램을 운영하고 있습니다. 자세한 내용은 내원 상담 시 안내해 드립니다. 과잉 진료 없이 꼭 필요한 치료만 제안하는 것이 기본 원칙입니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">환자 후기가 궁금해요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">환자 후기가 궁금해요.</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">네이버 등 온라인에 458건 이상의 환자 리뷰가 등록되어 있으며, 평균 4.9점입니다. '생각보다 안 아팠다', '설명이 자세하다', '불필요한 치료를 권하지 않아 신뢰가 간다' 등의 후기가 가장 많습니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">행복한예인치과는 언제 개원했나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">행복한예인치과는 언제 개원했나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">2013년에 서울 중구 남대문로에서 개원하여, 2026년 현재 13년간 같은 자리에서 진료를 이어오고 있습니다. 변하지 않는 곳에서 변함없는 원칙으로 진료합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">외국어 진료가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">외국어 진료가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">기본적인 영어 소통이 가능합니다. 시청역·명동·을지로 지역 특성상 외국인 환자분도 방문하시며, 사전에 전화(02-756-2828)로 문의해 주시면 더 원활한 진료 준비가 가능합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">카드 결제, 분할 납부가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">카드 결제, 분할 납부가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">신용카드·체크카드 결제와 무이자 할부가 가능합니다. 임플란트, 교정 등 고액 치료의 경우 분할 납부 상담도 가능합니다. 자세한 결제 방법은 내원 시 안내해 드립니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">어린이 치과 진료도 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">어린이 치과 진료도 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">네, 어린이 충치치료, 정기검진, 실란트 등 소아 치과 진료도 가능합니다. 아이가 치과에 대한 두려움을 갖지 않도록 부드럽고 친절한 진료를 지향합니다. 가족 단위 방문도 환영합니다.</p></div>
       </div>
 
       <!-- 추가 기본 정보 (8개) -->
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">행복한예인치과에서 진료 가능한 과목은?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">행복한예인치과에서 진료 가능한 과목은?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">임플란트, 보존치료(신경치료·충치치료), 앞니 심미치료(라미네이트·레진), 치아교정(투명교정·설측교정), 일반진료(스케일링·정기검진·잇몸치료), 사랑니 발치 등 치과 전 분야가 가능합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">의료진의 학력이 궁금해요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">의료진의 학력이 궁금해요.</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">한승대 원장(고려대 졸업, 경희대 치의학 박사), 신정희 원장(경희대 졸업, 경희대 치의학 박사), 박현미 원장(연세대 졸업, 연세대 교정과 석사). 전원 보건복지부 인증 전문의입니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">진료 환경과 장비는 어떤가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">진료 환경과 장비는 어떤가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">최신 CT(CBCT), 디지털 X-ray, 미세현미경, 구강스캐너 등 첨단 장비를 갖추고 있으며, 독립된 진료실로 프라이버시를 보장하고 철저한 감염 관리를 시행합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">상담만 받을 수도 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">상담만 받을 수도 있나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">물론입니다. 상담만 받고 치료 여부는 충분히 생각하신 후 결정하셔도 됩니다. X-ray 촬영 후 현재 상태와 치료 옵션을 투명하게 설명해 드립니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">예약 없이 방문해도 되나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">예약 없이 방문해도 되나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">예약제 운영이므로 사전 예약을 권장합니다. 응급 상황(극심한 통증, 외상)은 내원 시 최대한 수용합니다. 전화 02-756-2828로 예약해 주세요.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">치과 위생사도 전문 교육을 받나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">치과 위생사도 전문 교육을 받나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">네, 전 직원이 면허 소지자이며 정기적으로 내부 교육과 외부 세미나를 수료합니다. 스케일링, 환자 안내, 감염 관리 등 모든 업무에서 전문성을 유지합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">위생·감염 관리 기준은 어떤가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">위생·감염 관리 기준은 어떤가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">오토클레이브로 기구를 철저히 멸균하며, 1인 1팩 포장 기구 사용, 일회용 커버·글러브 환자마다 교체, 진료실 표면 소독과 공기 정화를 매 진료 후 시행합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">다른 치과에서 받던 치료를 이어서 받을 수 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">다른 치과에서 받던 치료를 이어서 받을 수 있나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">가능합니다. 임플란트, 교정, 보존치료 등을 이어서 진행할 수 있습니다. 기존 X-ray나 진료 기록을 가져오시면 더 정확한 연속 치료가 가능합니다.</p></div>
       </div>
 
       <!-- 추가 치료 안내 (8개) -->
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">임플란트 수명은 얼마나 되나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">임플란트 수명은 얼마나 되나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">관리에 따라 10~20년 이상 사용 가능하며, 정기 검진과 올바른 구강 관리를 병행하면 반영구적으로 유지됩니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">골이식이 필요하다는데 꼭 해야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">골이식이 필요하다는데 꼭 해야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">뼈가 부족한 경우 임플란트 장기 안정성을 위해 골이식이 필요합니다. 한승대 원장은 상악동 거상술, 블록본 이식 등 고난이도 골이식 경험이 풍부합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">잇몸병(치주질환) 치료는 어떻게 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">잇몸병(치주질환) 치료는 어떻게 하나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">스케일링과 치근 활택술로 시작하며, 심한 경우 잇몸 수술이 필요할 수 있습니다. 단계적 치료와 함께 가정 관리 방법도 안내합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">앞니가 벌어졌는데 어떤 치료가 좋을까요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">앞니가 벌어졌는데 어떤 치료가 좋을까요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">레진 본딩, 라미네이트, 교정 등 다양한 방법이 있으며, 벌어진 정도와 교합 상태에 따라 최적의 방법이 달라집니다. 상담 시 각 옵션의 장단점과 비용을 안내합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">치아 미백은 안전한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">치아 미백은 안전한가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">전문 치과에서 시행하는 미백은 안전합니다. 일시적 시림이 있을 수 있으나 자연 소실됩니다. 오피스 블리칭과 홈 블리칭 모두 가능합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">임플란트와 브릿지 중 뭐가 좋은가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">임플란트와 브릿지 중 뭐가 좋은가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">임플란트는 인접 치아 비손상, 브릿지는 빠른 시술과 낮은 비용이 장점입니다. 구강 상태·예산·선호에 맞춰 전문의가 최적의 방법을 제안합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">사랑니를 꼭 뽑아야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">사랑니를 꼭 뽑아야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">바르게 나서 기능하면 유지 가능하지만, 비스듬히 나거나 충치·염증이 반복되면 발치를 권합니다. X-ray로 정확한 위치 확인 후 안내합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">충치 치료 후 이가 시린 건 정상인가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">충치 치료 후 이가 시린 건 정상인가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">깊은 충치 치료 후 일시적 시림은 정상이며 1~2주 내 완화됩니다. 3주 이상 지속되면 재내원해 주세요.</p></div>
       </div>
 
       <!-- 추가 지역 기반 (12개) -->
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">덕수궁·서울시청 근처 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">덕수궁·서울시청 근처 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">행복한예인치과는 서울시청·덕수궁 바로 남쪽, 시청역 도보 5분 거리입니다. 덕수궁 돌담길에서도 7~8분이면 도착합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">서소문·서소문공원 근처 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">서소문·서소문공원 근처 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">서소문에서 도보 약 8분 거리에 행복한예인치과가 있습니다. 발치즉시 임플란트 80%+ 성공률의 전문 치과입니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">남산타워·남산한옥마을에서 가까운 치과가 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">남산타워·남산한옥마을에서 가까운 치과가 있나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">남산에서 택시 5분, 도보 약 15분, 명동역 경유 도보 8분으로도 올 수 있습니다. 관광 중 갑작스러운 통증에도 당일 예약 상담 가능합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">종각역·인사동 근처에서 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">종각역·인사동 근처에서 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">종각역에서 시청역 한 정거장, 도보 약 12분입니다. 인사동에서도 대중교통 10분 이내. 교정·보존과 전문의가 직접 진료합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">동대문·종로5가에서 행복한예인치과 가려면?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">동대문·종로5가에서 행복한예인치과 가려면?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">1호선 또는 4호선으로 시청역까지 약 10분, 시청역 4번 출구에서 도보 5분이면 도착합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">여의도·마포에서 행복한예인치과 가기 편한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">여의도·마포에서 행복한예인치과 가기 편한가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">여의도에서 5호선 광화문역까지 약 15분, 광화문역에서 도보 10분. 마포에서도 공덕역→시청역 경유 20분 이내입니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">용산·이태원에서 가까운 전문의 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">용산·이태원에서 가까운 전문의 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">용산에서 1호선으로 시청역까지 2정거장(약 7분), 이태원에서 6호선→1호선 환승 15분 이내에 도착합니다. 전문의 3인 협진 치과입니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">강남·서초에서 행복한예인치과를 찾아가는 방법은?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">강남·서초에서 행복한예인치과를 찾아가는 방법은?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">2호선 강남역에서 시청역까지 약 20분, 3호선 교대역에서 충무로 환승 후 약 15분. 강남 못지않은 전문성을 합리적으로 제공합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">성수동·건대에서 행복한예인치과 가기 편한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">성수동·건대에서 행복한예인치과 가기 편한가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">2호선으로 을지로입구역까지 10~15분, 을지로입구역 1번 출구에서 시청 방향 도보 7분이면 도착합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">서울 중구 남대문로에서 행복한예인치과의 차별점은?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">서울 중구 남대문로에서 행복한예인치과의 차별점은?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">전문의 3명 직접 진료, 13년간 같은 자리 운영, 발치즉시 임플란트 80%+ 시행률, 458건+ 리뷰 평균 4.9점, 수요일 야간진료가 차별점입니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">퇴근 후 저녁에 진료하는 시청역 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">퇴근 후 저녁에 진료하는 시청역 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">행복한예인치과는 매주 수요일 20시까지 야간진료합니다. 시청역 도보 5분 거리. 전화 02-756-2828로 예약하세요.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">주말 진료는 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">주말 진료는 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">토·일·공휴일 휴진입니다. 대신 수요일 야간진료(20시까지)를 운영합니다. 월~금 09:30~18:30(수요일 20:00) 중 예약해 주세요.</p></div>
       </div>
 
       <!-- 추가 직장인·생활 (7개) -->
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">임산부도 치과 치료가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">임산부도 치과 치료가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">가능합니다. 임신 중기(4~6개월)가 가장 안전한 치료 시기이며, 스케일링과 간단한 충치치료는 임신 중에도 가능합니다. 상담 시 임신 사실을 반드시 알려주세요.</p></div>
       </div>
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">고령자(어르신) 임플란트도 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">고령자(어르신) 임플란트도 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">가능합니다. 65세 이상은 임플란트 건강보험 적용(상·하악 각 1개)도 받으실 수 있습니다. 전신 건강 상태 확인 후 안전한 시술 계획을 수립합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">치실과 치간칫솔, 꼭 써야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">치실과 치간칫솔, 꼭 써야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">칫솔만으로는 치아 사이 치태를 완전히 제거하기 어렵습니다. 치실이나 치간칫솔 병용이 충치·잇몸병 예방에 매우 효과적입니다. 맞춤 도구와 사용법을 안내합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">전동칫솔이 일반 칫솔보다 좋은가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">전동칫솔이 일반 칫솔보다 좋은가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">전동칫솔은 일정한 압력과 회전으로 치태 제거에 효과적이지만, 올바른 사용법이 중요합니다. 칫솔 종류보다 올바른 습관이 핵심이며, 내원 시 맞춤 교육을 제공합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">오래 치과를 안 갔는데 지금 와도 괜찮을까요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">오래 치과를 안 갔는데 지금 와도 괜찮을까요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">물론입니다. 오랫동안 미루신 분들일수록 빨리 오시는 것이 중요합니다. 판단 없이 현재 상태를 설명해 드리고 우선순위에 따라 치료 계획을 세워드립니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">직장인인데 치료 기간이 오래 걸리면 어떡하죠?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">직장인인데 치료 기간이 오래 걸리면 어떡하죠?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">발치즉시 임플란트로 내원 횟수를 최소화하고, 한 번 방문 시 여러 치료를 병행합니다. 점심시간 방문과 수요일 야간진료(20시)도 활용하실 수 있습니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="life" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" onclick="toggleFaq(this)"><h4 itemprop="name">치과 치료비로 연말정산 세액공제가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">치과 치료비로 연말정산 세액공제가 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">네, 치과 치료비는 의료비 세액공제 대상입니다. 임플란트, 교정, 라미네이트 등 비급여도 포함됩니다. 국세청 자동 제출하며, 별도 영수증도 발급 가능합니다.</p></div>
       </div>
     </div>
@@ -1737,7 +1801,11 @@ window.addEventListener('scroll', () => {
 });
 
 // ===== FAQ TOGGLE & FILTER =====
-function toggleFaq(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open');}
+function toggleFaq(el){
+  const isOpen = el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+  el.setAttribute('aria-expanded', isOpen);
+}
 function filterFaq(cat,btn){
   document.querySelectorAll('.faq-cat-btn').forEach(b=>{b.style.borderColor='rgba(255,255,255,0.08)';b.style.background='transparent';b.style.color='var(--gray-light)';b.classList.remove('active');});
   btn.style.borderColor='rgba(247,186,24,0.3)';btn.style.background='rgba(247,186,24,0.1)';btn.style.color='var(--gold)';btn.classList.add('active');
@@ -1846,6 +1914,18 @@ Disallow: /admin/
 Disallow: /api/
 Allow: /api/info
 
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Yeti
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
 Sitemap: https://yein-dental.pages.dev/sitemap.xml
 
 # 행복한예인치과 - Happy Yein Dental Clinic
@@ -1854,33 +1934,61 @@ Sitemap: https://yein-dental.pages.dev/sitemap.xml
   return c.text(robotsTxt, 200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=86400' });
 })
 
-// ===== SEO: sitemap.xml =====
+// ===== SEO: sitemap.xml (이미지 포함) =====
 app.get('/sitemap.xml', (c) => {
   const domain = 'https://yein-dental.pages.dev';
   const today = new Date().toISOString().split('T')[0];
   const urls = [
-    { loc: '/', priority: '1.0', changefreq: 'weekly' },
-    { loc: '/philosophy', priority: '0.8', changefreq: 'monthly' },
-    { loc: '/doctors', priority: '0.8', changefreq: 'monthly' },
-    { loc: '/experience', priority: '0.7', changefreq: 'monthly' },
-    { loc: '/location', priority: '0.8', changefreq: 'monthly' },
-    { loc: '/treatments/implant', priority: '0.9', changefreq: 'monthly' },
-    { loc: '/treatments/preservation', priority: '0.8', changefreq: 'monthly' },
-    { loc: '/treatments/aesthetic', priority: '0.8', changefreq: 'monthly' },
-    { loc: '/treatments/orthodontics', priority: '0.8', changefreq: 'monthly' },
-    { loc: '/treatments/general', priority: '0.7', changefreq: 'monthly' },
-    { loc: '/before-after', priority: '0.7', changefreq: 'weekly' },
-    { loc: '/blog', priority: '0.7', changefreq: 'weekly' },
-    { loc: '/notice', priority: '0.6', changefreq: 'weekly' },
+    { loc: '/', priority: '1.0', changefreq: 'weekly', images: [
+      { url: '/static/img/dr-han-smile.jpg', title: '한승대 대표원장 - 행복한예인치과' },
+      { url: '/static/img/dr-han-profile.jpg', title: '한승대 원장 프로필' },
+      { url: '/static/img/logo.png', title: '행복한예인치과 로고' }
+    ]},
+    { loc: '/philosophy', priority: '0.8', changefreq: 'monthly', images: [
+      { url: '/static/img/dr-han-logo.jpg', title: '행복한예인치과 진료 철학' }
+    ]},
+    { loc: '/doctors', priority: '0.8', changefreq: 'monthly', images: [
+      { url: '/static/img/dr-han-front.jpg', title: '행복한예인치과 의료진' },
+      { url: '/static/img/dr-han-profile.jpg', title: '한승대 대표원장' }
+    ]},
+    { loc: '/experience', priority: '0.7', changefreq: 'monthly', images: [
+      { url: '/static/img/consult-2.jpg', title: '행복한예인치과 환자 경험' }
+    ]},
+    { loc: '/location', priority: '0.8', changefreq: 'monthly', images: [
+      { url: '/static/img/dr-han-logo.jpg', title: '행복한예인치과 오시는 길' }
+    ]},
+    { loc: '/treatments/implant', priority: '0.9', changefreq: 'monthly', images: [
+      { url: '/static/img/treat-1.jpg', title: '발치즉시 임플란트 시술' }
+    ]},
+    { loc: '/treatments/preservation', priority: '0.8', changefreq: 'monthly', images: [
+      { url: '/static/img/treat-2.jpg', title: '치아보존치료 신경치료' }
+    ]},
+    { loc: '/treatments/aesthetic', priority: '0.8', changefreq: 'monthly', images: [
+      { url: '/static/img/treat-3.jpg', title: '앞니 심미치료 라미네이트' }
+    ]},
+    { loc: '/treatments/orthodontics', priority: '0.8', changefreq: 'monthly', images: [
+      { url: '/static/img/treat-4.jpg', title: '치아교정 투명교정' }
+    ]},
+    { loc: '/treatments/general', priority: '0.7', changefreq: 'monthly', images: [
+      { url: '/static/img/treat-5.jpg', title: '일반 예방 치료' }
+    ]},
+    { loc: '/before-after', priority: '0.7', changefreq: 'weekly', images: [] },
+    { loc: '/blog', priority: '0.7', changefreq: 'weekly', images: [] },
+    { loc: '/notice', priority: '0.6', changefreq: 'weekly', images: [] },
   ];
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls.map(u => `  <url>
     <loc>${domain}${u.loc}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${u.changefreq}</changefreq>
-    <priority>${u.priority}</priority>
+    <priority>${u.priority}</priority>${u.images.map(img => `
+    <image:image>
+      <image:loc>${domain}${img.url}</image:loc>
+      <image:title>${img.title}</image:title>
+    </image:image>`).join('')}
   </url>`).join('\n')}
 </urlset>`;
   return c.text(sitemap, 200, { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });

@@ -25,7 +25,7 @@ ${nav('philosophy')}
 <!-- HERO -->
 <section class="sub-hero sub-hero-tall">
   <div class="sub-hero-bg">
-    <img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 진료 철학">
+    <img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 진료 철학 - 시청역 명동 을지로 13년 신뢰의 치과" width="1200" height="800" loading="eager" fetchpriority="high">
     <div class="sub-hero-overlay"></div>
   </div>
   <div class="sub-hero-breadcrumb">
@@ -165,13 +165,13 @@ ${nav('philosophy')}
     <div class="sec-label">FAQ</div>
     <h2 class="sec-title rv">진료 철학에 관한 <em>질문</em></h2>
     <div class="faq-list">
-      ${philoFaq.map(f => `
-      <div class="faq-item rv">
-        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h4>${f.q}</h4>
-          <i class="fas fa-chevron-down"></i>
+      ${philoFaq.map((f, i) => `
+      <div class="faq-item rv" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" aria-controls="philo-faq-${i}" onclick="var o=this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.setAttribute('aria-expanded',o);" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <h4 itemprop="name">${f.q}</h4>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
         </div>
-        <div class="faq-a"><p>${f.a}</p></div>
+        <div class="faq-a" id="philo-faq-${i}" role="region" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">${f.a}</p></div>
       </div>`).join('')}
     </div>
   </div>
@@ -206,7 +206,7 @@ ${nav('doctors')}
 <!-- HERO -->
 <section class="sub-hero sub-hero-tall">
   <div class="sub-hero-bg">
-    <img src="/static/img/dr-han-front.jpg" alt="행복한예인치과 의료진">
+    <img src="/static/img/dr-han-front.jpg" alt="행복한예인치과 의료진 - 통합치의학 보존과 교정과 전문의 3인" width="1200" height="800" loading="eager" fetchpriority="high">
     <div class="sub-hero-overlay"></div>
   </div>
   <div class="sub-hero-breadcrumb">
@@ -227,7 +227,7 @@ ${nav('doctors')}
     <div class="sec-label" style="color:var(--gold-deep);">Lead Doctor</div>
     <div class="doc-lead-grid rv">
       <div class="doc-lead-photo">
-        <img src="/static/img/dr-han-profile.jpg" alt="한승대 대표원장">
+        <img src="/static/img/dr-han-profile.jpg" alt="한승대 대표원장 - 통합치의학과 전문의 치의학 박사 경희대" width="400" height="533" loading="lazy">
         <div class="doc-lead-badge">Lead Doctor</div>
       </div>
       <div class="doc-lead-info">
@@ -360,13 +360,13 @@ ${nav('doctors')}
     <div class="sec-label">FAQ</div>
     <h2 class="sec-title rv">의료진에 관한 <em>질문</em></h2>
     <div class="faq-list">
-      ${docFaq.map(f => `
-      <div class="faq-item rv">
-        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h4>${f.q}</h4>
-          <i class="fas fa-chevron-down"></i>
+      ${docFaq.map((f, i) => `
+      <div class="faq-item rv" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" aria-controls="doc-faq-${i}" onclick="var o=this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.setAttribute('aria-expanded',o);" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <h4 itemprop="name">${f.q}</h4>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
         </div>
-        <div class="faq-a"><p>${f.a}</p></div>
+        <div class="faq-a" id="doc-faq-${i}" role="region" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">${f.a}</p></div>
       </div>`).join('')}
     </div>
   </div>
@@ -402,7 +402,7 @@ ${nav('experience')}
 <!-- HERO -->
 <section class="sub-hero sub-hero-tall">
   <div class="sub-hero-bg">
-    <img src="/static/img/consult-2.jpg" alt="행복한예인치과 환자 경험">
+    <img src="/static/img/consult-2.jpg" alt="행복한예인치과 환자 경험 - 편안한 진료 환경" width="1200" height="800" loading="eager" fetchpriority="high">
     <div class="sub-hero-overlay"></div>
   </div>
   <div class="sub-hero-breadcrumb">
@@ -425,7 +425,7 @@ ${nav('experience')}
 
     <div class="exp-pillar rv">
       <div class="exp-pillar-img">
-        <img src="/static/img/consult-1.jpg" alt="부드러운 진료">
+        <img src="/static/img/consult-1.jpg" alt="행복한예인치과 부드러운 진료 - 충분한 마취와 편안한 시술" width="600" height="400" loading="lazy">
       </div>
       <div class="exp-pillar-text">
         <div class="exp-pillar-num">01</div>
@@ -438,7 +438,7 @@ ${nav('experience')}
 
     <div class="exp-pillar exp-pillar-reverse rv">
       <div class="exp-pillar-img">
-        <img src="/static/img/xray-2.jpg" alt="명확한 소통">
+        <img src="/static/img/xray-2.jpg" alt="행복한예인치과 명확한 소통 - X-ray 앞에서 투명한 설명" width="600" height="400" loading="lazy">
       </div>
       <div class="exp-pillar-text">
         <div class="exp-pillar-num">02</div>
@@ -451,7 +451,7 @@ ${nav('experience')}
 
     <div class="exp-pillar rv">
       <div class="exp-pillar-img">
-        <img src="/static/img/consult-3.jpg" alt="효율적 시간">
+        <img src="/static/img/consult-3.jpg" alt="행복한예인치과 효율적 시간 관리 - 직장인 맞춤 진료" width="600" height="400" loading="lazy">
       </div>
       <div class="exp-pillar-text">
         <div class="exp-pillar-num">03</div>
@@ -464,7 +464,7 @@ ${nav('experience')}
 
     <div class="exp-pillar exp-pillar-reverse rv">
       <div class="exp-pillar-img">
-        <img src="/static/img/treat-3.jpg" alt="사후 케어">
+        <img src="/static/img/treat-3.jpg" alt="행복한예인치과 사후 케어 - 치료 후 지속적 관리" width="600" height="400" loading="lazy">
       </div>
       <div class="exp-pillar-text">
         <div class="exp-pillar-num">04</div>
@@ -483,12 +483,12 @@ ${nav('experience')}
     <div class="sec-label">Gallery</div>
     <h2 class="sec-title rv" style="margin-bottom:60px;"><em>진료</em> 환경</h2>
     <div class="exp-gallery-grid">
-      <div class="exp-gallery-item rv"><img src="/static/img/consult-1.jpg" alt="상담실"><span>상담실</span></div>
-      <div class="exp-gallery-item rv rv-d1"><img src="/static/img/xray-1.jpg" alt="X-ray 촬영"><span>X-ray 촬영</span></div>
-      <div class="exp-gallery-item rv rv-d2"><img src="/static/img/treat-2.jpg" alt="진료실"><span>진료실</span></div>
-      <div class="exp-gallery-item rv rv-d1"><img src="/static/img/xray-3.jpg" alt="정밀 진단"><span>정밀 진단</span></div>
-      <div class="exp-gallery-item rv rv-d2"><img src="/static/img/treat-6.jpg" alt="시술"><span>시술</span></div>
-      <div class="exp-gallery-item rv rv-d3"><img src="/static/img/consult-3.jpg" alt="사후 상담"><span>사후 상담</span></div>
+      <div class="exp-gallery-item rv"><img src="/static/img/consult-1.jpg" alt="행복한예인치과 상담실" width="600" height="450" loading="lazy"><span>상담실</span></div>
+      <div class="exp-gallery-item rv rv-d1"><img src="/static/img/xray-1.jpg" alt="행복한예인치과 X-ray 디지털 진단" width="600" height="450" loading="lazy"><span>X-ray 촬영</span></div>
+      <div class="exp-gallery-item rv rv-d2"><img src="/static/img/treat-2.jpg" alt="행복한예인치과 진료실" width="600" height="450" loading="lazy"><span>진료실</span></div>
+      <div class="exp-gallery-item rv rv-d1"><img src="/static/img/xray-3.jpg" alt="행복한예인치과 파노라마 정밀 진단" width="600" height="450" loading="lazy"><span>정밀 진단</span></div>
+      <div class="exp-gallery-item rv rv-d2"><img src="/static/img/treat-6.jpg" alt="행복한예인치과 치과 시술 장면" width="600" height="450" loading="lazy"><span>시술</span></div>
+      <div class="exp-gallery-item rv rv-d3"><img src="/static/img/consult-3.jpg" alt="행복한예인치과 사후 상담" width="600" height="450" loading="lazy"><span>사후 상담</span></div>
     </div>
   </div>
 </section>
@@ -524,13 +524,13 @@ ${nav('experience')}
     <div class="sec-label">FAQ</div>
     <h2 class="sec-title rv">환자 경험에 관한 <em>질문</em></h2>
     <div class="faq-list">
-      ${expFaq.map(f => `
-      <div class="faq-item rv">
-        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h4>${f.q}</h4>
-          <i class="fas fa-chevron-down"></i>
+      ${expFaq.map((f, i) => `
+      <div class="faq-item rv" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" aria-controls="exp-faq-${i}" onclick="var o=this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.setAttribute('aria-expanded',o);" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <h4 itemprop="name">${f.q}</h4>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
         </div>
-        <div class="faq-a"><p>${f.a}</p></div>
+        <div class="faq-a" id="exp-faq-${i}" role="region" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">${f.a}</p></div>
       </div>`).join('')}
     </div>
   </div>
@@ -571,7 +571,7 @@ ${nav('location')}
 <!-- HERO -->
 <section class="sub-hero">
   <div class="sub-hero-bg">
-    <img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 위치">
+    <img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 오시는 길 - 서울 중구 남대문로 시청역 도보 5분" width="1200" height="800" loading="eager" fetchpriority="high">
     <div class="sub-hero-overlay"></div>
   </div>
   <div class="sub-hero-breadcrumb">
@@ -698,13 +698,13 @@ ${nav('location')}
     <div class="sec-label">FAQ</div>
     <h2 class="sec-title rv">찾아오시는 길 <em>질문</em></h2>
     <div class="faq-list">
-      ${locFaq.map(f => `
-      <div class="faq-item rv">
-        <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h4>${f.q}</h4>
-          <i class="fas fa-chevron-down"></i>
+      ${locFaq.map((f, i) => `
+      <div class="faq-item rv" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" aria-controls="loc-faq-${i}" onclick="var o=this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');this.setAttribute('aria-expanded',o);" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <h4 itemprop="name">${f.q}</h4>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
         </div>
-        <div class="faq-a"><p>${f.a}</p></div>
+        <div class="faq-a" id="loc-faq-${i}" role="region" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">${f.a}</p></div>
       </div>`).join('')}
     </div>
   </div>
