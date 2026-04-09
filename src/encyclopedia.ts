@@ -300,12 +300,12 @@ export function encyclopediaListPage(): string {
     "@type": "DefinedTermSet",
     "name": "행복한예인치과 치과 용어 백과사전",
     "description": `${TOTAL_TERMS}개 이상의 치과 용어를 쉽게 설명합니다`,
-    "url": "https://yein-dental.pages.dev/encyclopedia",
+    "url": "https://happyyein.kr/encyclopedia",
     "inDefinedTermSet": terms.slice(0, 50).map(t => ({
       "@type": "DefinedTerm",
       "name": t.term,
       "description": t.short,
-      "url": `https://yein-dental.pages.dev/encyclopedia/${t.id}`
+      "url": `https://happyyein.kr/encyclopedia/${t.id}`
     }))
   };
 
@@ -438,11 +438,11 @@ export function encyclopediaDetailPage(id: string): string | null {
     "name": t.term,
     "alternateName": t.termEn || undefined,
     "description": t.short,
-    "url": `https://yein-dental.pages.dev/encyclopedia/${t.id}`,
+    "url": `https://happyyein.kr/encyclopedia/${t.id}`,
     "inDefinedTermSet": {
       "@type": "DefinedTermSet",
       "name": "행복한예인치과 치과 백과사전",
-      "url": "https://yein-dental.pages.dev/encyclopedia"
+      "url": "https://happyyein.kr/encyclopedia"
     }
   };
 

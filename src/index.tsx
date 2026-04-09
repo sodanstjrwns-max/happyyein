@@ -37,7 +37,7 @@ app.use('*', async (c, next) => {
 })
 
 app.get('/', (c) => {
-  const SITE_DOMAIN = 'https://yein-dental.pages.dev';
+  const SITE_DOMAIN = 'https://happyyein.kr';
   const mainDesc = '서울 시청역·명동·을지로·광화문에서 도보 5~10분. 13년간 한자리에서 쌓아온 신뢰의 치과. 발치즉시 임플란트 80%+, 보존과·교정과 전문의 3인 협진. 수요일 야간진료. 행복한예인치과 02-756-2828.';
   const mainTitle = '행복한예인치과 | 시청역·명동·을지로 치과 - 임플란트·보존·심미·교정 전문의 협진';
   const ogImage = `${SITE_DOMAIN}/static/img/dr-han-logo.jpg`;
@@ -1935,17 +1935,17 @@ User-agent: Bingbot
 Allow: /
 Crawl-delay: 2
 
-Sitemap: https://yein-dental.pages.dev/sitemap.xml
+Sitemap: https://happyyein.kr/sitemap.xml
 
 # 행복한예인치과 - Happy Yein Dental Clinic
-# https://yein-dental.pages.dev
+# https://happyyein.kr
 `;
   return c.text(robotsTxt, 200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=86400' });
 })
 
 // ===== SEO: sitemap.xml (이미지 포함) =====
 app.get('/sitemap.xml', (c) => {
-  const domain = 'https://yein-dental.pages.dev';
+  const domain = 'https://happyyein.kr';
   const today = new Date().toISOString().split('T')[0];
   const urls = [
     { loc: '/', priority: '1.0', changefreq: 'weekly', images: [

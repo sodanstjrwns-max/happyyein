@@ -355,7 +355,7 @@ export function renderTreatmentPage(slug: string): string | null {
     "@type": "MedicalWebPage",
     "name": t.title,
     "description": t.metaDesc,
-    "url": `https://yein-dental.pages.dev/treatments/${t.slug}`,
+    "url": `https://happyyein.kr/treatments/${t.slug}`,
     "about": {
       "@type": "MedicalProcedure",
       "name": t.title,

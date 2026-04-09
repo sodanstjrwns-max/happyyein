@@ -4,7 +4,7 @@
 const SITE = {
   name: '행복한예인치과',
   nameEn: 'Happy Yein Dental Clinic',
-  domain: 'https://yein-dental.pages.dev',
+  domain: 'https://happyyein.kr',
   ogImage: '/static/img/dr-han-logo.jpg',
   locale: 'ko_KR',
   phone: '02-756-2828',
