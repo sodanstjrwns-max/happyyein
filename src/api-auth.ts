@@ -3,18 +3,28 @@ import { Hono } from 'hono'
 
 type Bindings = {
   DB: D1Database;
+  ADMIN_PASSWORD?: string;   // wrangler secret put ADMIN_PASSWORD
+  JWT_SECRET?: string;       // wrangler secret put JWT_SECRET
 }
 
 const authApi = new Hono<{ Bindings: Bindings }>()
 
 // ===== 설정 =====
-// 프로덕션에서는 환경변수로 관리하세요 (wrangler secret put ADMIN_PASSWORD)
-const ADMIN_PASSWORD = 'yein2828!admin'
-const JWT_SECRET = 'yein-dental-admin-secret-2026'
+// 프로덕션 배포 후: wrangler secret put ADMIN_PASSWORD / wrangler secret put JWT_SECRET
+const DEFAULT_ADMIN_PASSWORD = 'yein2828!admin'
+const DEFAULT_JWT_SECRET = 'yein-dental-admin-secret-2026'
 const TOKEN_EXPIRY = 24 * 60 * 60 * 1000  // 24시간
 
+// 환경변수 우선, 폴백값 사용 (로컬 개발용)
+function getAdminPassword(env: Bindings): string {
+  return env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD
+}
+function getJwtSecret(env: Bindings): string {
+  return env.JWT_SECRET || DEFAULT_JWT_SECRET
+}
+
 // ===== JWT 유틸리티 (Web Crypto API 사용 — Cloudflare Workers 호환) =====
-async function createJWT(payload: Record<string, any>): Promise<string> {
+async function createJWT(payload: Record<string, any>, secret: string): Promise<string> {
   const header = { alg: 'HS256', typ: 'JWT' }
   const now = Math.floor(Date.now() / 1000)
   const fullPayload = { ...payload, iat: now, exp: now + (TOKEN_EXPIRY / 1000) }
@@ -25,7 +35,7 @@ async function createJWT(payload: Record<string, any>): Promise<string> {
 
   const key = await crypto.subtle.importKey(
     'raw',
-    new TextEncoder().encode(JWT_SECRET),
+    new TextEncoder().encode(secret),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign']
@@ -36,7 +46,7 @@ async function createJWT(payload: Record<string, any>): Promise<string> {
   return `${data}.${encodedSignature}`
 }
 
-async function verifyJWT(token: string): Promise<Record<string, any> | null> {
+async function verifyJWT(token: string, secret: string): Promise<Record<string, any> | null> {
   try {
     const parts = token.split('.')
     if (parts.length !== 3) return null
@@ -46,7 +56,7 @@ async function verifyJWT(token: string): Promise<Record<string, any> | null> {
 
     const key = await crypto.subtle.importKey(
       'raw',
-      new TextEncoder().encode(JWT_SECRET),
+      new TextEncoder().encode(secret),
       { name: 'HMAC', hash: 'SHA-256' },
       false,
       ['verify']
@@ -88,11 +98,11 @@ authApi.post('/login', async (c) => {
       return c.json({ error: '비밀번호를 입력하세요.' }, 400)
     }
 
-    if (password !== ADMIN_PASSWORD) {
+    if (password !== getAdminPassword(c.env)) {
       return c.json({ error: '비밀번호가 일치하지 않습니다.' }, 401)
     }
 
-    const token = await createJWT({ role: 'admin', clinic: 'yein-dental' })
+    const token = await createJWT({ role: 'admin', clinic: 'yein-dental' }, getJwtSecret(c.env))
 
     return c.json({
       success: true,
@@ -115,7 +125,7 @@ authApi.post('/verify', async (c) => {
     }
 
     const token = authHeader.substring(7)
-    const payload = await verifyJWT(token)
+    const payload = await verifyJWT(token, getJwtSecret(c.env))
 
     if (!payload) {
       return c.json({ valid: false, error: '토큰이 만료되었거나 유효하지 않습니다.' }, 401)
@@ -142,7 +152,8 @@ export async function requireAdmin(c: any, next: () => Promise<void>) {
   }
 
   const token = authHeader.substring(7)
-  const payload = await verifyJWT(token)
+  const secret = getJwtSecret(c.env)
+  const payload = await verifyJWT(token, secret)
 
   if (!payload || payload.role !== 'admin') {
     return c.json({ error: '인증이 만료되었습니다. 다시 로그인하세요.' }, 401)
@@ -151,5 +162,5 @@ export async function requireAdmin(c: any, next: () => Promise<void>) {
   await next()
 }
 
-export { verifyJWT }
+export { verifyJWT, getJwtSecret }
 export default authApi

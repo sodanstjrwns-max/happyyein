@@ -1,31 +1,35 @@
 // 회원 인증 API — 회원가입, 로그인, 프로필
 import { Hono } from 'hono'
 
-type Bindings = { DB: D1Database }
+type Bindings = { DB: D1Database; USER_JWT_SECRET?: string }
 const userAuthApi = new Hono<{ Bindings: Bindings }>()
 
 // ===== 설정 =====
-const JWT_SECRET = 'yein-dental-user-secret-2026'
+// 프로덕션: wrangler secret put USER_JWT_SECRET
+const DEFAULT_USER_JWT_SECRET = 'yein-dental-user-secret-2026'
 const TOKEN_EXPIRY = 7 * 24 * 60 * 60 * 1000  // 7일
+function getUserJwtSecret(env: Bindings): string {
+  return env.USER_JWT_SECRET || DEFAULT_USER_JWT_SECRET
+}
 
 // ===== JWT 유틸리티 (Web Crypto API) =====
-async function createJWT(payload: Record<string, any>): Promise<string> {
+async function createJWT(payload: Record<string, any>, secret: string): Promise<string> {
   const header = { alg: 'HS256', typ: 'JWT' }
   const now = Math.floor(Date.now() / 1000)
   const fullPayload = { ...payload, iat: now, exp: now + (TOKEN_EXPIRY / 1000) }
   const encodedHeader = b64url(JSON.stringify(header))
   const encodedPayload = b64url(JSON.stringify(fullPayload))
   const data = `${encodedHeader}.${encodedPayload}`
-  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(JWT_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
   const signature = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(data))
   return `${data}.${b64urlFromBytes(signature)}`
 }
 
-async function verifyUserJWT(token: string): Promise<Record<string, any> | null> {
+async function verifyUserJWT(token: string, secret: string): Promise<Record<string, any> | null> {
   try {
     const [eh, ep, es] = token.split('.')
     if (!eh || !ep || !es) return null
-    const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(JWT_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify'])
+    const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify'])
     // Decode base64url signature to bytes
     let sigB64 = es.replace(/-/g, '+').replace(/_/g, '/')
     while (sigB64.length % 4) sigB64 += '='
@@ -177,7 +181,7 @@ userAuthApi.post('/register', async (c) => {
     await db.batch(consentStmts)
 
     // JWT 토큰 발급
-    const token = await createJWT({ id: userId, email: body.email, name: body.name, role: 'user' })
+    const token = await createJWT({ id: userId, email: body.email, name: body.name, role: 'user' }, getUserJwtSecret(c.env))
 
     return c.json({
       success: true,
@@ -224,7 +228,7 @@ userAuthApi.post('/login', async (c) => {
     // last_login 갱신
     await db.prepare('UPDATE users SET last_login_at = datetime("now") WHERE id = ?').bind(user.id).run()
 
-    const token = await createJWT({ id: user.id, email: user.email, name: user.name, role: user.role })
+    const token = await createJWT({ id: user.id, email: user.email, name: user.name, role: user.role }, getUserJwtSecret(c.env))
 
     return c.json({
       success: true,
@@ -245,7 +249,7 @@ userAuthApi.post('/verify', async (c) => {
   if (!authHeader?.startsWith('Bearer ')) {
     return c.json({ valid: false }, 401)
   }
-  const payload = await verifyUserJWT(authHeader.substring(7))
+  const payload = await verifyUserJWT(authHeader.substring(7), getUserJwtSecret(c.env))
   if (!payload) return c.json({ valid: false }, 401)
   return c.json({ valid: true, user: { id: payload.id, email: payload.email, name: payload.name, role: payload.role } })
 })
@@ -258,7 +262,7 @@ userAuthApi.get('/profile', async (c) => {
   if (!authHeader?.startsWith('Bearer ')) {
     return c.json({ error: '로그인이 필요합니다.' }, 401)
   }
-  const payload = await verifyUserJWT(authHeader.substring(7))
+  const payload = await verifyUserJWT(authHeader.substring(7), getUserJwtSecret(c.env))
   if (!payload) return c.json({ error: '인증이 만료되었습니다.' }, 401)
 
   const db = c.env.DB

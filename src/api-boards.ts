@@ -197,14 +197,21 @@ boards.post('/:board', requireAdmin, async (c) => {
 
     const postId = result.meta.last_row_id
 
-    // 이미지 저장
+    // 이미지 저장 (url/type 또는 image_url/image_type 양쪽 지원)
     if (images && Array.isArray(images) && images.length > 0) {
-      const stmts = images.map((img: { url: string; type: string; sort_order: number }) =>
-        c.env.DB.prepare(
-          `INSERT INTO post_images (post_id, image_url, image_type, sort_order) VALUES (?, ?, ?, ?)`
-        ).bind(postId, img.url, img.type || 'content', img.sort_order || 0)
-      )
-      await c.env.DB.batch(stmts)
+      const stmts = images
+        .filter((img: any) => (img.url || img.image_url))  // URL 없는 항목 제외
+        .map((img: any, i: number) =>
+          c.env.DB.prepare(
+            `INSERT INTO post_images (post_id, image_url, image_type, sort_order) VALUES (?, ?, ?, ?)`
+          ).bind(
+            postId,
+            img.url || img.image_url,
+            img.type || img.image_type || 'content',
+            img.sort_order ?? i
+          )
+        )
+      if (stmts.length > 0) await c.env.DB.batch(stmts)
     }
 
     return c.json({ success: true, id: postId })
@@ -244,12 +251,19 @@ boards.put('/:board/:id', requireAdmin, async (c) => {
       await c.env.DB.prepare('DELETE FROM post_images WHERE post_id = ?').bind(id).run()
       
       if (images.length > 0) {
-        const stmts = images.map((img: { url: string; type: string; sort_order: number }) =>
-          c.env.DB.prepare(
-            `INSERT INTO post_images (post_id, image_url, image_type, sort_order) VALUES (?, ?, ?, ?)`
-          ).bind(id, img.url, img.type || 'content', img.sort_order || 0)
-        )
-        await c.env.DB.batch(stmts)
+        const stmts = images
+          .filter((img: any) => (img.url || img.image_url))
+          .map((img: any, i: number) =>
+            c.env.DB.prepare(
+              `INSERT INTO post_images (post_id, image_url, image_type, sort_order) VALUES (?, ?, ?, ?)`
+            ).bind(
+              id,
+              img.url || img.image_url,
+              img.type || img.image_type || 'content',
+              img.sort_order ?? i
+            )
+          )
+        if (stmts.length > 0) await c.env.DB.batch(stmts)
       }
     }
 
