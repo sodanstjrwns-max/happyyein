@@ -6,6 +6,9 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
+  // Production D1/R2: Configure bindings via Cloudflare Dashboard > Pages > Settings > Functions
+  // Or add real database_id here after: npx wrangler d1 create yein-dental-db
+  // Local dev uses: --d1=yein-dental-db --r2=yein-dental-images --local
   "d1_databases": [
     {
       "binding": "DB",
