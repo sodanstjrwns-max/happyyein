@@ -318,7 +318,7 @@ export function encyclopediaListPage(): string {
 
   return `${head({
     title: '치과 백과사전',
-    description: '행복한예인치과가 제공하는 ${TOTAL_TERMS}개+ 치과 용어 백과사전. 임플란트, 신경치료, 교정, 심미치료 등 모든 치과 용어를 쉽게 설명합니다. 시청역·명동·을지로 치과 02-756-2828',
+    description: `행복한예인치과가 제공하는 ${TOTAL_TERMS}개+ 치과 용어 백과사전. 임플란트, 신경치료, 교정, 심미치료 등 모든 치과 용어를 쉽게 설명합니다. 시청역·명동·을지로 치과 02-756-2828`,
     path: '/encyclopedia',
     keywords: '치과 용어, 치과 백과사전, 임플란트 뜻, 신경치료 뜻, 크라운 뜻, 치과 용어 사전, 치과 용어 설명, 행복한예인치과',
     breadcrumbs: [{ name: '홈', url: '/' }, { name: '치과 백과사전', url: '/encyclopedia' }],

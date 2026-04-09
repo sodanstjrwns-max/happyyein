@@ -1881,19 +1881,28 @@ app.get('/admin', (c) => c.html(adminDashboardPage()))
 app.get('/before-after', (c) => c.html(boardListPage('before-after')))
 app.get('/before-after/write', (c) => c.html(boardWritePage('before-after')))
 app.get('/before-after/:id/edit', (c) => c.html(boardEditPage('before-after')))
-app.get('/before-after/:id', (c) => c.html(boardDetailPage('before-after')))
+app.get('/before-after/:id', async (c) => {
+  const html = await boardDetailPage('before-after', c.env.DB, c.req.param('id'))
+  return c.html(html)
+})
 
 // 블로그
 app.get('/blog', (c) => c.html(boardListPage('blog')))
 app.get('/blog/write', (c) => c.html(boardWritePage('blog')))
 app.get('/blog/:id/edit', (c) => c.html(boardEditPage('blog')))
-app.get('/blog/:id', (c) => c.html(boardDetailPage('blog')))
+app.get('/blog/:id', async (c) => {
+  const html = await boardDetailPage('blog', c.env.DB, c.req.param('id'))
+  return c.html(html)
+})
 
 // 공지사항
 app.get('/notice', (c) => c.html(boardListPage('notice')))
 app.get('/notice/write', (c) => c.html(boardWritePage('notice')))
 app.get('/notice/:id/edit', (c) => c.html(boardEditPage('notice')))
-app.get('/notice/:id', (c) => c.html(boardDetailPage('notice')))
+app.get('/notice/:id', async (c) => {
+  const html = await boardDetailPage('notice', c.env.DB, c.req.param('id'))
+  return c.html(html)
+})
 
 // 치과 백과사전
 app.get('/encyclopedia', (c) => c.html(encyclopediaListPage()))

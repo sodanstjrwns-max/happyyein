@@ -584,13 +584,78 @@ ${scripts()}`
 
 
 // ==========================================
-// 상세 페이지
+// 상세 페이지 (SSR: 서버에서 글 데이터 조회 → 메타태그 동적 생성)
 // ==========================================
-export function boardDetailPage(board: string): string {
+
+// HTML 특수문자 이스케이프 (서버용)
+function escHtmlServer(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// HTML 태그 제거 후 텍스트만 추출 (description용)
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+interface BoardDetailData {
+  post: { id: number; title: string; content: string; thumbnail: string; view_count: number; created_at: string; } | null;
+  images: { image_url: string; image_type: string; }[];
+}
+
+export async function boardDetailPage(board: string, db: D1Database, postId: string): Promise<string> {
   const cfg = BOARD_CONFIG[board]
   if (!cfg) return ''
 
-  return `${head({ title: cfg.name + ' 상세', description: cfg.metaDesc, path: `/${cfg.slug}`, noindex: true })}
+  // SSR: 서버에서 글 데이터 조회 (조회수 증가 포함)
+  let postData: BoardDetailData = { post: null, images: [] };
+  try {
+    await db.prepare('UPDATE posts SET view_count = view_count + 1 WHERE board = ? AND id = ?').bind(board, postId).run();
+    const post = await db.prepare('SELECT * FROM posts WHERE board = ? AND id = ?').bind(board, postId).first() as any;
+    if (post) {
+      const images = await db.prepare('SELECT image_url, image_type, sort_order FROM post_images WHERE post_id = ? ORDER BY sort_order').bind(post.id).all();
+      postData = { post, images: (images.results || []) as any };
+    }
+  } catch (e) { /* DB 오류 시 빈 데이터로 진행 */ }
+
+  // 동적 SEO 메타 생성
+  const hasPost = !!postData.post;
+  const postTitle = hasPost ? postData.post!.title : '게시글을 찾을 수 없습니다';
+  const pageTitle = hasPost ? `${postTitle} - ${cfg.name}` : `${cfg.name}`;
+
+  // description: 본문에서 HTML 태그 제거 후 첫 155자
+  let pageDesc = cfg.metaDesc;
+  if (hasPost && postData.post!.content) {
+    const plainText = stripHtml(postData.post!.content);
+    pageDesc = plainText.length > 155 ? plainText.substring(0, 155) + '...' : plainText;
+    if (pageDesc.length < 50) pageDesc = `${postTitle} - ${cfg.metaDesc}`;
+  }
+
+  // 블로그·비포애프터 상세는 index (검색 노출), 공지사항은 noindex
+  const shouldIndex = board !== 'notice' && hasPost;
+  // canonical: 상세 페이지 자체 URL
+  const canonicalPath = hasPost ? `/${cfg.slug}/${postId}` : `/${cfg.slug}`;
+
+  // OG 이미지: 썸네일 → 기본 이미지
+  const ogImage = (hasPost && postData.post!.thumbnail) ? postData.post!.thumbnail : undefined;
+
+  // article 날짜 정보
+  const publishedTime = hasPost ? postData.post!.created_at : undefined;
+
+  return `${head({
+    title: pageTitle,
+    description: escHtmlServer(pageDesc),
+    path: canonicalPath,
+    noindex: !shouldIndex,
+    ogType: hasPost ? 'article' : 'website',
+    ogImage: ogImage,
+    articlePublishedTime: publishedTime,
+    keywords: hasPost ? `${escHtmlServer(postTitle)}, 행복한예인치과, ${cfg.name}, 시청역 치과, 명동 치과, 을지로 치과` : undefined,
+    breadcrumbs: [
+      { name: '홈', url: '/' },
+      { name: cfg.name, url: `/${cfg.slug}` },
+      ...(hasPost ? [{ name: postTitle, url: canonicalPath }] : [])
+    ]
+  })}
 ${nav(cfg.navKey)}
 
 <style>${boardCSS}</style>
@@ -599,7 +664,47 @@ ${nav(cfg.navKey)}
   <div class="page-inner">
     <a href="/${cfg.slug}" class="board-back"><i class="fas fa-arrow-left"></i> ${cfg.nameEn} 목록으로</a>
     <div class="board-detail" id="detailWrap">
-      <div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;color:var(--gold);opacity:0.3;"></i></div>
+      ${hasPost ? (() => {
+        const post = postData.post!;
+        const images = postData.images;
+        let html = '';
+        // SSR H1: 글 제목
+        html += `<h1 class="board-detail-title">${escHtmlServer(post.title)}</h1>`;
+        html += `<div class="board-detail-meta"><span><i class="far fa-calendar-alt"></i> ${post.created_at ? post.created_at.substring(0, 10) : ''}</span><span><i class="fas fa-eye"></i> ${post.view_count}</span></div>`;
+
+        // 블로그: 작성자 카드
+        if (board === 'blog') {
+          html += '<div class="detail-author-card"><img src="/static/img/dr-han-profile.jpg" alt="한승대 대표원장 프로필"><div class="detail-author-info"><span class="author-name">한승대 대표원장</span><span class="author-role">Integrative Dentistry Specialist</span><span class="author-desc">통합치의학과 전문의 · 치의학 박사 · 경희대 치의학전문대학원<br>13년간 한자리에서 쌓아온 신뢰의 치과</span></div></div>';
+        }
+
+        // 비포애프터: 전후 이미지
+        if (board === 'before-after') {
+          const beforeIntra = images.find((i: any) => i.image_type === 'before_intra');
+          const afterIntra = images.find((i: any) => i.image_type === 'after_intra');
+          const beforePano = images.find((i: any) => i.image_type === 'before_pano');
+          const afterPano = images.find((i: any) => i.image_type === 'after_pano');
+          html += '<div class="ba-detail-grid">';
+          if (beforeIntra || afterIntra) {
+            html += '<div><div class="ba-detail-pair-label">구내 사진 (Intraoral)</div><div class="ba-detail-pair">';
+            if (beforeIntra) html += `<div class="ba-detail-img"><img src="${(beforeIntra as any).image_url}" alt="${escHtmlServer(post.title)} 치료 전 구내사진"><div class="ba-label ba-label-before">Before</div></div>`;
+            if (afterIntra) html += `<div class="ba-detail-img"><img src="${(afterIntra as any).image_url}" alt="${escHtmlServer(post.title)} 치료 후 구내사진"><div class="ba-label ba-label-after">After</div></div>`;
+            html += '</div></div>';
+          }
+          if (beforePano || afterPano) {
+            html += '<div><div class="ba-detail-pair-label">파노라마 (Panoramic X-ray)</div><div class="ba-detail-pair">';
+            if (beforePano) html += `<div class="ba-detail-img"><img src="${(beforePano as any).image_url}" alt="${escHtmlServer(post.title)} 치료 전 파노라마"><div class="ba-label ba-label-before">Before</div></div>`;
+            if (afterPano) html += `<div class="ba-detail-img"><img src="${(afterPano as any).image_url}" alt="${escHtmlServer(post.title)} 치료 후 파노라마"><div class="ba-label ba-label-after">After</div></div>`;
+            html += '</div></div>';
+          }
+          html += '</div>';
+        }
+
+        // 본문
+        if (post.content) {
+          html += `<article class="board-detail-content">${post.content}</article>`;
+        }
+        return html;
+      })() : `<div class="board-empty"><i class="fas fa-exclamation-circle"></i><p>게시글을 찾을 수 없습니다.</p></div>`}
     </div>
   </div>
 </section>
@@ -609,89 +714,22 @@ ${footer()}
 <script>
 const BOARD = '${board}';
 const BOARD_SLUG = '${cfg.slug}';
-const postId = window.location.pathname.split('/').pop();
+const postId = '${postId}';
 
-async function loadDetail() {
-  try {
-    const res = await fetch('/api/boards/' + BOARD + '/' + postId);
-    const data = await res.json();
-    if (!data.post) {
-      document.getElementById('detailWrap').innerHTML = '<div class="board-empty"><i class="fas fa-exclamation-circle"></i><p>게시글을 찾을 수 없습니다.</p></div>';
-      return;
+// 관리 버튼 동적 추가 (관리자 로그인 시만)
+(function() {
+  if (localStorage.getItem('admin_token')) {
+    const wrap = document.getElementById('detailWrap');
+    if (wrap && wrap.querySelector('.board-detail-title')) {
+      const btnDiv = document.createElement('div');
+      btnDiv.style.cssText = 'margin-top:48px;display:flex;gap:12px;';
+      btnDiv.innerHTML = '<a href="/' + BOARD_SLUG + '/' + postId + '/edit" class="btn btn-outline" style="font-size:0.7rem;padding:12px 28px;"><i class="fas fa-edit"></i> 수정</a>'
+        + '<button onclick="deletePost()" class="btn btn-ghost" style="font-size:0.7rem;padding:12px 28px;border-color:rgba(255,0,0,0.3);color:rgba(255,100,100,0.8);"><i class="fas fa-trash"></i> 삭제</button>'
+        + '<a href="/admin" class="btn btn-ghost" style="font-size:0.7rem;padding:12px 28px;"><i class="fas fa-cog"></i> 관리자</a>';
+      wrap.appendChild(btnDiv);
     }
-
-    const post = data.post;
-    const images = data.images || [];
-    let html = '';
-
-    html += '<h1 class="board-detail-title">' + escHtml(post.title) + '</h1>';
-    html += '<div class="board-detail-meta"><span><i class="far fa-calendar-alt"></i> ' + formatDate(post.created_at) + '</span><span><i class="fas fa-eye"></i> ' + post.view_count + '</span></div>';
-
-    ${board === 'blog' ? `
-    // 블로그 작성자 카드
-    html += '<div class="detail-author-card"><img src="/static/img/dr-han-profile.jpg" alt="한승대 대표원장 프로필"><div class="detail-author-info"><span class="author-name">한승대 대표원장</span><span class="author-role">Integrative Dentistry Specialist</span><span class="author-desc">통합치의학과 전문의 · 치의학 박사 · 경희대 치의학전문대학원<br>13년간 한자리에서 쌓아온 신뢰의 치과</span></div></div>';
-    ` : ''}
-
-    ${board === 'before-after' ? `
-    // 비포애프터: 구내사진, 파노라마 전후 이미지
-    const beforeIntra = images.find(i => i.image_type === 'before_intra');
-    const afterIntra = images.find(i => i.image_type === 'after_intra');
-    const beforePano = images.find(i => i.image_type === 'before_pano');
-    const afterPano = images.find(i => i.image_type === 'after_pano');
-
-    html += '<div class="ba-detail-grid">';
-    // 구내사진 쌍
-    if (beforeIntra || afterIntra) {
-      html += '<div>';
-      html += '<div class="ba-detail-pair-label">구내 사진 (Intraoral)</div>';
-      html += '<div class="ba-detail-pair">';
-      if (beforeIntra) {
-        html += '<div class="ba-detail-img"><img src="' + beforeIntra.image_url + '" alt="치료 전 구내사진"><div class="ba-label ba-label-before">Before</div></div>';
-      }
-      if (afterIntra) {
-        html += '<div class="ba-detail-img"><img src="' + afterIntra.image_url + '" alt="치료 후 구내사진"><div class="ba-label ba-label-after">After</div></div>';
-      }
-      html += '</div></div>';
-    }
-    // 파노라마 쌍
-    if (beforePano || afterPano) {
-      html += '<div>';
-      html += '<div class="ba-detail-pair-label">파노라마 (Panoramic X-ray)</div>';
-      html += '<div class="ba-detail-pair">';
-      if (beforePano) {
-        html += '<div class="ba-detail-img"><img src="' + beforePano.image_url + '" alt="치료 전 파노라마"><div class="ba-label ba-label-before">Before</div></div>';
-      }
-      if (afterPano) {
-        html += '<div class="ba-detail-img"><img src="' + afterPano.image_url + '" alt="치료 후 파노라마"><div class="ba-label ba-label-after">After</div></div>';
-      }
-      html += '</div></div>';
-    }
-    html += '</div>';
-    ` : `
-    // 블로그/공지: 본문 HTML이 이미지를 포함 (인라인)
-    // 기존 이미지 갤러리 방식은 사용하지 않음
-    `}
-
-    // 본문 (공통) — 블로그/공지는 H태그+인라인 이미지가 포함된 HTML
-    if (post.content) {
-      html += '<article class="board-detail-content">' + post.content + '</article>';
-    }
-
-    // 관리 버튼 (로그인된 관리자만 표시)
-    if (localStorage.getItem('admin_token')) {
-      html += '<div style="margin-top:48px;display:flex;gap:12px;">';
-      html += '<a href="/' + BOARD_SLUG + '/' + postId + '/edit" class="btn btn-outline" style="font-size:0.7rem;padding:12px 28px;"><i class="fas fa-edit"></i> 수정</a>';
-      html += '<button onclick="deletePost()" class="btn btn-ghost" style="font-size:0.7rem;padding:12px 28px;border-color:rgba(255,0,0,0.3);color:rgba(255,100,100,0.8);"><i class="fas fa-trash"></i> 삭제</button>';
-      html += '<a href="/admin" class="btn btn-ghost" style="font-size:0.7rem;padding:12px 28px;"><i class="fas fa-cog"></i> 관리자</a>';
-      html += '</div>';
-    }
-
-    document.getElementById('detailWrap').innerHTML = html;
-  } catch (err) {
-    console.error(err);
-    document.getElementById('detailWrap').innerHTML = '<div class="board-empty"><i class="fas fa-exclamation-circle"></i><p>로딩 실패</p></div>';
   }
-}
+})();
 
 async function deletePost() {
   if (!confirm('정말 삭제하시겠습니까?')) return;
@@ -706,11 +744,6 @@ async function deletePost() {
     alert(data.error || '삭제 실패. 관리자 로그인이 필요합니다.');
   }
 }
-
-function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-function formatDate(d) { if (!d) return ''; return d.substring(0, 10); }
-
-loadDetail();
 </script>
 ${scripts()}`
 }
