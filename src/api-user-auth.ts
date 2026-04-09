@@ -188,7 +188,7 @@ userAuthApi.post('/register', async (c) => {
       token,
       user: { id: userId, email: body.email, name: body.name },
       message: '회원가입이 완료되었습니다.'
-    })
+    }, 201)
   } catch (err: any) {
     console.error('Register error:', err)
     return c.json({ error: '회원가입 중 오류가 발생했습니다.' }, 500)

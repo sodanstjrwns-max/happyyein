@@ -92,8 +92,8 @@ boards.get('/:board', async (c) => {
     return c.json({ error: '잘못된 게시판입니다.' }, 400)
   }
 
-  const page = parseInt(c.req.query('page') || '1')
-  const limit = parseInt(c.req.query('limit') || '12')
+  const page = Math.max(1, parseInt(c.req.query('page') || '1') || 1)
+  const limit = Math.min(50, Math.max(1, parseInt(c.req.query('limit') || '12') || 12))
   const offset = (page - 1) * limit
 
   try {

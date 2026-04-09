@@ -1,5 +1,14 @@
 // 공통 레이아웃: head, nav, footer, scripts
 
+// HTML 특수문자 이스케이프 (XSS 방어)
+function escAttr(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+// JSON-LD 안전 출력 (</script> 조기 종료 + HTML 태그 인젝션 방지)
+function safeJsonLd(obj: any): string {
+  return JSON.stringify(obj).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
+}
+
 // 사이트 기본 정보 상수
 const SITE = {
   name: '행복한예인치과',
@@ -40,9 +49,11 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
     o = opts;
   }
 
-  const fullTitle = o.path === '/'
+  const rawTitle = o.path === '/'
     ? `${o.title}`
     : `${o.title} | ${SITE.name}`;
+  const fullTitle = escAttr(rawTitle);
+  const safeDesc = escAttr(o.description);
   const canonicalUrl = `${SITE.domain}${o.path}`;
   const ogImage = o.ogImage
     ? (o.ogImage.startsWith('http') ? o.ogImage : `${SITE.domain}${o.ogImage}`)
@@ -118,16 +129,16 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
   } : null;
 
   const jsonLdScripts = [
-    `<script type="application/ld+json">${JSON.stringify(orgJsonLd)}</script>`
+    `<script type="application/ld+json">${safeJsonLd(orgJsonLd)}</script>`
   ];
   if (breadcrumbJsonLd) {
-    jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify(breadcrumbJsonLd)}</script>`);
+    jsonLdScripts.push(`<script type="application/ld+json">${safeJsonLd(breadcrumbJsonLd)}</script>`);
   }
   if (o.jsonLd) {
     if (Array.isArray(o.jsonLd)) {
-      o.jsonLd.forEach(ld => jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify(ld)}</script>`));
+      o.jsonLd.forEach(ld => jsonLdScripts.push(`<script type="application/ld+json">${safeJsonLd(ld)}</script>`));
     } else {
-      jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify(o.jsonLd)}</script>`);
+      jsonLdScripts.push(`<script type="application/ld+json">${safeJsonLd(o.jsonLd)}</script>`);
     }
   }
 
@@ -139,7 +150,7 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
 
 <!-- SEO 기본 -->
 <title>${fullTitle}</title>
-<meta name="description" content="${o.description}">
+<meta name="description" content="${safeDesc}">
 <meta name="robots" content="${robots}">
 <link rel="canonical" href="${canonicalUrl}">
 
@@ -147,7 +158,7 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
 <meta property="og:type" content="${ogType}">
 <meta property="og:site_name" content="${SITE.name}">
 <meta property="og:title" content="${fullTitle}">
-<meta property="og:description" content="${o.description}">
+<meta property="og:description" content="${safeDesc}">
 <meta property="og:url" content="${canonicalUrl}">
 <meta property="og:image" content="${ogImage}">
 <meta property="og:locale" content="${SITE.locale}">
@@ -155,7 +166,7 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${fullTitle}">
-<meta name="twitter:description" content="${o.description}">
+<meta name="twitter:description" content="${safeDesc}">
 <meta name="twitter:image" content="${ogImage}">
 
 <!-- Naver 검색 최적화 -->
@@ -169,7 +180,7 @@ ${o.articleModifiedTime ? `<meta property="article:modified_time" content="${o.a
 <meta name="author" content="${SITE.name}">
 <meta name="format-detection" content="telephone=yes">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-${o.keywords ? `<meta name="keywords" content="${o.keywords}">` : ''}
+${o.keywords ? `<meta name="keywords" content="${escAttr(o.keywords)}">` : ''}
 <meta name="geo.region" content="KR-11">
 <meta name="geo.placename" content="서울특별시 중구">
 <meta name="geo.position" content="${SITE.geo.lat};${SITE.geo.lng}">
