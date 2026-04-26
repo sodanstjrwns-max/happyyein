@@ -397,7 +397,6 @@ ${nav('encyclopedia')}
 
 ${footer()}
 <script>
-${scripts().replace(/<\/?script>/g, '')}
 let currentCat = 'all';
 function filterTerms() {
   const q = document.getElementById('encSearch').value.toLowerCase().trim();
@@ -418,7 +417,7 @@ function filterCat(cat, btn) {
   filterTerms();
 }
 </script>
-</body></html>`;
+${scripts()}`;
 }
 
 // ===========================
