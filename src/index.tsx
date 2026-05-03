@@ -9,8 +9,9 @@ import userAuthApi from './api-user-auth'
 import { adminLoginPage, adminDashboardPage } from './admin-pages'
 import { registerPage, loginPage } from './auth-pages'
 import { encyclopediaListPage, encyclopediaDetailPage } from './encyclopedia'
+import autoBlogApi, { handleScheduled } from './auto-blog'
 
-type Bindings = { DB: D1Database; R2: R2Bucket }
+type Bindings = { DB: D1Database; R2: R2Bucket; OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; AUTO_BLOG_SECRET?: string }
 const app = new Hono<{ Bindings: Bindings }>()
 
 // ===== 보안 헤더 미들웨어 (SEO/보안 최적화) =====
@@ -1871,6 +1872,7 @@ app.get('/login', (c) => c.html(loginPage()))
 app.route('/api/upload', uploadApi)
 app.route('/api/images', imagesApi)
 app.route('/api/boards', boardsApi)
+app.route('/api/auto-blog', autoBlogApi)
 
 // ===== ADMIN PAGES =====
 app.get('/admin/login', (c) => c.html(adminLoginPage()))
@@ -2013,4 +2015,10 @@ ${urls.map(u => `  <url>
   return c.text(sitemap, 200, { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
 })
 
-export default app
+// ===== Cloudflare Cron Trigger — 매일 자동 블로그 생성 =====
+export default {
+  fetch: app.fetch,
+  async scheduled(event: ScheduledEvent, env: Bindings, ctx: ExecutionContext) {
+    ctx.waitUntil(handleScheduled(env))
+  },
+}

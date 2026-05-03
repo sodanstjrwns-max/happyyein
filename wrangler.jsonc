@@ -21,5 +21,10 @@
       "binding": "R2",
       "bucket_name": "yein-dental-images"
     }
-  ]
+  ],
+  // 자동 블로그: 매일 오전 7시(KST = UTC 22:00 전날) 자동 실행
+  // Production secrets: wrangler secret put OPENAI_API_KEY / AUTO_BLOG_SECRET
+  "triggers": {
+    "crons": ["0 22 * * *"]
+  }
 }
