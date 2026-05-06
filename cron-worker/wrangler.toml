@@ -1,0 +1,10 @@
+name = "happyyein-cron"
+main = "index.js"
+compatibility_date = "2026-04-07"
+
+[triggers]
+crons = ["0 22 * * *"]
+
+[vars]
+BLOG_URL = "https://happyyein.pages.dev/api/auto-blog/generate"
+AUTO_BLOG_SECRET = "yein-auto-blog-2026"
