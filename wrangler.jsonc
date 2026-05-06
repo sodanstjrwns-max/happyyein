@@ -13,7 +13,7 @@
     {
       "binding": "DB",
       "database_name": "yein-dental-db",
-      "database_id": "local-dev-placeholder"
+      "database_id": "00671886-3f10-49d2-8731-6766e944223e"
     }
   ],
   "r2_buckets": [
@@ -21,10 +21,9 @@
       "binding": "R2",
       "bucket_name": "yein-dental-images"
     }
-  ],
-  // 자동 블로그: 매일 오전 7시(KST = UTC 22:00 전날) 자동 실행
-  // Production secrets: wrangler secret put OPENAI_API_KEY / AUTO_BLOG_SECRET
-  "triggers": {
-    "crons": ["0 22 * * *"]
-  }
+  ]
+  // 자동 블로그: 매일 오전 7시(KST) 자동 발행
+  // Cloudflare Pages는 cron trigger 미지원 → GitHub Actions 스케줄러로 매일 호출
+  // POST https://happyyein.pages.dev/api/auto-blog/generate (Authorization: Bearer AUTO_BLOG_SECRET)
+  // Production secrets: wrangler pages secret put OPENAI_API_KEY / AUTO_BLOG_SECRET
 }
