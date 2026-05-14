@@ -1925,6 +1925,14 @@ app.get('/api/info', (c) => {
   })
 })
 
+// ===== SEO: IndexNow 검증 키 =====
+app.get('/a1b2c3d4e5f6g7h8i9j0happyyein2026.txt', (c) => {
+  return c.text('a1b2c3d4e5f6g7h8i9j0happyyein2026', 200, {
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Cache-Control': 'public, max-age=604800'
+  });
+})
+
 // ===== SEO: robots.txt =====
 app.get('/robots.txt', (c) => {
   const robotsTxt = `User-agent: *
@@ -1954,65 +1962,115 @@ Sitemap: https://happyyein.kr/sitemap.xml
   return c.text(robotsTxt, 200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=86400' });
 })
 
-// ===== SEO: sitemap.xml (이미지 포함) =====
-app.get('/sitemap.xml', (c) => {
+// ===== SEO: sitemap.xml (DB 동적 생성 — 모든 포스트 개별 URL 포함) =====
+app.get('/sitemap.xml', async (c) => {
   const domain = 'https://happyyein.kr';
   const today = new Date().toISOString().split('T')[0];
-  const urls = [
-    { loc: '/', priority: '1.0', changefreq: 'weekly', images: [
+  const db = c.env.DB;
+
+  // 정적 페이지
+  const staticUrls = [
+    { loc: '/', priority: '1.0', changefreq: 'weekly', lastmod: today, images: [
       { url: '/static/img/dr-han-smile.jpg', title: '한승대 대표원장 - 행복한예인치과' },
       { url: '/static/img/dr-han-profile.jpg', title: '한승대 원장 프로필' },
       { url: '/static/img/logo.png', title: '행복한예인치과 로고' }
     ]},
-    { loc: '/philosophy', priority: '0.8', changefreq: 'monthly', images: [
+    { loc: '/philosophy', priority: '0.8', changefreq: 'monthly', lastmod: today, images: [
       { url: '/static/img/dr-han-logo.jpg', title: '행복한예인치과 진료 철학' }
     ]},
-    { loc: '/doctors', priority: '0.8', changefreq: 'monthly', images: [
+    { loc: '/doctors', priority: '0.8', changefreq: 'monthly', lastmod: today, images: [
       { url: '/static/img/dr-han-front.jpg', title: '행복한예인치과 의료진' },
       { url: '/static/img/dr-han-profile.jpg', title: '한승대 대표원장' }
     ]},
-    { loc: '/experience', priority: '0.7', changefreq: 'monthly', images: [
+    { loc: '/experience', priority: '0.7', changefreq: 'monthly', lastmod: today, images: [
       { url: '/static/img/consult-2.jpg', title: '행복한예인치과 환자 경험' }
     ]},
-    { loc: '/location', priority: '0.8', changefreq: 'monthly', images: [
+    { loc: '/location', priority: '0.8', changefreq: 'monthly', lastmod: today, images: [
       { url: '/static/img/dr-han-logo.jpg', title: '행복한예인치과 오시는 길' }
     ]},
-    { loc: '/treatments/implant', priority: '0.9', changefreq: 'monthly', images: [
+    { loc: '/treatments/implant', priority: '0.9', changefreq: 'monthly', lastmod: today, images: [
       { url: '/static/img/treat-1.jpg', title: '발치즉시 임플란트 시술' }
     ]},
-    { loc: '/treatments/preservation', priority: '0.8', changefreq: 'monthly', images: [
+    { loc: '/treatments/preservation', priority: '0.8', changefreq: 'monthly', lastmod: today, images: [
       { url: '/static/img/treat-2.jpg', title: '치아보존치료 신경치료' }
     ]},
-    { loc: '/treatments/aesthetic', priority: '0.8', changefreq: 'monthly', images: [
+    { loc: '/treatments/aesthetic', priority: '0.8', changefreq: 'monthly', lastmod: today, images: [
       { url: '/static/img/treat-3.jpg', title: '앞니 심미치료 라미네이트' }
     ]},
-    { loc: '/treatments/orthodontics', priority: '0.8', changefreq: 'monthly', images: [
+    { loc: '/treatments/orthodontics', priority: '0.8', changefreq: 'monthly', lastmod: today, images: [
       { url: '/static/img/treat-4.jpg', title: '치아교정 투명교정' }
     ]},
-    { loc: '/treatments/general', priority: '0.7', changefreq: 'monthly', images: [
+    { loc: '/treatments/general', priority: '0.7', changefreq: 'monthly', lastmod: today, images: [
       { url: '/static/img/treat-5.jpg', title: '일반 예방 치료' }
     ]},
-    { loc: '/before-after', priority: '0.7', changefreq: 'weekly', images: [] },
-    { loc: '/blog', priority: '0.7', changefreq: 'weekly', images: [] },
-    { loc: '/notice', priority: '0.6', changefreq: 'weekly', images: [] },
-    { loc: '/encyclopedia', priority: '0.8', changefreq: 'weekly', images: [] },
+    { loc: '/before-after', priority: '0.7', changefreq: 'daily', lastmod: today, images: [] },
+    { loc: '/blog', priority: '0.8', changefreq: 'daily', lastmod: today, images: [] },
+    { loc: '/notice', priority: '0.5', changefreq: 'weekly', lastmod: today, images: [] },
+    { loc: '/encyclopedia', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
   ];
+
+  // DB에서 모든 발행된 포스트 조회 (블로그 + 비포애프터 개별 URL)
+  let postUrls: typeof staticUrls = [];
+  try {
+    const posts = await db.prepare(
+      `SELECT p.id, p.board, p.title, p.thumbnail_url, p.updated_at, p.created_at, p.seo_keyword
+       FROM posts p WHERE p.is_published = 1 AND p.board IN ('blog','before-after')
+       ORDER BY p.created_at DESC`
+    ).all();
+
+    for (const post of (posts.results || []) as any[]) {
+      const slug = post.board === 'before-after' ? 'before-after' : 'blog';
+      const postDate = (post.updated_at || post.created_at || today).substring(0, 10);
+      const images: { url: string; title: string }[] = [];
+
+      // 썸네일 이미지
+      if (post.thumbnail_url) {
+        images.push({ url: post.thumbnail_url, title: post.title });
+      }
+
+      // 비포애프터는 치료사진 이미지도 추가
+      if (post.board === 'before-after') {
+        try {
+          const imgs = await db.prepare(
+            'SELECT image_url, image_type FROM post_images WHERE post_id = ? ORDER BY sort_order'
+          ).bind(post.id).all();
+          for (const img of (imgs.results || []) as any[]) {
+            const typeLabel = img.image_type === 'before_intra' ? '치료 전' : img.image_type === 'after_intra' ? '치료 후' : img.image_type === 'before_pano' ? '치료 전 파노라마' : '치료 후 파노라마';
+            images.push({ url: img.image_url, title: `${post.title} ${typeLabel}` });
+          }
+        } catch {}
+      }
+
+      postUrls.push({
+        loc: `/${slug}/${post.id}`,
+        priority: post.board === 'blog' ? '0.7' : '0.6',
+        changefreq: 'monthly',
+        lastmod: postDate,
+        images,
+      });
+    }
+  } catch (e) { /* DB 오류 시 정적 URL만 */ }
+
+  const allUrls = [...staticUrls, ...postUrls];
+
+  // XML 특수문자 이스케이프
+  const escXml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-${urls.map(u => `  <url>
+${allUrls.map(u => `  <url>
     <loc>${domain}${u.loc}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${u.lastmod}</lastmod>
     <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>${u.images.map(img => `
     <image:image>
-      <image:loc>${domain}${img.url}</image:loc>
-      <image:title>${img.title}</image:title>
+      <image:loc>${img.url.startsWith('http') ? escXml(img.url) : domain + escXml(img.url)}</image:loc>
+      <image:title>${escXml(img.title)}</image:title>
     </image:image>`).join('')}
   </url>`).join('\n')}
 </urlset>`;
-  return c.text(sitemap, 200, { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
+  return c.text(sitemap, 200, { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=1800' });
 })
 
 // ===== Cloudflare Cron Trigger — 매일 자동 블로그 생성 =====

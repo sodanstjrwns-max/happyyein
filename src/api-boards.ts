@@ -1,6 +1,7 @@
 // 게시판 CRUD API (비포애프터, 블로그, 공지사항)
 import { Hono } from 'hono'
 import { requireAdmin } from './api-auth'
+import { notifySearchEngines } from './auto-blog'
 
 type Bindings = {
   DB: D1Database;
@@ -214,6 +215,12 @@ boards.post('/:board', requireAdmin, async (c) => {
       if (stmts.length > 0) await c.env.DB.batch(stmts)
     }
 
+    // [SEO] IndexNow + Google Ping — 즉시 인덱싱 알림
+    if (board !== 'notice') {
+      const postUrl = `https://happyyein.kr/${board === 'before-after' ? 'before-after' : 'blog'}/${postId}`;
+      notifySearchEngines(postUrl).catch(() => {});
+    }
+
     return c.json({ success: true, id: postId })
   } catch (err: any) {
     return c.json({ error: err.message }, 500)
@@ -265,6 +272,12 @@ boards.put('/:board/:id', requireAdmin, async (c) => {
           )
         if (stmts.length > 0) await c.env.DB.batch(stmts)
       }
+    }
+
+    // [SEO] 수정 시에도 IndexNow 알림 (재크롤링 유도)
+    if (board !== 'notice') {
+      const postUrl = `https://happyyein.kr/${board === 'before-after' ? 'before-after' : 'blog'}/${id}`;
+      notifySearchEngines(postUrl).catch(() => {});
     }
 
     return c.json({ success: true })

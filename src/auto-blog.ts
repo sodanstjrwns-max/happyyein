@@ -371,6 +371,14 @@ function buildPrompt(topic: typeof ALL_TOPICS[0]): string {
 - <div class="blog-cta"> ... </div> 박스를 글 말미에 넣어 상담/예약 유도
 - CTA 문구 예시: "행복한예인치과에서 정확한 진단을 받아보세요. 전문의 3인이 협진합니다."
 
+### 3-1. FAQ 섹션 (AEO 최적화 — 필수)
+- 글 말미(CTA 전)에 **자주 묻는 질문 3~5개**를 반드시 포함
+- H2 태그로 "자주 묻는 질문" 제목 추가
+- 각 질문은 H3 태그, 답변은 P 태그로 작성
+- 질문은 반드시 "?"로 끝나야 함 (예: "임플란트 수명은 얼마나 되나요?")
+- 답변은 2~3문장으로 간결하게
+- 또한 JSON 출력의 faq_data 필드에도 동일한 FAQ를 [{"q":"질문","a":"답변"}] 배열로 포함
+
 ### 4. 내부 링크 (SEO 핵심)
 - 본문 중간에 자연스럽게 내부 링크 삽입 (a 태그)
 - 사용 가능한 내부 링크: ${topic.internalLinks.map(l => `${SITE.domain}${l}`).join(', ')}
@@ -394,9 +402,10 @@ function buildPrompt(topic: typeof ALL_TOPICS[0]): string {
 다음 JSON 형식으로만 응답하세요. 다른 텍스트 없이 JSON만:
 {
   "title": "SEO 최적화 제목 (메인 키워드 포함, 40자 이내)",
-  "content": "<h2>...</h2><p>...</p>...(본문 HTML)",
+  "content": "<h2>...</h2><p>...</p>...(본문 HTML, FAQ 섹션 포함)",
   "meta_description": "검색 결과에 표시될 설명 (메인 키워드 포함, 150자 이내)",
-  "tags": ["키워드1", "키워드2", "키워드3", "키워드4", "키워드5"]
+  "tags": ["키워드1", "키워드2", "키워드3", "키워드4", "키워드5"],
+  "faq_data": [{"q": "질문1?", "a": "답변1"}, {"q": "질문2?", "a": "답변2"}, {"q": "질문3?", "a": "답변3"}]
 }`
 }
 
@@ -500,6 +509,12 @@ async function generateAndSave(db: D1Database, env: Bindings): Promise<{ success
     // 상대 링크를 절대 링크로 변환하지 않음 (같은 도메인)
     content = content.replace(/<a\s+href="(\/[^"]+)"/g, '<a href="$1" class="blog-internal-link"')
 
+    // 3-1. FAQ JSON-LD 데이터를 content에 data-faq 속성으로 삽입 (AEO용)
+    if (result.faq_data && Array.isArray(result.faq_data) && result.faq_data.length > 0) {
+      const faqJson = JSON.stringify(result.faq_data).replace(/'/g, '&#39;');
+      content += `\n<div class="blog-faq" data-faq='${faqJson}' style="display:none;"></div>`;
+    }
+
     // 4. DB 저장
     const insertResult = await db.prepare(
       `INSERT INTO posts (board, title, content, thumbnail_url, is_published, seo_keyword, seo_description, seo_tags, auto_generated, created_at, updated_at)
@@ -514,10 +529,63 @@ async function generateAndSave(db: D1Database, env: Bindings): Promise<{ success
 
     const postId = insertResult.meta.last_row_id
 
+    // 5. IndexNow + Google Ping — 즉시 인덱싱 요청
+    const postUrl = `${SITE.domain}/blog/${postId}`;
+    await notifySearchEngines(postUrl).catch(() => {});
+
     return { success: true, postId: postId as number, title: result.title, keyword: topic.keyword }
   } catch (err: any) {
     return { success: false, error: err.message }
   }
+}
+
+// ===== IndexNow + Google Ping — 검색엔진 즉시 인덱싱 알림 =====
+const INDEXNOW_KEY = 'a1b2c3d4e5f6g7h8i9j0happyyein2026';
+
+export async function notifySearchEngines(url: string): Promise<void> {
+  const promises: Promise<any>[] = [];
+
+  // 1. IndexNow (Bing, Yandex, Naver Yeti 등)
+  promises.push(
+    fetch(`https://api.indexnow.org/indexnow`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        host: 'happyyein.kr',
+        key: INDEXNOW_KEY,
+        keyLocation: `https://happyyein.kr/${INDEXNOW_KEY}.txt`,
+        urlList: [url]
+      })
+    }).then(r => console.log(`[IndexNow] ${r.status} for ${url}`)).catch(e => console.error('[IndexNow] error:', e))
+  );
+
+  // 2. Google Ping (sitemap 기반)
+  promises.push(
+    fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent('https://happyyein.kr/sitemap.xml')}`)
+      .then(r => console.log(`[Google Ping] ${r.status}`)).catch(e => console.error('[Google Ping] error:', e))
+  );
+
+  // 3. Bing URL Submission (IndexNow 경유)
+  promises.push(
+    fetch(`https://www.bing.com/indexnow?url=${encodeURIComponent(url)}&key=${INDEXNOW_KEY}`)
+      .then(r => console.log(`[Bing IndexNow] ${r.status} for ${url}`)).catch(e => console.error('[Bing] error:', e))
+  );
+
+  // 4. Naver 웹마스터 Ping
+  promises.push(
+    fetch(`https://searchadvisor.naver.com/indexnow`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        host: 'happyyein.kr',
+        key: INDEXNOW_KEY,
+        keyLocation: `https://happyyein.kr/${INDEXNOW_KEY}.txt`,
+        urlList: [url]
+      })
+    }).then(r => console.log(`[Naver IndexNow] ${r.status}`)).catch(e => console.error('[Naver] error:', e))
+  );
+
+  await Promise.allSettled(promises);
 }
 
 // ===== API 엔드포인트 =====

@@ -606,6 +606,8 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
   const cfg = BOARD_CONFIG[board]
   if (!cfg) return ''
 
+  const SITE_DOMAIN = 'https://happyyein.kr';
+
   // SSR: 서버에서 글 데이터 조회 (조회수 증가 포함)
   let postData: BoardDetailData = { post: null, images: [] };
   try {
@@ -622,12 +624,33 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
   const postTitle = hasPost ? postData.post!.title : '게시글을 찾을 수 없습니다';
   const pageTitle = hasPost ? `${postTitle} - ${cfg.name}` : `${cfg.name}`;
 
-  // description: 본문에서 HTML 태그 제거 후 첫 155자
+  // [Issue #6] DB의 seo_description 우선 사용 → 없으면 본문에서 추출
   let pageDesc = cfg.metaDesc;
-  if (hasPost && postData.post!.content) {
-    const plainText = stripHtml(postData.post!.content);
-    pageDesc = plainText.length > 155 ? plainText.substring(0, 155) + '...' : plainText;
-    if (pageDesc.length < 50) pageDesc = `${postTitle} - ${cfg.metaDesc}`;
+  if (hasPost) {
+    const seoDesc = (postData.post as any).seo_description;
+    if (seoDesc && seoDesc.length > 20) {
+      pageDesc = seoDesc;
+    } else if (postData.post!.content) {
+      const plainText = stripHtml(postData.post!.content);
+      pageDesc = plainText.length > 155 ? plainText.substring(0, 155) + '...' : plainText;
+      if (pageDesc.length < 50) pageDesc = `${postTitle} - ${cfg.metaDesc}`;
+    }
+  }
+
+  // [Issue #6] DB의 seo_keyword 우선 사용 → keywords 메타 강화
+  let pageKeywords = hasPost ? `${escHtmlServer(postTitle)}, 행복한예인치과, ${cfg.name}, 시청역 치과, 명동 치과, 을지로 치과` : undefined;
+  if (hasPost) {
+    const seoKeyword = (postData.post as any).seo_keyword;
+    const seoTags = (postData.post as any).seo_tags;
+    if (seoKeyword) {
+      pageKeywords = `${seoKeyword}, ${pageKeywords}`;
+    }
+    if (seoTags) {
+      try {
+        const tags = JSON.parse(seoTags);
+        if (Array.isArray(tags)) pageKeywords = `${tags.join(', ')}, ${pageKeywords}`;
+      } catch {}
+    }
   }
 
   // 블로그·비포애프터 상세는 index (검색 노출), 공지사항은 noindex
@@ -640,6 +663,245 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
 
   // article 날짜 정보
   const publishedTime = hasPost ? postData.post!.created_at : undefined;
+  const modifiedTime = hasPost ? ((postData.post as any).updated_at || postData.post!.created_at) : undefined;
+
+  // ============================================================
+  // [Issue #2] Article/BlogPosting JSON-LD (블로그)
+  // [Issue #2b] MedicalWebPage + MedicalProcedure (비포애프터)
+  // [Issue #4] FAQ JSON-LD (블로그 — auto-blog가 content에 FAQ 삽입 시)
+  // [Issue #5] ImageObject 구조화 데이터 (비포애프터)
+  // ============================================================
+  const jsonLdSchemas: object[] = [];
+
+  if (hasPost && board === 'blog') {
+    // ▶ BlogPosting / Article 스키마
+    const postContent = postData.post!.content || '';
+    const plainText = stripHtml(postContent);
+    const wordCount = plainText.replace(/\s+/g, ' ').trim().split(' ').length;
+
+    const articleSchema: any = {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": postTitle,
+      "name": postTitle,
+      "description": escHtmlServer(pageDesc),
+      "url": `${SITE_DOMAIN}${canonicalPath}`,
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `${SITE_DOMAIN}${canonicalPath}`
+      },
+      "datePublished": publishedTime,
+      "dateModified": modifiedTime || publishedTime,
+      "author": {
+        "@type": "Person",
+        "name": "한승대",
+        "jobTitle": "통합치의학과 전문의 · 대표원장",
+        "url": `${SITE_DOMAIN}/doctors`,
+        "affiliation": {
+          "@type": "Dentist",
+          "name": "행복한예인치과",
+          "url": SITE_DOMAIN
+        }
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "행복한예인치과",
+        "url": SITE_DOMAIN,
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${SITE_DOMAIN}/static/img/logo.png`
+        }
+      },
+      "inLanguage": "ko",
+      "wordCount": wordCount,
+      "articleSection": cfg.name,
+      "isPartOf": {
+        "@type": "Blog",
+        "name": "행복한예인치과 블로그",
+        "url": `${SITE_DOMAIN}/blog`
+      }
+    };
+
+    // 이미지 (OG 이미지 또는 본문 내 첫 이미지)
+    if (ogImage) {
+      articleSchema.image = {
+        "@type": "ImageObject",
+        "url": ogImage.startsWith('http') ? ogImage : `${SITE_DOMAIN}${ogImage}`,
+        "caption": postTitle
+      };
+    } else {
+      // 본문에서 첫 번째 img src 추출
+      const imgMatch = postContent.match(/<img[^>]+src=["']([^"']+)["']/i);
+      if (imgMatch) {
+        articleSchema.image = {
+          "@type": "ImageObject",
+          "url": imgMatch[1].startsWith('http') ? imgMatch[1] : `${SITE_DOMAIN}${imgMatch[1]}`,
+          "caption": postTitle
+        };
+      }
+    }
+
+    // SEO 키워드 → keywords
+    const seoKeyword = (postData.post as any).seo_keyword;
+    if (seoKeyword) {
+      articleSchema.keywords = seoKeyword;
+    }
+
+    jsonLdSchemas.push(articleSchema);
+
+    // ▶ [Issue #4] FAQ 스키마 — 본문에서 FAQ 데이터 자동 추출
+    // auto-blog가 <div class="blog-faq" data-faq='[{"q":"...","a":"..."}]'> 형태로 삽입
+    const faqDataMatch = postContent.match(/data-faq='([^']+)'/);
+    if (faqDataMatch) {
+      try {
+        const faqItems = JSON.parse(faqDataMatch[1].replace(/&quot;/g, '"').replace(/&amp;/g, '&'));
+        if (Array.isArray(faqItems) && faqItems.length > 0) {
+          jsonLdSchemas.push({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqItems.map((faq: any) => ({
+              "@type": "Question",
+              "name": faq.q,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.a
+              }
+            }))
+          });
+        }
+      } catch {}
+    }
+
+    // FAQ 대체 패턴: <h3> 기반 Q&A 추출 (blog-callout 내부 등)
+    if (!faqDataMatch) {
+      const faqRegex = /<h3[^>]*>\s*(?:Q[.:]?\s*|질문[.:]?\s*)?(.+?)<\/h3>\s*<p[^>]*>\s*(?:A[.:]?\s*|답변[.:]?\s*)?(.+?)<\/p>/gi;
+      const faqItems: { q: string; a: string }[] = [];
+      let match;
+      while ((match = faqRegex.exec(postContent)) !== null) {
+        const q = stripHtml(match[1]).trim();
+        const a = stripHtml(match[2]).trim();
+        if (q.endsWith('?') || q.endsWith('요') || q.endsWith('까')) {
+          faqItems.push({ q, a });
+        }
+      }
+      if (faqItems.length >= 2) {
+        jsonLdSchemas.push({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": faqItems.slice(0, 10).map(faq => ({
+            "@type": "Question",
+            "name": faq.q,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": faq.a
+            }
+          }))
+        });
+      }
+    }
+  }
+
+  if (hasPost && board === 'before-after') {
+    // ▶ [Issue #2b] MedicalWebPage 스키마
+    const medicalPageSchema: any = {
+      "@context": "https://schema.org",
+      "@type": "MedicalWebPage",
+      "name": postTitle,
+      "headline": postTitle,
+      "description": escHtmlServer(pageDesc),
+      "url": `${SITE_DOMAIN}${canonicalPath}`,
+      "datePublished": publishedTime,
+      "dateModified": modifiedTime || publishedTime,
+      "inLanguage": "ko",
+      "medicalAudience": {
+        "@type": "MedicalAudience",
+        "audienceType": "Patient"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "한승대",
+        "jobTitle": "통합치의학과 전문의 · 대표원장"
+      },
+      "publisher": {
+        "@type": "Dentist",
+        "name": "행복한예인치과",
+        "url": SITE_DOMAIN
+      }
+    };
+
+    // ▶ [Issue #5] ImageObject before/after 구조화 데이터
+    const images = postData.images;
+    const beforeIntra = images.find((i: any) => i.image_type === 'before_intra');
+    const afterIntra = images.find((i: any) => i.image_type === 'after_intra');
+    const beforePano = images.find((i: any) => i.image_type === 'before_pano');
+    const afterPano = images.find((i: any) => i.image_type === 'after_pano');
+
+    const imageObjects: any[] = [];
+    if (beforeIntra) imageObjects.push({
+      "@type": "ImageObject",
+      "url": (beforeIntra as any).image_url.startsWith('http') ? (beforeIntra as any).image_url : `${SITE_DOMAIN}${(beforeIntra as any).image_url}`,
+      "name": `${postTitle} - 치료 전 구내사진`,
+      "description": `${postTitle} 치료 전 구내 사진 (Before)`
+    });
+    if (afterIntra) imageObjects.push({
+      "@type": "ImageObject",
+      "url": (afterIntra as any).image_url.startsWith('http') ? (afterIntra as any).image_url : `${SITE_DOMAIN}${(afterIntra as any).image_url}`,
+      "name": `${postTitle} - 치료 후 구내사진`,
+      "description": `${postTitle} 치료 후 구내 사진 (After)`
+    });
+    if (beforePano) imageObjects.push({
+      "@type": "ImageObject",
+      "url": (beforePano as any).image_url.startsWith('http') ? (beforePano as any).image_url : `${SITE_DOMAIN}${(beforePano as any).image_url}`,
+      "name": `${postTitle} - 치료 전 파노라마`,
+      "description": `${postTitle} 치료 전 파노라마 엑스레이 (Before)`
+    });
+    if (afterPano) imageObjects.push({
+      "@type": "ImageObject",
+      "url": (afterPano as any).image_url.startsWith('http') ? (afterPano as any).image_url : `${SITE_DOMAIN}${(afterPano as any).image_url}`,
+      "name": `${postTitle} - 치료 후 파노라마`,
+      "description": `${postTitle} 치료 후 파노라마 엑스레이 (After)`
+    });
+
+    if (imageObjects.length > 0) {
+      medicalPageSchema.image = imageObjects;
+      // 대표 이미지 (치료 후 구내사진 우선)
+      medicalPageSchema.primaryImageOfPage = imageObjects.find(i => i.name.includes('치료 후 구내')) || imageObjects[0];
+    }
+
+    jsonLdSchemas.push(medicalPageSchema);
+
+    // ▶ MedicalProcedure 스키마 (치과 시술 사례)
+    const procedureSchema: any = {
+      "@context": "https://schema.org",
+      "@type": "MedicalProcedure",
+      "name": postTitle,
+      "description": escHtmlServer(pageDesc),
+      "url": `${SITE_DOMAIN}${canonicalPath}`,
+      "procedureType": "http://schema.org/TherapeuticProcedure",
+      "performedBy": {
+        "@type": "Dentist",
+        "name": "행복한예인치과",
+        "url": SITE_DOMAIN,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "서울 중구",
+          "addressCountry": "KR"
+        }
+      },
+      "status": "http://schema.org/EventCompleted"
+    };
+
+    // before/after 이미지가 있으면 결과 이미지 첨부
+    if (afterIntra || afterPano) {
+      procedureSchema.image = (afterIntra || afterPano) ? {
+        "@type": "ImageObject",
+        "url": ((afterIntra || afterPano) as any).image_url.startsWith('http') ? ((afterIntra || afterPano) as any).image_url : `${SITE_DOMAIN}${((afterIntra || afterPano) as any).image_url}`,
+        "name": `${postTitle} - 치료 결과`
+      } : undefined;
+    }
+
+    jsonLdSchemas.push(procedureSchema);
+  }
 
   return `${head({
     title: pageTitle,
@@ -649,7 +911,9 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
     ogType: hasPost ? 'article' : 'website',
     ogImage: ogImage,
     articlePublishedTime: publishedTime,
-    keywords: hasPost ? `${escHtmlServer(postTitle)}, 행복한예인치과, ${cfg.name}, 시청역 치과, 명동 치과, 을지로 치과` : undefined,
+    articleModifiedTime: modifiedTime,
+    keywords: pageKeywords,
+    jsonLd: jsonLdSchemas.length > 0 ? jsonLdSchemas : undefined,
     breadcrumbs: [
       { name: '홈', url: '/' },
       { name: cfg.name, url: `/${cfg.slug}` },
