@@ -28,6 +28,8 @@
 | `/notice` | 공지사항 |
 | `/location` | 오시는 길 (카카오맵) |
 | `/contact` | 상담 예약 |
+| `/local` | **지역별 진료 안내** (Local SEO 목록 — 6지역 × 5진료) |
+| `/local/:slug` | **지역+진료 전용 랜딩페이지** (30개, 예: `/local/sicheong-implant`) |
 
 ### 관리자 기능
 | 경로 | 설명 |
@@ -51,6 +53,37 @@
 | GET | `/sitemap.xml` | 동적 사이트맵 (DB 기반, 개별 포스트 URL 포함) |
 | GET | `/robots.txt` | 크롤러 가이드 |
 
+### Local SEO 전용 랜딩페이지 (2026-05-26 슈퍼 업그레이드)
+
+**6개 지역 × 5개 핵심 진료 = 30개 전용 랜딩페이지** — 구글 "지역명 + 진료" 검색 상위 노출 목적
+
+| 지역 | 역 | 도보 | URL 패턴 |
+|------|-----|------|----------|
+| 시청역 | 1·2호선 시청역 | 5분 | `/local/sicheong-*` |
+| 명동 | 4호선 명동역 | 8분 | `/local/myeongdong-*` |
+| 을지로 | 2호선 을지로입구역 | 7분 | `/local/euljiro-*` |
+| 회현역 | 4호선 회현역 | 6분 | `/local/hoehyeon-*` |
+| 광화문·종로 | 5호선 광화문역 | 10분 | `/local/gwanghwamun-*` |
+| 서울역 | 1·4호선 서울역 | 12분 | `/local/seoul-station-*` |
+
+| 진료 | ID | 예시 URL |
+|------|------|----------|
+| 임플란트 | `implant` | `/local/sicheong-implant` |
+| 신경치료 | `preservation` | `/local/myeongdong-preservation` |
+| 라미네이트 | `aesthetic` | `/local/euljiro-aesthetic` |
+| 교정 | `orthodontics` | `/local/hoehyeon-orthodontics` |
+| 스케일링 | `general` | `/local/gwanghwamun-general` |
+
+**각 페이지 SEO 요소:**
+- URL에 키워드 포함 (`/local/sicheong-implant`)
+- `<title>`에 정확한 키워드 매칭 (`시청역 임플란트 | 행복한예인치과`)
+- `<h1>`에 키워드 (`시청역 임플란트 전문 치과 행복한예인치과`)
+- MedicalBusiness + Service + GeoCircle JSON-LD
+- FAQPage JSON-LD (페이지당 7~8개 전용 FAQ)
+- MedicalWebPage + BreadcrumbList 스키마
+- 지역별 교통/랜드마크 유니크 콘텐츠
+- 양방향 내부 링크 네트워크 (치료페이지 ↔ 지역SEO, 지역 간 ↔ 진료 간)
+
 ## GPT-5.5 자동 블로그 시스템
 
 - **매일 오전 7시 (KST)** Cloudflare Cron Worker가 자동 발행
@@ -72,6 +105,10 @@
 | `MedicalWebPage` | `/before-after/:id` | 의료 웹페이지 (medicalAudience: Patient) |
 | `MedicalProcedure` | `/before-after/:id` | 의료 시술 정보 (performedBy: Dentist, status: EventCompleted) |
 | `ImageObject` | `/before-after/:id` | 시술 전후 이미지 (before_intra, after_intra, before_pano, after_pano) |
+| `MedicalBusiness` | `/local/:slug` | 치과 + 서비스 + GeoCircle (지역 SEO) |
+| `MedicalWebPage` | `/local/:slug` | 의료 웹페이지 + speakable |
+| `FAQPage` | `/local/:slug` | 지역+진료 전용 FAQ (7~8개/페이지) |
+| `CollectionPage` | `/local` | 지역별 진료 목록 (ItemList 30개) |
 
 ### 검색엔진 즉시 알림
 - **IndexNow API** → Bing, Yandex, Naver Yeti 동시 알림
@@ -156,7 +193,8 @@ webapp/
 │   ├── api-upload.ts      # 이미지 업로드 API (R2)
 │   ├── auto-blog.ts       # GPT-5.5 자동 블로그 (생성 + FAQ + IndexNow)
 │   ├── admin-pages.ts     # 관리자 페이지
-│   ├── treatment-pages.ts # 진료과목 상세 페이지
+│   ├── treatments.ts      # 진료과목 상세 페이지
+│   ├── local-seo.ts       # 🆕 Local SEO 30개 랜딩페이지 (지역×진료)
 │   ├── encyclopedia.ts    # 치과백과사전
 │   └── renderer.tsx       # JSX 렌더러
 ├── public/static/         # 정적 자산 (CSS, JS, 이미지)
@@ -171,6 +209,7 @@ webapp/
 
 ## 향후 개선 사항
 
+- [x] ✅ Local SEO 슈퍼 업그레이드 — 지역×진료 30개 전용 랜딩페이지 (2026-05-26)
 - [ ] Google Search Console 연동 및 인덱싱 현황 모니터링
 - [ ] 비포애프터 게시물 등록 후 MedicalProcedure 스키마 프로덕션 검증
 - [ ] 자동 블로그 FAQ 품질 모니터링 (FAQPage 스키마 Google 리치 결과 확인)
@@ -181,4 +220,4 @@ webapp/
 
 ---
 
-**Built with Hono + Cloudflare Pages** | Last updated: 2026-05-14
+**Built with Hono + Cloudflare Pages** | Last updated: 2026-05-26
