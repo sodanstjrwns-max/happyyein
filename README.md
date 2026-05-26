@@ -32,6 +32,10 @@
 | `/local/:slug` | **지역+진료 전용 랜딩페이지** (30개, 예: `/local/sicheong-implant`) |
 | `/symptoms` | **증상별 진료 가이드** (Symptom SEO 허브 — 20개 증상 목록) |
 | `/symptoms/:slug` | **증상별 전용 랜딩페이지** (20개, 예: `/symptoms/toothache`) |
+| `/cost` | **치료비용 안내** (Cost SEO 허브 — 10개 치료 비용 목록) |
+| `/cost/:slug` | **치료비용 전용 랜딩페이지** (10개, 예: `/cost/implant-cost`) |
+| `/compare` | **치료 비교 가이드** (Comparison SEO 허브 — 8개 비교 목록) |
+| `/compare/:slug` | **치료 비교 전용 랜딩페이지** (8개, 예: `/compare/implant-vs-bridge`) |
 
 ### 관리자 기능
 | 경로 | 설명 |
@@ -122,6 +126,55 @@
 - 관련 증상 크로스링크
 - CTA (전화/네이버 예약)
 
+### 치료비용 SEO 전용 랜딩페이지 (2026-05-26 4차 슈퍼 업그레이드)
+
+**10개 치료비용 전용 랜딩페이지** — 높은 전환율의 비용 검색 키워드 대응
+
+| 치료 | Slug | 예시 검색어 |
+|------|------|----------|
+| 임플란트 | `implant-cost` | "임플란트 비용", "임플란트 가격" |
+| 치아보존 | `preservation-cost` | "신경치료 비용", "치아보존 가격" |
+| 교정 | `orthodontics-cost` | "치아교정 비용", "투명교정 가격" |
+| 심미치료 | `aesthetic-cost` | "라미네이트 비용", "심미보철 가격" |
+| 스케일링 | `scaling-cost` | "스케일링 비용", "스케일링 가격" |
+| 크라운 | `crown-cost` | "크라운 비용", "치관 가격" |
+| 미백 | `whitening-cost` | "치아미백 비용", "화이트닝 가격" |
+| 발치 | `extraction-cost` | "사랑니 발치 비용", "발치 가격" |
+| 틀니 | `denture-cost` | "틀니 비용", "의치 가격" |
+| 소아치과 | `pediatric-cost` | "소아치과 비용", "아이 치료비" |
+
+**각 페이지 SEO 요소:**
+- MedicalWebPage + speakable + lastReviewed JSON-LD
+- Dentist + OfferCatalog + Offer + PriceSpecification JSON-LD
+- FAQPage JSON-LD (3~5개 전용 FAQ/페이지)
+- BreadcrumbList JSON-LD (홈 → 치료비용 안내 → [치료])
+- 가격 범위 + 보험 적용 안내
+- 비용 영향 요인 + 치료 과정별 비용 구조
+- 관련 치료 크로스링크 + CTA
+
+### 치료 비교 SEO 콘텐츠 (2026-05-26 4차 슈퍼 업그레이드)
+
+**8개 치료 비교 콘텐츠** — 의사결정 단계 검색 키워드 대응
+
+| 비교 | Slug | 예시 검색어 |
+|------|------|----------|
+| 임플란트 vs 브릿지 | `implant-vs-bridge` | "임플란트 브릿지 차이" |
+| 라미네이트 vs 레진 | `laminate-vs-resin` | "라미네이트 레진 비교" |
+| 투명교정 vs 메탈교정 | `clear-vs-metal-braces` | "투명교정 메탈교정 차이" |
+| 임플란트 vs 틀니 | `implant-vs-denture` | "임플란트 틀니 비교" |
+| 지르코니아 vs PFM vs 금 | `zirconia-vs-pfm-vs-gold` | "크라운 종류 비교" |
+| 전문미백 vs 자가미백 | `office-vs-home-whitening` | "미백 종류 비교" |
+| 즉시임플란트 vs 지연임플란트 | `immediate-vs-delayed-implant` | "즉시 임플란트 장단점" |
+| 스케일링 vs 딥클리닝 | `scaling-vs-deep-cleaning` | "스케일링 딥클리닝 차이" |
+
+**각 페이지 SEO 요소:**
+- MedicalWebPage + speakable + lastReviewed JSON-LD
+- FAQPage JSON-LD (2~4개 전용 FAQ/페이지)
+- BreadcrumbList JSON-LD (홈 → 치료 비교 → [A vs B])
+- 양쪽 장단점 비교 그리드
+- "이런 분에게 추천" 섹션
+- 전문의 소견 + CTA
+
 ### 홈페이지 추가 스키마 (2026-05-26 3차 슈퍼 업그레이드)
 - **Review 스키마 (10개 개별 리뷰)** — Google 별점 노출 (평점 4.9, 10개 리뷰)
 - **Service + PriceSpecification** — 5개 진료 서비스 (임플란트, 신경치료, 투명교정, 심미치료, 스케일링)
@@ -160,6 +213,13 @@
 | `MedicalSignOrSymptom` | `/symptoms/:slug` | 의료 증상 스키마 |
 | `MedicalTherapy` | `/symptoms/:slug` | 치료법 정보 (performedBy: Dentist) |
 | `FAQPage` | `/symptoms/:slug` | 증상별 전용 FAQ (4~6개/페이지) |
+| `MedicalWebPage` | `/cost/:slug` | 치료비용 의료 웹페이지 + speakable + lastReviewed |
+| `Dentist` + `OfferCatalog` | `/cost/:slug` | 치과 + 서비스 + 가격 정보 |
+| `PriceSpecification` | `/cost/:slug` | 치료 비용 범위 |
+| `FAQPage` | `/cost/:slug` | 비용 전용 FAQ (3~5개/페이지) |
+| `MedicalWebPage` | `/compare/:slug` | 치료비교 의료 웹페이지 + speakable |
+| `FAQPage` | `/compare/:slug` | 비교 전용 FAQ (2~4개/페이지) |
+| `CollectionPage` | `/cost`, `/compare` | 비용/비교 목록 (ItemList) |
 
 ### 검색엔진 즉시 알림
 - **IndexNow API** → Bing, Yandex, Naver Yeti 동시 알림
@@ -176,6 +236,8 @@
 - Canonical URL 자동 설정
 
 ### 사이트맵
+- **총 312개 URL** (기존 68 → 312, +244 URLs)
+- 치료비용 11 + 치료비교 9 + 백과사전 203 + 기존 89
 - **동적 생성**: D1 DB에서 모든 게시물 URL 자동 포함
 - `<image:image>` 태그로 이미지 사이트맵 지원
 - `<lastmod>` 게시물 수정일 기반 동적 업데이트
@@ -247,7 +309,9 @@ webapp/
 │   ├── treatments.ts      # 진료과목 상세 페이지
 │   ├── local-seo.ts       # 🆕 Local SEO 30개 랜딩페이지 (지역×진료)
 │   ├── symptom-seo.ts     # 🆕 Symptom SEO 20개 랜딩페이지 (증상별 가이드)
-│   ├── encyclopedia.ts    # 치과백과사전
+│   ├── cost-seo.ts        # 🆕 Cost SEO 10개 랜딩페이지 (치료비용 안내)
+│   ├── comparison-seo.ts  # 🆕 Comparison SEO 8개 랜딩페이지 (치료 비교)
+│   ├── encyclopedia.ts    # 치과백과사전 (215개 용어, 사이트맵 확장)
 │   └── renderer.tsx       # JSX 렌더러
 ├── public/static/         # 정적 자산 (CSS, JS, 이미지)
 ├── migrations/            # D1 마이그레이션 SQL
@@ -263,6 +327,7 @@ webapp/
 
 - [x] ✅ Local SEO 슈퍼 업그레이드 — 지역×진료 30개 전용 랜딩페이지 (2026-05-26)
 - [x] ✅ 3차 SEO 슈퍼 업그레이드 — 증상별 20개 랜딩페이지 + Review/Service 스키마 + hreflang (2026-05-26)
+- [x] ✅ 4차 SEO 슈퍼 업그레이드 — 치료비용 10개 + 치료비교 8개 + 사이트맵 312URL + SameAs 확장 (2026-05-26)
 - [ ] Google Search Console 연동 및 인덱싱 현황 모니터링
 - [ ] 비포애프터 게시물 등록 후 MedicalProcedure 스키마 프로덕션 검증
 - [ ] 자동 블로그 FAQ 품질 모니터링 (FAQPage 스키마 Google 리치 결과 확인)
@@ -271,4 +336,16 @@ webapp/
 
 ---
 
-**Built with Hono + Cloudflare Pages** | Last updated: 2026-05-26 (3차 SEO 슈퍼 업그레이드)
+**Built with Hono + Cloudflare Pages** | Last updated: 2026-05-26 (4차 SEO 슈퍼 업그레이드)
+
+### SEO 컨텐츠 총계 (전체 랜딩페이지 현황)
+| 카테고리 | 개수 | 파일 |
+|----------|------|------|
+| 메인 + 정적 페이지 | ~15 | index.tsx, pages.ts, treatments.ts |
+| Local SEO (지역별) | 30 | local-seo.ts |
+| Symptom SEO (증상별) | 20 | symptom-seo.ts |
+| Cost SEO (치료비용) | 10 | cost-seo.ts |
+| Comparison SEO (치료비교) | 8 | comparison-seo.ts |
+| 백과사전 | 215 | encyclopedia.ts |
+| 블로그 (동적) | 232+ | auto-blog.ts + D1 DB |
+| **사이트맵 총 URL** | **312+** | sitemap.xml (동적 생성) |
