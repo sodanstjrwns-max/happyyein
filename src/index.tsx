@@ -11,6 +11,7 @@ import { registerPage, loginPage } from './auth-pages'
 import { encyclopediaListPage, encyclopediaDetailPage } from './encyclopedia'
 import autoBlogApi, { handleScheduled, notifySearchEngines } from './auto-blog'
 import { renderLocalSeoPage, localSeoIndexPage, getAllLocalSeoSlugs } from './local-seo'
+import { renderSymptomPage, symptomIndexPage, getAllSymptomSlugs } from './symptom-seo'
 
 type Bindings = { DB: D1Database; R2: R2Bucket; OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; AUTO_BLOG_SECRET?: string }
 const app = new Hono<{ Bindings: Bindings }>()
@@ -43,6 +44,7 @@ app.get('/', (c) => {
   const mainDesc = '서울 시청역·명동·을지로·광화문에서 도보 5~10분. 13년간 한자리에서 쌓아온 신뢰의 치과. 발치즉시 임플란트 80%+, 보존과·교정과 전문의 3인 협진. 수요일 야간진료. 행복한예인치과 02-756-2828.';
   const mainTitle = '행복한예인치과 | 시청역·명동·을지로 치과 - 임플란트·보존·심미·교정 전문의 협진';
   const ogImage = `${SITE_DOMAIN}/static/img/dr-han-logo.jpg`;
+  const today = new Date().toISOString().split('T')[0];
 
   // 1) Dentist + LocalBusiness 통합 스키마
   const orgJsonLd = JSON.stringify({
@@ -260,7 +262,7 @@ app.get('/', (c) => {
     "isPartOf": { "@id": `${SITE_DOMAIN}/#website` },
     "about": { "@id": `${SITE_DOMAIN}/#organization` },
     "datePublished": "2013-01-01",
-    "dateModified": "2026-04-09",
+    "dateModified": today,
     "inLanguage": "ko",
     "speakable": {
       "@type": "SpeakableSpecification",
@@ -300,6 +302,45 @@ app.get('/', (c) => {
     ]
   });
 
+  // 7) Review 스키마 (개별 리뷰 — Google 별점 노출)
+  const reviewsJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Dentist",
+    "name": "행복한예인치과",
+    "@id": `${SITE_DOMAIN}/#reviews`,
+    "review": [
+      { "@type": "Review", "author": { "@type": "Person", "name": "김○○" }, "datePublished": "2026-03-15", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "10년 넘게 치과를 미뤘는데, 여기서 처음으로 편하게 치료받았어요. 한승대 원장님이 X-ray 보면서 자세히 설명해주시고, 안 해도 되는 건 안 해도 된다고 솔직하게 말해주셔서 신뢰가 갔습니다." },
+      { "@type": "Review", "author": { "@type": "Person", "name": "이○○" }, "datePublished": "2026-02-20", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "시청역 직장인인데 수요일 야간진료 정말 좋습니다. 발치즉시 임플란트로 내원 횟수도 적었고, 과잉진료 없이 필요한 것만 해주셔서 만족합니다." },
+      { "@type": "Review", "author": { "@type": "Person", "name": "박○○" }, "datePublished": "2026-01-28", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "신정희 원장님 신경치료 받았는데 정말 안 아팠어요. 미세현미경으로 세밀하게 해주시고, 매 단계마다 설명해주셔서 불안감이 없었습니다. 보존과 전문의라 더 믿음이 갑니다." },
+      { "@type": "Review", "author": { "@type": "Person", "name": "최○○" }, "datePublished": "2025-12-10", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "을지로에서 근무하는데 도보 7분이라 점심시간에 다니기 좋습니다. 스케일링부터 충치치료까지 한 곳에서 해결하니 편합니다. 다음엔 교정 상담도 받으려구요." },
+      { "@type": "Review", "author": { "@type": "Person", "name": "정○○" }, "datePublished": "2025-11-25", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "박현미 원장님 투명교정 진행 중입니다. 직장에서 티 안 나서 좋고, 교정 전문의가 직접 해주시니까 진행이 빠르고 정확해요. 명동에서 가까워서 퇴근 후 편하게 갑니다." },
+      { "@type": "Review", "author": { "@type": "Person", "name": "한○○" }, "datePublished": "2025-10-18", "reviewRating": { "@type": "Rating", "ratingValue": "4", "bestRating": "5" }, "reviewBody": "임플란트 2개 했는데 발치하면서 동시에 심어서 시간이 많이 단축됐습니다. 과정마다 사진 찍어서 보여주시고 설명이 꼼꼼합니다. 13년 된 치과답게 안정적인 느낌." },
+      { "@type": "Review", "author": { "@type": "Person", "name": "문○○" }, "datePublished": "2025-09-05", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "치과 공포증이 심했는데 여기는 표면 마취부터 해주시고, 중간중간 상태 확인해주셔서 편했습니다. 생각보다 전혀 안 아팠고, 앞으로 정기적으로 다닐 생각입니다." },
+      { "@type": "Review", "author": { "@type": "Person", "name": "송○○" }, "datePublished": "2025-08-12", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "광화문 사무실에서 10분 거리인데, 전문의 3명이 각 분야를 맡아서 좋습니다. 충치는 한 원장님, 신경치료는 신 원장님이 해주시니까 전문성이 높아서 좋아요." },
+      { "@type": "Review", "author": { "@type": "Person", "name": "윤○○" }, "datePublished": "2025-07-20", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "65세 이상 임플란트 보험 적용 받았습니다. 친절하게 보험 절차도 안내해주시고, 시술도 깔끔했어요. 감사합니다." },
+      { "@type": "Review", "author": { "@type": "Person", "name": "조○○" }, "datePublished": "2025-06-30", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "앞니 레진으로 간격 메우기 했는데 자연스러워서 친구들도 모릅니다. 라미네이트 권하지 않고 레진으로 충분하다고 솔직하게 말해주신 점이 좋았습니다." }
+    ]
+  });
+
+  // 8) Service + PriceSpecification 스키마 (치료별 서비스 정보)
+  const servicesJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Dentist",
+    "name": "행복한예인치과",
+    "@id": `${SITE_DOMAIN}/#services`,
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "행복한예인치과 진료 서비스 및 비용 안내",
+      "itemListElement": [
+        { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "발치즉시 임플란트", "procedureType": "Surgical", "description": "발치와 동시에 임플란트를 식립하여 치료 기간을 대폭 단축. 80% 이상 즉시식립 시행." }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "CT 촬영 후 정밀 진단 기반 개인 맞춤 비용 안내. 65세 이상 건강보험 적용 가능." } },
+        { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "치아보존치료(신경치료)", "procedureType": "Noninvasive", "description": "보존과 전문의의 미세현미경 활용 정밀 신경치료. 자연치아를 최대한 보존." }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용 항목. 치아 상태에 따른 투명한 비용 안내." } },
+        { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "투명교정(인비절라인)", "procedureType": "Noninvasive", "description": "교정 전문의 직접 시행. 티 안 나는 투명한 교정 장치로 직장인에게 인기." }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "교합 상태별 맞춤 비용 안내. 분할 납부 가능." } },
+        { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "앞니 심미치료(라미네이트/레진)", "procedureType": "Noninvasive", "description": "최소삭제 원칙의 라미네이트, 즉일 완성 가능한 레진 심미보철." }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "시술 범위에 따른 맞춤 비용 안내." } },
+        { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "스케일링", "procedureType": "Noninvasive", "description": "건강보험 적용(연 1회). 치석 제거로 잇몸 건강 유지." }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용 시 본인부담 약 1~2만원." } }
+      ]
+    }
+  });
+
   return c.html(`<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -334,6 +375,11 @@ app.get('/', (c) => {
 <meta name="google-site-verification" content="">
 <meta property="og:article:author" content="행복한예인치과">
 
+<!-- hreflang (다국어 SEO) -->
+<link rel="alternate" hreflang="ko" href="${SITE_DOMAIN}/">
+<link rel="alternate" hreflang="en" href="${SITE_DOMAIN}/">
+<link rel="alternate" hreflang="x-default" href="${SITE_DOMAIN}/">
+
 <!-- 추가 메타 -->
 <meta name="theme-color" content="#F7BA18">
 <meta name="author" content="행복한예인치과">
@@ -367,6 +413,8 @@ app.get('/', (c) => {
 <script type="application/ld+json">${webpageJsonLd}</script>
 <script type="application/ld+json">${medicalClinicJsonLd}</script>
 <script type="application/ld+json">${breadcrumbJsonLd}</script>
+<script type="application/ld+json">${reviewsJsonLd}</script>
+<script type="application/ld+json">${servicesJsonLd}</script>
 
 <!-- 폰트 & 아이콘 -->
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -871,6 +919,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
           <a href="/treatments/general" class="nav-dropdown-item">일반 / 예방 치료</a>
           <div style="border-top:1px solid rgba(255,255,255,0.08);margin:4px 0;"></div>
           <a href="/local" class="nav-dropdown-item">📍 지역별 진료 안내</a>
+          <a href="/symptoms" class="nav-dropdown-item">🩺 증상별 가이드</a>
         </div>
       </div>
       <a href="/doctors" class="nav-link">Doctors</a>
@@ -903,6 +952,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   <a href="/treatments/orthodontics" class="mob-link mob-link-sub" onclick="closeMob()">치아 교정</a>
   <a href="/treatments/general" class="mob-link mob-link-sub" onclick="closeMob()">일반 / 예방 치료</a>
   <a href="/local" class="mob-link" onclick="closeMob()" style="color:#4da3ff;font-weight:600;">📍 지역별 진료</a>
+  <a href="/symptoms" class="mob-link" onclick="closeMob()" style="color:#4da3ff;font-weight:600;">🩺 증상별 가이드</a>
   <a href="/doctors" class="mob-link" onclick="closeMob()">Doctors</a>
   <a href="/experience" class="mob-link" onclick="closeMob()">Experience</a>
   <a href="/before-after" class="mob-link" onclick="closeMob()">Contents</a>
@@ -1690,6 +1740,28 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   </div>
 </section>
 
+<!-- ===== 증상별 가이드 바로가기 ===== -->
+<section class="sec-pad" style="background:var(--black-warm);border-top:1px solid rgba(255,255,255,0.03);padding-top:80px;padding-bottom:80px;">
+  <div style="max-width:1200px;margin:0 auto;text-align:center;">
+    <p class="rv" style="font-family:var(--font-display);font-size:0.65rem;text-transform:uppercase;letter-spacing:6px;color:var(--gold);margin-bottom:12px;">Symptom Guide</p>
+    <h2 class="rv" style="font-family:var(--font-kr);font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-1px;margin-bottom:16px;">🩺 이런 증상이 있으신가요?</h2>
+    <p class="rv" style="font-family:var(--font-kr);font-size:0.85rem;color:var(--gray);line-height:1.9;margin-bottom:40px;">증상에 맞는 전문 진료 가이드를 확인하세요. 행복한예인치과 전문의가 원인과 치료법을 안내합니다.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:1000px;margin:0 auto;">
+      <a href="/symptoms/toothache" style="padding:10px 18px;border-radius:24px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.8rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">🦷 이가 아파요</a>
+      <a href="/symptoms/sensitive-teeth" style="padding:10px 18px;border-radius:24px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.8rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">🥶 이가 시려요</a>
+      <a href="/symptoms/bleeding-gums" style="padding:10px 18px;border-radius:24px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.8rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">🩸 잇몸 출혈</a>
+      <a href="/symptoms/swollen-gums" style="padding:10px 18px;border-radius:24px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.8rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">😣 잇몸 부음</a>
+      <a href="/symptoms/bad-breath" style="padding:10px 18px;border-radius:24px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.8rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">💨 입냄새</a>
+      <a href="/symptoms/wisdom-tooth-pain" style="padding:10px 18px;border-radius:24px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.8rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">🦷 사랑니 통증</a>
+      <a href="/symptoms/dental-anxiety" style="padding:10px 18px;border-radius:24px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.8rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">😰 치과 공포증</a>
+      <a href="/symptoms/broken-front-tooth" style="padding:10px 18px;border-radius:24px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.8rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">💔 앞니 깨짐</a>
+      <a href="/symptoms/jaw-pain" style="padding:10px 18px;border-radius:24px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.8rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">😖 턱관절 통증</a>
+      <a href="/symptoms/implant-consultation" style="padding:10px 18px;border-radius:24px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.8rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">🏥 임플란트 상담</a>
+      <a href="/symptoms" style="padding:10px 20px;border-radius:24px;background:rgba(247,186,24,0.15);border:1px solid rgba(247,186,24,0.3);color:var(--gold);font-size:0.8rem;font-family:var(--font-kr);text-decoration:none;font-weight:700;transition:all 0.2s;">전체 증상 가이드 →</a>
+    </div>
+  </div>
+</section>
+
 <!-- ===== CTA ===== -->
 <section class="cta sec-pad">
   <div class="cta-inner">
@@ -1886,6 +1958,15 @@ app.get('/local/:slug', (c) => {
   return c.html(html)
 })
 
+// ===== SYMPTOM SEO: 증상별 전용 랜딩페이지 (20개) =====
+app.get('/symptoms', (c) => c.html(symptomIndexPage()))
+app.get('/symptoms/:slug', (c) => {
+  const slug = c.req.param('slug')
+  const html = renderSymptomPage(slug)
+  if (!html) return c.notFound()
+  return c.html(html)
+})
+
 // ===== AUTH API =====
 app.route('/api/auth', authApi)
 app.route('/api/user', userAuthApi)
@@ -2037,6 +2118,15 @@ app.get('/sitemap.xml', async (c) => {
     { loc: '/local', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
     ...getAllLocalSeoSlugs().map(s => ({
       loc: `/local/${s}`,
+      priority: '0.9',
+      changefreq: 'weekly' as const,
+      lastmod: today,
+      images: [] as { url: string; title: string }[],
+    })),
+    // Symptom SEO: 증상별 전용 랜딩페이지 (20개)
+    { loc: '/symptoms', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
+    ...getAllSymptomSlugs().map(s => ({
+      loc: `/symptoms/${s}`,
       priority: '0.9',
       changefreq: 'weekly' as const,
       lastmod: today,

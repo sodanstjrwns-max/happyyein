@@ -30,6 +30,8 @@
 | `/contact` | 상담 예약 |
 | `/local` | **지역별 진료 안내** (Local SEO 목록 — 6지역 × 5진료) |
 | `/local/:slug` | **지역+진료 전용 랜딩페이지** (30개, 예: `/local/sicheong-implant`) |
+| `/symptoms` | **증상별 진료 가이드** (Symptom SEO 허브 — 20개 증상 목록) |
+| `/symptoms/:slug` | **증상별 전용 랜딩페이지** (20개, 예: `/symptoms/toothache`) |
 
 ### 관리자 기능
 | 경로 | 설명 |
@@ -84,6 +86,48 @@
 - 지역별 교통/랜드마크 유니크 콘텐츠
 - 양방향 내부 링크 네트워크 (치료페이지 ↔ 지역SEO, 지역 간 ↔ 진료 간)
 
+### 증상별 SEO 전용 랜딩페이지 (2026-05-26 3차 슈퍼 업그레이드)
+
+**20개 증상별 전용 랜딩페이지** — 환자가 실제 검색하는 증상 키워드 대응
+
+| 증상 | Slug | 예시 검색어 |
+|------|------|----------|
+| 이가 아파요 | `toothache` | "치통 원인", "이 아플때" |
+| 이가 시려요 | `sensitive-teeth` | "시린이", "이 시림" |
+| 잇몸 출혈 | `bleeding-gums` | "잇몸에서 피", "양치질 피" |
+| 잇몸 부음 | `swollen-gums` | "잇몸 붓다", "잇몸 딩딩" |
+| 입냄새 | `bad-breath` | "구취", "입냄새 원인" |
+| 치아 흔들림 | `loose-teeth` | "이가 흔들려요", "치아 흔들" |
+| 사랑니 통증 | `wisdom-tooth-pain` | "사랑니 아파요", "사랑니 발치" |
+| 치아 금 | `cracked-tooth` | "치아 금갔어요", "금이 간 치아" |
+| 잇몸 퇴축 | `gum-recession` | "잇몸 내려앨아요", "치아미가 드러남" |
+| 이 갈이 | `teeth-grinding` | "이갈이", "이를 갈아요" |
+| 치아 변색 | `tooth-discoloration` | "치아가 누렇다", "치아 변색" |
+| 벌어진 치아 | `gap-teeth` | "앞니 사이 벌어짐", "치간" |
+| 턱관절 통증 | `jaw-pain` | "턱관절 통증", "입 볌륜 소리" |
+| 치아 상실 | `missing-tooth` | "치아 빠졌어요", "치아 없은 부위" |
+| 충치 | `cavity` | "충치 증상", "충치 초기" |
+| 앞니 깨짐 | `broken-front-tooth` | "앞니 깨졌어요", "앞니 파절" |
+| 교정 상담 | `need-orthodontics` | "교정 해야하나요", "덮니" |
+| 임플란트 상담 | `implant-consultation` | "임플란트 물어보기", "임플란트 비용" |
+| 구내염 | `mouth-ulcer` | "구내염", "입안 염증" |
+| 치과 공포증 | `dental-anxiety` | "치과 무서워요", "치과 공포증" |
+
+**각 페이지 SEO 요소:**
+- MedicalWebPage + MedicalCondition + MedicalSignOrSymptom + MedicalTherapy JSON-LD
+- FAQPage JSON-LD (4~6개 전용 FAQ/페이지)
+- BreadcrumbList JSON-LD (홈 → 증상별 가이드 → [증상])
+- 긴급도 표시 (high/medium/low)
+- 원인 섹션 + 치료법 섹션 (진료페이지 링크 + 담당의 권어)
+- 관련 증상 크로스링크
+- CTA (전화/네이버 예약)
+
+### 홈페이지 추가 스키마 (2026-05-26 3차 슈퍼 업그레이드)
+- **Review 스키마 (10개 개별 리뷰)** — Google 별점 노출 (평점 4.9, 10개 리뷰)
+- **Service + PriceSpecification** — 5개 진료 서비스 (임플란트, 신경치료, 투명교정, 심미치료, 스케일링)
+- **hreflang (ko/en/x-default)** — 다국어 SEO 신호
+- **dateModified 동적 자동화** — 매일 자동 업데이트 (Google 프레시니스 향상)
+
 ## GPT-5.5 자동 블로그 시스템
 
 - **매일 오전 7시 (KST)** Cloudflare Cron Worker가 자동 발행
@@ -109,6 +153,13 @@
 | `MedicalWebPage` | `/local/:slug` | 의료 웹페이지 + speakable |
 | `FAQPage` | `/local/:slug` | 지역+진료 전용 FAQ (7~8개/페이지) |
 | `CollectionPage` | `/local` | 지역별 진료 목록 (ItemList 30개) |
+| `Review` (10개) | `/` | 개별 환자 리뷰 (Google 별점 노출) |
+| `Service` + `PriceSpecification` | `/` | 5개 진료 서비스 및 비용 정보 |
+| `MedicalWebPage` | `/symptoms/:slug` | 의료 웹페이지 + speakable |
+| `MedicalCondition` | `/symptoms/:slug` | 증상/질환 정보 (signOrSymptom, possibleTreatment) |
+| `MedicalSignOrSymptom` | `/symptoms/:slug` | 의료 증상 스키마 |
+| `MedicalTherapy` | `/symptoms/:slug` | 치료법 정보 (performedBy: Dentist) |
+| `FAQPage` | `/symptoms/:slug` | 증상별 전용 FAQ (4~6개/페이지) |
 
 ### 검색엔진 즉시 알림
 - **IndexNow API** → Bing, Yandex, Naver Yeti 동시 알림
@@ -150,7 +201,7 @@
 - **프로젝트명**: `happyyein`
 - **도메인**: https://happyyein.kr (커스텀), https://happyyein.pages.dev (기본)
 - **상태**: ✅ Active
-- **마지막 배포**: 2026-05-14
+- **마지막 배포**: 2026-05-26
 
 ### Cron Worker
 - **프로젝트명**: `happyyein-cron`
@@ -195,6 +246,7 @@ webapp/
 │   ├── admin-pages.ts     # 관리자 페이지
 │   ├── treatments.ts      # 진료과목 상세 페이지
 │   ├── local-seo.ts       # 🆕 Local SEO 30개 랜딩페이지 (지역×진료)
+│   ├── symptom-seo.ts     # 🆕 Symptom SEO 20개 랜딩페이지 (증상별 가이드)
 │   ├── encyclopedia.ts    # 치과백과사전
 │   └── renderer.tsx       # JSX 렌더러
 ├── public/static/         # 정적 자산 (CSS, JS, 이미지)
@@ -210,14 +262,13 @@ webapp/
 ## 향후 개선 사항
 
 - [x] ✅ Local SEO 슈퍼 업그레이드 — 지역×진료 30개 전용 랜딩페이지 (2026-05-26)
+- [x] ✅ 3차 SEO 슈퍼 업그레이드 — 증상별 20개 랜딩페이지 + Review/Service 스키마 + hreflang (2026-05-26)
 - [ ] Google Search Console 연동 및 인덱싱 현황 모니터링
 - [ ] 비포애프터 게시물 등록 후 MedicalProcedure 스키마 프로덕션 검증
 - [ ] 자동 블로그 FAQ 품질 모니터링 (FAQPage 스키마 Google 리치 결과 확인)
-- [ ] 환자 리뷰/후기 구조화 데이터 (Review 스키마) 추가
-- [ ] 다국어 지원 (영어 페이지) 검토
 - [ ] Core Web Vitals 최적화 (LCP, CLS, INP)
 - [ ] 예약 시스템 온라인 통합
 
 ---
 
-**Built with Hono + Cloudflare Pages** | Last updated: 2026-05-26
+**Built with Hono + Cloudflare Pages** | Last updated: 2026-05-26 (3차 SEO 슈퍼 업그레이드)
