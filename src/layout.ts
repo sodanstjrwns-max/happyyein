@@ -224,7 +224,9 @@ export function nav(activeMenu?: string) {
     { label: '앞니 심미 치료', href: '/treatments/aesthetic' },
     { label: '치아 교정', href: '/treatments/orthodontics' },
     { label: '일반 / 예방 치료', href: '/treatments/general' },
-  ];
+    { label: '─────────────', href: '#', separator: true },
+    { label: '📍 지역별 진료 안내', href: '/local' },
+  ] as { label: string; href: string; separator?: boolean }[];
   const contentsDropdown = [
     { label: '비포 & 애프터', href: '/before-after' },
     { label: '블로그', href: '/blog' },
@@ -248,7 +250,7 @@ export function nav(activeMenu?: string) {
           return `<div class="nav-dropdown-wrap">
             <a href="${item.href}" class="nav-link ${activeMenu === 'treatments' ? 'active' : ''}">${item.label} <i class="fas fa-chevron-down" style="font-size:0.5rem;margin-left:4px;"></i></a>
             <div class="nav-dropdown">
-              ${dropdownItems.map(d => `<a href="${d.href}" class="nav-dropdown-item">${d.label}</a>`).join('')}
+              ${dropdownItems.map(d => (d as any).separator ? `<div style="border-top:1px solid #eee;margin:4px 0;"></div>` : `<a href="${d.href}" class="nav-dropdown-item">${d.label}</a>`).join('')}
             </div>
           </div>`;
         }
@@ -276,7 +278,8 @@ export function nav(activeMenu?: string) {
 <div class="mob-menu" id="mobMenu">
   <a href="/" class="mob-link" onclick="closeMob()">Home</a>
   <a href="/philosophy" class="mob-link" onclick="closeMob()">Philosophy</a>
-  ${dropdownItems.map(d => `<a href="${d.href}" class="mob-link mob-link-sub" onclick="closeMob()">${d.label}</a>`).join('')}
+  ${dropdownItems.filter(d => !(d as any).separator).map(d => `<a href="${d.href}" class="mob-link mob-link-sub" onclick="closeMob()">${d.label}</a>`).join('')}
+  <a href="/local" class="mob-link" onclick="closeMob()" style="color:#013C88;font-weight:600;">📍 지역별 진료</a>
   <a href="/doctors" class="mob-link" onclick="closeMob()">Doctors</a>
   <a href="/experience" class="mob-link" onclick="closeMob()">Experience</a>
   <a href="/before-after" class="mob-link" onclick="closeMob()">Contents</a>

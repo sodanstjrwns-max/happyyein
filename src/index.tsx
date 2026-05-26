@@ -9,7 +9,8 @@ import userAuthApi from './api-user-auth'
 import { adminLoginPage, adminDashboardPage } from './admin-pages'
 import { registerPage, loginPage } from './auth-pages'
 import { encyclopediaListPage, encyclopediaDetailPage } from './encyclopedia'
-import autoBlogApi, { handleScheduled } from './auto-blog'
+import autoBlogApi, { handleScheduled, notifySearchEngines } from './auto-blog'
+import { renderLocalSeoPage, localSeoIndexPage, getAllLocalSeoSlugs } from './local-seo'
 
 type Bindings = { DB: D1Database; R2: R2Bucket; OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; AUTO_BLOG_SECRET?: string }
 const app = new Hono<{ Bindings: Bindings }>()
@@ -868,6 +869,8 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
           <a href="/treatments/aesthetic" class="nav-dropdown-item">앞니 심미 치료</a>
           <a href="/treatments/orthodontics" class="nav-dropdown-item">치아 교정</a>
           <a href="/treatments/general" class="nav-dropdown-item">일반 / 예방 치료</a>
+          <div style="border-top:1px solid rgba(255,255,255,0.08);margin:4px 0;"></div>
+          <a href="/local" class="nav-dropdown-item">📍 지역별 진료 안내</a>
         </div>
       </div>
       <a href="/doctors" class="nav-link">Doctors</a>
@@ -899,6 +902,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   <a href="/treatments/aesthetic" class="mob-link mob-link-sub" onclick="closeMob()">앞니 심미 치료</a>
   <a href="/treatments/orthodontics" class="mob-link mob-link-sub" onclick="closeMob()">치아 교정</a>
   <a href="/treatments/general" class="mob-link mob-link-sub" onclick="closeMob()">일반 / 예방 치료</a>
+  <a href="/local" class="mob-link" onclick="closeMob()" style="color:#4da3ff;font-weight:600;">📍 지역별 진료</a>
   <a href="/doctors" class="mob-link" onclick="closeMob()">Doctors</a>
   <a href="/experience" class="mob-link" onclick="closeMob()">Experience</a>
   <a href="/before-after" class="mob-link" onclick="closeMob()">Contents</a>
@@ -1670,6 +1674,19 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       북창동·다동·무교동·남산·소공동 등 도심 생활권에서 도보 이동이 가능하며,<br>
       시청역·명동역·을지로입구역·회현역·광화문역·종로3가역·충무로역·서울역 등 주변 지하철역과 인접해 있습니다.
     </p>
+    <!-- 지역별 진료 빠른 링크 -->
+    <div style="margin-top:40px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.06);">
+      <h3 class="rv" style="font-family:var(--font-kr);font-size:0.95rem;color:var(--gold);margin-bottom:16px;font-weight:600;">📍 지역별 전문 진료 바로가기</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:900px;margin:0 auto;">
+        <a href="/local/sicheong-implant" style="padding:8px 16px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.78rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">시청역 임플란트</a>
+        <a href="/local/myeongdong-implant" style="padding:8px 16px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.78rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">명동 임플란트</a>
+        <a href="/local/euljiro-preservation" style="padding:8px 16px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.78rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">을지로 신경치료</a>
+        <a href="/local/gwanghwamun-orthodontics" style="padding:8px 16px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.78rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">광화문 교정</a>
+        <a href="/local/hoehyeon-aesthetic" style="padding:8px 16px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.78rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">회현역 라미네이트</a>
+        <a href="/local/seoul-station-general" style="padding:8px 16px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.78rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">서울역 스케일링</a>
+        <a href="/local" style="padding:8px 16px;border-radius:20px;background:rgba(247,186,24,0.15);border:1px solid rgba(247,186,24,0.3);color:var(--gold);font-size:0.78rem;font-family:var(--font-kr);text-decoration:none;font-weight:600;transition:all 0.2s;">전체 보기 →</a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1860,6 +1877,15 @@ app.get('/treatments/:slug', (c) => {
   return c.html(html)
 })
 
+// ===== LOCAL SEO: 지역×진료 전용 랜딩페이지 (30개+) =====
+app.get('/local', (c) => c.html(localSeoIndexPage()))
+app.get('/local/:slug', (c) => {
+  const slug = c.req.param('slug')
+  const html = renderLocalSeoPage(slug)
+  if (!html) return c.notFound()
+  return c.html(html)
+})
+
 // ===== AUTH API =====
 app.route('/api/auth', authApi)
 app.route('/api/user', userAuthApi)
@@ -2007,6 +2033,15 @@ app.get('/sitemap.xml', async (c) => {
     { loc: '/blog', priority: '0.8', changefreq: 'daily', lastmod: today, images: [] },
     { loc: '/notice', priority: '0.5', changefreq: 'weekly', lastmod: today, images: [] },
     { loc: '/encyclopedia', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
+    // Local SEO: 지역×진료 전용 랜딩페이지 (30개+)
+    { loc: '/local', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
+    ...getAllLocalSeoSlugs().map(s => ({
+      loc: `/local/${s}`,
+      priority: '0.9',
+      changefreq: 'weekly' as const,
+      lastmod: today,
+      images: [] as { url: string; title: string }[],
+    })),
   ];
 
   // DB에서 모든 발행된 포스트 조회 (블로그 + 비포애프터 개별 URL)

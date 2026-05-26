@@ -469,6 +469,27 @@ ${nav('treatments')}
   </div>
 </section>
 
+<!-- 지역별 진료 안내 (Local SEO 내부 링크) -->
+<section style="max-width:1100px; margin:0 auto; padding:40px 20px;">
+  <h2 style="font-size:clamp(18px,3vw,22px); font-weight:800; color:#1a1a1a; text-align:center; margin:0 0 8px;">
+    <i class="fas fa-map-marked-alt" style="color:#013C88; margin-right:8px;"></i>지역별 ${t.title} 안내
+  </h2>
+  <p style="text-align:center; color:#888; font-size:14px; margin:0 0 20px;">가까운 역에서 찾아오시는 길을 확인하세요</p>
+  <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
+    ${(() => {
+      const localTreatmentId = t.slug;
+      return [
+        { id: 'sicheong', name: '시청역', min: 5 },
+        { id: 'hoehyeon', name: '회현역', min: 6 },
+        { id: 'euljiro', name: '을지로입구역', min: 7 },
+        { id: 'myeongdong', name: '명동역', min: 8 },
+        { id: 'gwanghwamun', name: '광화문역', min: 10 },
+        { id: 'seoul-station', name: '서울역', min: 12 },
+      ].map(r => '<a href="/local/' + r.id + '-' + localTreatmentId + '" style="display:inline-flex;align-items:center;gap:6px;background:#f8faff;border:1px solid #d0dff5;border-radius:24px;padding:8px 18px;font-size:14px;color:#013C88;text-decoration:none;font-weight:600;transition:all 0.2s;" onmouseover="this.style.background=\'#013C88\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'#f8faff\';this.style.color=\'#013C88\'"><i class="fas fa-subway" style="font-size:12px;"></i>' + r.name + ' ' + t.title + ' <span style="opacity:0.7;font-size:12px;">' + r.min + '분</span></a>').join('');
+    })()}
+  </div>
+</section>
+
 <!-- OTHER TREATMENTS -->
 <div class="other-treats">
   <div class="other-treats-inner">
