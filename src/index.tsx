@@ -12,6 +12,9 @@ import { encyclopediaListPage, encyclopediaDetailPage } from './encyclopedia'
 import autoBlogApi, { handleScheduled, notifySearchEngines } from './auto-blog'
 import { renderLocalSeoPage, localSeoIndexPage, getAllLocalSeoSlugs } from './local-seo'
 import { renderSymptomPage, symptomIndexPage, getAllSymptomSlugs } from './symptom-seo'
+import { renderCostPage, costIndexPage, getAllCostSlugs } from './cost-seo'
+import { renderComparisonPage, comparisonIndexPage, getAllComparisonSlugs } from './comparison-seo'
+import { terms as encyclopediaTerms } from './encyclopedia'
 
 type Bindings = { DB: D1Database; R2: R2Bucket; OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; AUTO_BLOG_SECRET?: string }
 const app = new Hono<{ Bindings: Bindings }>()
@@ -145,7 +148,10 @@ app.get('/', (c) => {
     "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "458", "bestRating": "5" },
     "sameAs": [
       "https://blog.naver.com/yein2828",
-      "https://naver.me/G0DXGZbi"
+      "https://naver.me/G0DXGZbi",
+      "https://map.naver.com/v5/entry/place/36682457",
+      "https://www.google.com/maps?cid=YOUR_GOOGLE_CID",
+      "https://place.map.kakao.com/7840173"
     ]
   });
 
@@ -920,6 +926,8 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
           <div style="border-top:1px solid rgba(255,255,255,0.08);margin:4px 0;"></div>
           <a href="/local" class="nav-dropdown-item">📍 지역별 진료 안내</a>
           <a href="/symptoms" class="nav-dropdown-item">🩺 증상별 가이드</a>
+          <a href="/cost" class="nav-dropdown-item">💰 치료비용 안내</a>
+          <a href="/compare" class="nav-dropdown-item">⚖️ 치료 비교</a>
         </div>
       </div>
       <a href="/doctors" class="nav-link">Doctors</a>
@@ -953,6 +961,8 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   <a href="/treatments/general" class="mob-link mob-link-sub" onclick="closeMob()">일반 / 예방 치료</a>
   <a href="/local" class="mob-link" onclick="closeMob()" style="color:#4da3ff;font-weight:600;">📍 지역별 진료</a>
   <a href="/symptoms" class="mob-link" onclick="closeMob()" style="color:#4da3ff;font-weight:600;">🩺 증상별 가이드</a>
+  <a href="/cost" class="mob-link" onclick="closeMob()" style="color:#4da3ff;font-weight:600;">💰 치료비용 안내</a>
+  <a href="/compare" class="mob-link" onclick="closeMob()" style="color:#4da3ff;font-weight:600;">⚖️ 치료 비교</a>
   <a href="/doctors" class="mob-link" onclick="closeMob()">Doctors</a>
   <a href="/experience" class="mob-link" onclick="closeMob()">Experience</a>
   <a href="/before-after" class="mob-link" onclick="closeMob()">Contents</a>
@@ -1762,6 +1772,38 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   </div>
 </section>
 
+<!-- ===== 치료비용 & 비교 바로가기 ===== -->
+<section class="sec-pad" style="background:linear-gradient(135deg,rgba(1,60,136,0.06),rgba(247,186,24,0.04));border-top:1px solid rgba(255,255,255,0.03);padding-top:80px;padding-bottom:80px;">
+  <div style="max-width:1200px;margin:0 auto;text-align:center;">
+    <p class="rv" style="font-family:var(--font-display);font-size:0.65rem;text-transform:uppercase;letter-spacing:6px;color:var(--gold);margin-bottom:12px;">Treatment Cost & Comparison</p>
+    <h2 class="rv" style="font-family:var(--font-kr);font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-1px;margin-bottom:16px;">💰 치료비용이 궁금하신가요?</h2>
+    <p class="rv" style="font-family:var(--font-kr);font-size:0.85rem;color:var(--gray);line-height:1.9;margin-bottom:40px;">투명한 치료비용 안내와 치료법 비교로 최적의 선택을 도와드립니다.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;max-width:1000px;margin:0 auto 32px;">
+      <div style="background:rgba(247,186,24,0.05);border:1px solid rgba(247,186,24,0.12);border-radius:16px;padding:24px;text-align:left;">
+        <h3 style="font-family:var(--font-kr);font-size:1rem;font-weight:700;color:var(--white);margin-bottom:12px;">💰 치료비용 안내</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <a href="/cost/implant-cost" style="padding:6px 14px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.75rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">임플란트 비용</a>
+          <a href="/cost/orthodontics-cost" style="padding:6px 14px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.75rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">교정 비용</a>
+          <a href="/cost/aesthetic-cost" style="padding:6px 14px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.75rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">심미치료 비용</a>
+          <a href="/cost/crown-cost" style="padding:6px 14px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.75rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">크라운 비용</a>
+          <a href="/cost/scaling-cost" style="padding:6px 14px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.75rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">스케일링 비용</a>
+          <a href="/cost" style="padding:6px 16px;border-radius:20px;background:rgba(247,186,24,0.15);border:1px solid rgba(247,186,24,0.3);color:var(--gold);font-size:0.75rem;font-family:var(--font-kr);text-decoration:none;font-weight:700;transition:all 0.2s;">전체 비용 안내 →</a>
+        </div>
+      </div>
+      <div style="background:rgba(1,60,136,0.05);border:1px solid rgba(1,60,136,0.12);border-radius:16px;padding:24px;text-align:left;">
+        <h3 style="font-family:var(--font-kr);font-size:1rem;font-weight:700;color:var(--white);margin-bottom:12px;">⚖️ 치료 비교</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <a href="/compare/implant-vs-bridge" style="padding:6px 14px;border-radius:20px;background:rgba(1,60,136,0.08);border:1px solid rgba(1,60,136,0.15);color:#6db3f8;font-size:0.75rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">임플란트 vs 브릿지</a>
+          <a href="/compare/laminate-vs-resin" style="padding:6px 14px;border-radius:20px;background:rgba(1,60,136,0.08);border:1px solid rgba(1,60,136,0.15);color:#6db3f8;font-size:0.75rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">라미네이트 vs 레진</a>
+          <a href="/compare/clear-vs-metal-braces" style="padding:6px 14px;border-radius:20px;background:rgba(1,60,136,0.08);border:1px solid rgba(1,60,136,0.15);color:#6db3f8;font-size:0.75rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">투명교정 vs 메탈교정</a>
+          <a href="/compare/implant-vs-denture" style="padding:6px 14px;border-radius:20px;background:rgba(1,60,136,0.08);border:1px solid rgba(1,60,136,0.15);color:#6db3f8;font-size:0.75rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">임플란트 vs 틀니</a>
+          <a href="/compare" style="padding:6px 16px;border-radius:20px;background:rgba(1,60,136,0.15);border:1px solid rgba(1,60,136,0.3);color:#6db3f8;font-size:0.75rem;font-family:var(--font-kr);text-decoration:none;font-weight:700;transition:all 0.2s;">전체 비교 가이드 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ===== CTA ===== -->
 <section class="cta sec-pad">
   <div class="cta-inner">
@@ -1967,6 +2009,24 @@ app.get('/symptoms/:slug', (c) => {
   return c.html(html)
 })
 
+// ===== COST SEO: 치료비용 전용 랜딩페이지 (10개) =====
+app.get('/cost', (c) => c.html(costIndexPage()))
+app.get('/cost/:slug', (c) => {
+  const slug = c.req.param('slug')
+  const html = renderCostPage(slug)
+  if (!html) return c.notFound()
+  return c.html(html)
+})
+
+// ===== COMPARISON SEO: 치료 비교 콘텐츠 (8개) =====
+app.get('/compare', (c) => c.html(comparisonIndexPage()))
+app.get('/compare/:slug', (c) => {
+  const slug = c.req.param('slug')
+  const html = renderComparisonPage(slug)
+  if (!html) return c.notFound()
+  return c.html(html)
+})
+
 // ===== AUTH API =====
 app.route('/api/auth', authApi)
 app.route('/api/user', userAuthApi)
@@ -2129,6 +2189,32 @@ app.get('/sitemap.xml', async (c) => {
       loc: `/symptoms/${s}`,
       priority: '0.9',
       changefreq: 'weekly' as const,
+      lastmod: today,
+      images: [] as { url: string; title: string }[],
+    })),
+    // Cost SEO: 치료비용 전용 랜딩페이지 (10개)
+    { loc: '/cost', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
+    ...getAllCostSlugs().map(s => ({
+      loc: `/cost/${s}`,
+      priority: '0.9',
+      changefreq: 'weekly' as const,
+      lastmod: today,
+      images: [] as { url: string; title: string }[],
+    })),
+    // Comparison SEO: 치료 비교 콘텐츠 (8개)
+    { loc: '/compare', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
+    ...getAllComparisonSlugs().map(s => ({
+      loc: `/compare/${s}`,
+      priority: '0.85',
+      changefreq: 'weekly' as const,
+      lastmod: today,
+      images: [] as { url: string; title: string }[],
+    })),
+    // Encyclopedia: 치과 백과사전 개별 용어 (215개)
+    ...encyclopediaTerms.map(t => ({
+      loc: `/encyclopedia/${t.id}`,
+      priority: '0.6',
+      changefreq: 'monthly' as const,
       lastmod: today,
       images: [] as { url: string; title: string }[],
     })),

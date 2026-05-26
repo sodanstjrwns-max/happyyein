@@ -227,6 +227,8 @@ export function nav(activeMenu?: string) {
     { label: '─────────────', href: '#', separator: true },
     { label: '📍 지역별 진료 안내', href: '/local' },
     { label: '🩺 증상별 가이드', href: '/symptoms' },
+    { label: '💰 치료비용 안내', href: '/cost' },
+    { label: '⚖️ 치료 비교', href: '/compare' },
   ] as { label: string; href: string; separator?: boolean }[];
   const contentsDropdown = [
     { label: '비포 & 애프터', href: '/before-after' },
@@ -282,6 +284,8 @@ export function nav(activeMenu?: string) {
   ${dropdownItems.filter(d => !(d as any).separator).map(d => `<a href="${d.href}" class="mob-link mob-link-sub" onclick="closeMob()">${d.label}</a>`).join('')}
   <a href="/local" class="mob-link" onclick="closeMob()" style="color:#013C88;font-weight:600;">📍 지역별 진료</a>
   <a href="/symptoms" class="mob-link" onclick="closeMob()" style="color:#013C88;font-weight:600;">🩺 증상별 가이드</a>
+  <a href="/cost" class="mob-link" onclick="closeMob()" style="color:#013C88;font-weight:600;">💰 치료비용 안내</a>
+  <a href="/compare" class="mob-link" onclick="closeMob()" style="color:#013C88;font-weight:600;">⚖️ 치료 비교</a>
   <a href="/doctors" class="mob-link" onclick="closeMob()">Doctors</a>
   <a href="/experience" class="mob-link" onclick="closeMob()">Experience</a>
   <a href="/before-after" class="mob-link" onclick="closeMob()">Contents</a>
