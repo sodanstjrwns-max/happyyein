@@ -19,7 +19,33 @@ export function philosophyPage(): string {
     { q: '행복한예인치과의 가격 책정 원칙은 무엇인가요?', a: '합리적이고 투명한 가격을 원칙으로 합니다. 상담 시 안내받은 금액 그대로 진행되며, 숨겨진 추가 비용이 없습니다. 불필요한 치료를 권하지 않기 때문에 과잉 비용이 발생하지 않습니다. 분할 납부도 가능합니다.' },
   ];
   const philoFaqJsonLd = { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": philoFaq.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })) };
-  return `${head({ title: '진료 철학', description: '시청역·명동·을지로에서 13년, 행복한예인치과의 진료 철학. 내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다. 과장 없는 진료, 환자 존중, 장기적 관계. 서울 중구 남대문로 02-756-2828', path: '/philosophy', ogImage: '/static/img/dr-han-logo.jpg', keywords: '치과 진료 철학, 행복한예인치과 철학, 한승대 원장, 시청역 치과 철학, 명동 치과, 을지로 치과, 광화문 치과, 서울 중구 치과, 신뢰할 수 있는 치과, 직장인 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '진료 철학', url: '/philosophy' }], jsonLd: [philoFaqJsonLd] })}
+  const aboutPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "행복한예인치과 진료 철학",
+    "description": "시청역·명동·을지로에서 13년, 행복한예인치과의 진료 철학. 내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다.",
+    "url": "https://happyyein.kr/philosophy",
+    "mainEntity": {
+      "@type": "MedicalClinic",
+      "@id": "https://happyyein.kr/#organization",
+      "name": "행복한예인치과",
+      "foundingDate": "2013",
+      "slogan": "내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다",
+      "knowsAbout": ["임플란트", "치아보존", "치아교정", "심미치료", "예방치료"],
+      "amenityFeature": [
+        { "@type": "LocationFeatureSpecification", "name": "에어샤워 감염관리 시스템", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "CT 정밀 진단 장비", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "미세현미경 (25배 확대)", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "독립 수술실", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "수요일 야간진료 (20시)", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "장애인 편의시설", "value": true }
+      ],
+      "knowsLanguage": ["ko", "en"]
+    },
+    "dateModified": new Date().toISOString().split('T')[0],
+    "inLanguage": "ko"
+  };
+  return `${head({ title: '진료 철학', description: '시청역·명동·을지로에서 13년, 행복한예인치과의 진료 철학. 내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다. 과장 없는 진료, 환자 존중, 장기적 관계. 서울 중구 남대문로 02-756-2828', path: '/philosophy', ogImage: '/static/img/dr-han-logo.jpg', keywords: '치과 진료 철학, 행복한예인치과 철학, 한승대 원장, 시청역 치과 철학, 명동 치과, 을지로 치과, 광화문 치과, 서울 중구 치과, 신뢰할 수 있는 치과, 직장인 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '진료 철학', url: '/philosophy' }], jsonLd: [philoFaqJsonLd, aboutPageSchema] })}
 ${nav('philosophy')}
 
 <!-- HERO -->
@@ -200,7 +226,98 @@ export function doctorsPage(): string {
     { q: '을지로·광화문 근처에서 보존과 전문의가 있는 치과가 있나요?', a: '을지로입구역에서 도보 7분, 광화문역 10분 거리의 행복한예인치과에서 보건복지부 인증 보존과 전문의 신정희 원장이 직접 진료합니다. 미세현미경 정밀 신경치료로 자연 치아를 최대한 보존합니다. 수요일 야간진료도 가능합니다.' },
   ];
   const docFaqJsonLd = { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": docFaq.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })) };
-  return `${head({ title: '의료진 소개', description: '시청역·명동·을지로 전문의 협진 치과 | 행복한예인치과 의료진. 한승대 대표원장(통합치의학 전문의, 치의학 박사), 신정희 원장(보존과 전문의), 박현미 원장(교정 전문의). 시청역 5분, 명동역 8분. 02-756-2828', path: '/doctors', ogImage: '/static/img/dr-han-profile.jpg', keywords: '행복한예인치과 의료진, 한승대 원장, 시청역 치과 전문의, 명동 치과 전문의, 을지로 치과, 광화문 치과, 보존과 전문의, 교정과 전문의, 서울 중구 치과, 직장인 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '의료진 소개', url: '/doctors' }], jsonLd: [docFaqJsonLd] })}
+  // Physician JSON-LD — 3명 전문의 개별 스키마 (Google Knowledge Panel 대응)
+  const physicianSchemas = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Physician",
+      "@id": "https://happyyein.kr/#dr-han",
+      "name": "한승대",
+      "alternateName": "Han Seungdae",
+      "jobTitle": "대표원장",
+      "description": "보건복지부 인증 통합치의학과 전문의, 치의학 박사. 발치즉시 임플란트, 고난이도 임플란트(상악동 거상술, 골이식), 전악 임플란트 재건, 앞니 심미 치료 전문.",
+      "image": "https://happyyein.kr/static/img/dr-han-profile.jpg",
+      "url": "https://happyyein.kr/doctors",
+      "telephone": "+82-2-756-2828",
+      "medicalSpecialty": { "@type": "MedicalSpecialty", "name": "통합치의학과" },
+      "hasCredential": [
+        { "@type": "EducationalOccupationalCredential", "credentialCategory": "보건복지부 인증 전문의", "name": "통합치의학과 전문의" },
+        { "@type": "EducationalOccupationalCredential", "credentialCategory": "학위", "name": "치의학 박사 (경희대학교)" }
+      ],
+      "alumniOf": [
+        { "@type": "CollegeOrUniversity", "name": "고려대학교" },
+        { "@type": "CollegeOrUniversity", "name": "경희대학교 치의학전문대학원" }
+      ],
+      "memberOf": [
+        { "@type": "Organization", "name": "대한악안면임플란트학회" },
+        { "@type": "Organization", "name": "서울특별시 치과의사회" }
+      ],
+      "worksFor": { "@type": "Dentist", "@id": "https://happyyein.kr/#organization", "name": "행복한예인치과" },
+      "knowsAbout": ["발치즉시 임플란트", "상악동 거상술", "골이식", "전악 임플란트 재건", "앞니 심미 치료", "라미네이트", "레진"],
+      "availableService": [
+        { "@type": "MedicalProcedure", "name": "발치즉시 임플란트" },
+        { "@type": "MedicalProcedure", "name": "고난이도 임플란트" },
+        { "@type": "MedicalProcedure", "name": "앞니 심미 치료" }
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Physician",
+      "@id": "https://happyyein.kr/#dr-shin",
+      "name": "신정희",
+      "alternateName": "Shin Junghee",
+      "jobTitle": "원장",
+      "description": "보건복지부 인증 치과보존과 전문의, 치의학 박사. 미세현미경(25배) 정밀 신경치료, 보존 수복, 충치 치료 전문.",
+      "image": "https://happyyein.kr/static/img/dr-shin-profile.jpg",
+      "url": "https://happyyein.kr/doctors",
+      "telephone": "+82-2-756-2828",
+      "medicalSpecialty": { "@type": "MedicalSpecialty", "name": "치과보존과" },
+      "hasCredential": [
+        { "@type": "EducationalOccupationalCredential", "credentialCategory": "보건복지부 인증 전문의", "name": "치과보존과 전문의" },
+        { "@type": "EducationalOccupationalCredential", "credentialCategory": "학위", "name": "치의학 박사 (경희대학교)" }
+      ],
+      "alumniOf": [
+        { "@type": "CollegeOrUniversity", "name": "경희대학교 치과대학" }
+      ],
+      "worksFor": { "@type": "Dentist", "@id": "https://happyyein.kr/#organization", "name": "행복한예인치과" },
+      "knowsAbout": ["미세현미경 신경치료", "보존 수복", "충치 치료", "레진 치료"],
+      "availableService": [
+        { "@type": "MedicalProcedure", "name": "미세현미경 신경치료" },
+        { "@type": "MedicalProcedure", "name": "보존 수복" },
+        { "@type": "MedicalProcedure", "name": "충치 치료" }
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Physician",
+      "@id": "https://happyyein.kr/#dr-park",
+      "name": "박현미",
+      "alternateName": "Park Hyunmi",
+      "jobTitle": "원장",
+      "description": "교정과 전문의. 인비절라인 투명교정, 설측교정, 세라믹 교정, 성인 교정 전문. Columbia University CE 수료.",
+      "image": "https://happyyein.kr/static/img/dr-park-profile.jpg",
+      "url": "https://happyyein.kr/doctors",
+      "telephone": "+82-2-756-2828",
+      "medicalSpecialty": { "@type": "MedicalSpecialty", "name": "치과교정과" },
+      "hasCredential": [
+        { "@type": "EducationalOccupationalCredential", "credentialCategory": "전문의", "name": "교정과 전문의" },
+        { "@type": "EducationalOccupationalCredential", "credentialCategory": "자격", "name": "인비절라인 인증 제공자 (Certified Provider)" }
+      ],
+      "alumniOf": [
+        { "@type": "CollegeOrUniversity", "name": "연세대학교" },
+        { "@type": "CollegeOrUniversity", "name": "연세대학교 치의학대학원 교정과" },
+        { "@type": "CollegeOrUniversity", "name": "Columbia University (CE)" }
+      ],
+      "worksFor": { "@type": "Dentist", "@id": "https://happyyein.kr/#organization", "name": "행복한예인치과" },
+      "knowsAbout": ["인비절라인 투명교정", "설측교정", "세라믹 교정", "성인 교정"],
+      "availableService": [
+        { "@type": "MedicalProcedure", "name": "인비절라인 투명교정" },
+        { "@type": "MedicalProcedure", "name": "설측교정" },
+        { "@type": "MedicalProcedure", "name": "성인 교정" }
+      ]
+    }
+  ];
+  return `${head({ title: '의료진 소개', description: '시청역·명동·을지로 전문의 협진 치과 | 행복한예인치과 의료진. 한승대 대표원장(통합치의학 전문의, 치의학 박사), 신정희 원장(보존과 전문의), 박현미 원장(교정 전문의). 시청역 5분, 명동역 8분. 02-756-2828', path: '/doctors', ogImage: '/static/img/dr-han-profile.jpg', keywords: '행복한예인치과 의료진, 한승대 원장, 시청역 치과 전문의, 명동 치과 전문의, 을지로 치과, 광화문 치과, 보존과 전문의, 교정과 전문의, 서울 중구 치과, 직장인 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '의료진 소개', url: '/doctors' }], jsonLd: [docFaqJsonLd, ...physicianSchemas] })}
 ${nav('doctors')}
 
 <!-- HERO -->

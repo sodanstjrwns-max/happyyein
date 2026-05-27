@@ -247,14 +247,24 @@ app.get('/', (c) => {
     }))
   });
 
-  // 3) WebSite 스키마 (사이트링크 검색 최적화)
+  // 3) WebSite 스키마 (사이트링크 검색 최적화 + SearchAction)
   const websiteJsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": `${SITE_DOMAIN}/#website`,
     "name": "행복한예인치과",
-    "alternateName": "Happy Yein Dental",
+    "alternateName": ["Happy Yein Dental", "Happy Yein Dental Clinic"],
     "url": SITE_DOMAIN,
-    "publisher": { "@id": `${SITE_DOMAIN}/#organization` }
+    "publisher": { "@id": `${SITE_DOMAIN}/#organization` },
+    "inLanguage": "ko",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${SITE_DOMAIN}/blog?q={search_term_string}`
+      },
+      "query-input": "required name=search_term_string"
+    }
   });
 
   // 4) WebPage 스키마 (AEO: speakable 추가)

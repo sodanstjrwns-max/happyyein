@@ -350,6 +350,7 @@ export function renderTreatmentPage(slug: string): string | null {
   };
 
   // MedicalWebPage 스키마
+  const today = new Date().toISOString().split('T')[0];
   const medicalPageSchema = {
     "@context": "https://schema.org",
     "@type": "MedicalWebPage",
@@ -362,7 +363,75 @@ export function renderTreatmentPage(slug: string): string | null {
       "procedureType": "Surgical",
       "bodyLocation": "Mouth"
     },
-    "lastReviewed": "2026-04-07"
+    "lastReviewed": today,
+    "dateModified": today,
+    "medicalAudience": { "@type": "MedicalAudience", "audienceType": "Patient" },
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [".sub-hero-content h1", ".treat-intro-text h2", ".faq-q h4", ".faq-a p"]
+    }
+  };
+
+  // HowTo 스키마 (Google 리치 스니펫: 단계별 치료 과정)
+  const howToSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": `${t.title} 치료 과정`,
+    "description": `행복한예인치과에서 ${t.title} 치료를 받는 단계별 과정입니다.`,
+    "totalTime": t.slug === 'implant' ? 'P3M' : t.slug === 'orthodontics' ? 'P18M' : t.slug === 'aesthetic' ? 'P14D' : t.slug === 'preservation' ? 'P7D' : 'P1D',
+    "estimatedCost": {
+      "@type": "MonetaryAmount",
+      "currency": "KRW",
+      "value": t.slug === 'implant' ? '1200000' : t.slug === 'orthodontics' ? '3500000' : t.slug === 'aesthetic' ? '500000' : t.slug === 'preservation' ? '100000' : '50000'
+    },
+    "step": t.process.map((p, i) => ({
+      "@type": "HowToStep",
+      "position": i + 1,
+      "name": p.title,
+      "text": p.desc,
+      "url": `https://happyyein.kr/treatments/${t.slug}#step-${i + 1}`
+    })),
+    "performedBy": {
+      "@type": "Dentist",
+      "name": "행복한예인치과",
+      "url": "https://happyyein.kr"
+    }
+  };
+
+  // Service + PriceSpecification 스키마
+  const priceMap: Record<string, { min: string; max: string; note: string }> = {
+    implant: { min: '1200000', max: '3000000', note: '만 65세 이상 건강보험 적용 가능 (상하악 각 1개)' },
+    preservation: { min: '50000', max: '300000', note: '건강보험 적용 항목 포함' },
+    aesthetic: { min: '300000', max: '1500000', note: '비급여 치료 (보험 적용 불가)' },
+    orthodontics: { min: '3000000', max: '7000000', note: '투명교정 포함, 기간별 분납 가능' },
+    general: { min: '30000', max: '200000', note: '스케일링 연 1회 건강보험 적용' }
+  };
+  const price = priceMap[t.slug] || { min: '50000', max: '500000', note: '' };
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": `${t.title} - 행복한예인치과`,
+    "description": t.metaDesc,
+    "url": `https://happyyein.kr/treatments/${t.slug}`,
+    "serviceType": "Dental Treatment",
+    "provider": {
+      "@type": "Dentist",
+      "name": "행복한예인치과",
+      "@id": "https://happyyein.kr/#organization"
+    },
+    "areaServed": { "@type": "City", "name": "서울특별시" },
+    "offers": {
+      "@type": "Offer",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "priceCurrency": "KRW",
+        "minPrice": price.min,
+        "maxPrice": price.max,
+        "description": price.note
+      },
+      "availability": "https://schema.org/InStock",
+      "url": `https://happyyein.kr/treatments/${t.slug}`
+    }
   };
 
   return `${head({
@@ -377,7 +446,7 @@ export function renderTreatmentPage(slug: string): string | null {
       { name: '진료 안내', url: '/#treatments' },
       { name: t.title, url: `/treatments/${t.slug}` }
     ],
-    jsonLd: [faqSchema, medicalPageSchema]
+    jsonLd: [faqSchema, medicalPageSchema, howToSchema, serviceSchema]
   })}
 ${nav('treatments')}
 
