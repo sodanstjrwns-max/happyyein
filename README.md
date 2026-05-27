@@ -175,6 +175,29 @@
 - "이런 분에게 추천" 섹션
 - 전문의 소견 + CTA
 
+### HowTo + Physician + SearchAction 스키마 (2026-05-27 5차 슈퍼 업그레이드)
+
+**5개 치료페이지 HowTo 스키마** — Google 리치 스니펫 (단계별 치료 과정)
+- 각 치료페이지에 HowTo + HowToStep (5단계) + totalTime + estimatedCost
+- Google에서 "임플란트 치료 과정" 검색 시 단계별 리치 스니펫 노출 가능
+
+**5개 치료페이지 Service + PriceSpecification** — 비용 정보 구조화
+- 임플란트: 120만~300만원, 보존: 5만~30만원, 심미: 30만~150만원, 교정: 300만~700만원, 일반: 3만~20만원
+- 보험 적용 안내 포함
+
+**3명 전문의 Physician 스키마** — Google Knowledge Panel 대응
+- 한승대 (통합치의학과 전문의, 치의학 박사)
+- 신정희 (치과보존과 전문의, 치의학 박사)
+- 박현미 (교정과 전문의, 인비젤라인 인증)
+- 각 의사별: hasCredential, alumniOf, memberOf, availableService, knowsAbout
+
+**SearchAction (Sitelinks Searchbox)** — Google 검색결과 사이트 내 검색창
+- WebSite 스키마에 potentialAction: SearchAction 추가
+
+**AboutPage + MedicalClinic** — 진료철학 페이지 구조화
+- amenityFeature 6개 (에어샤워, CT, 미세현미경, 독립 수술실, 야간진료, 장애인 편의시설)
+- knowsLanguage: ko, en
+
 ### 홈페이지 추가 스키마 (2026-05-26 3차 슈퍼 업그레이드)
 - **Review 스키마 (10개 개별 리뷰)** — Google 별점 노출 (평점 4.9, 10개 리뷰)
 - **Service + PriceSpecification** — 5개 진료 서비스 (임플란트, 신경치료, 투명교정, 심미치료, 스케일링)
@@ -220,6 +243,11 @@
 | `MedicalWebPage` | `/compare/:slug` | 치료비교 의료 웹페이지 + speakable |
 | `FAQPage` | `/compare/:slug` | 비교 전용 FAQ (2~4개/페이지) |
 | `CollectionPage` | `/cost`, `/compare` | 비용/비교 목록 (ItemList) |
+| `HowTo` + `HowToStep` | `/treatments/:slug` | 단계별 치료 과정 (Google 리치 스니펫) |
+| `Service` + `PriceSpecification` | `/treatments/:slug` | 치료별 비용 범위 + 보험 정보 |
+| `Physician` (3명) | `/doctors` | 전문의 개별 스키마 (hasCredential, alumniOf) |
+| `SearchAction` | `/` | Sitelinks Searchbox (potentialAction) |
+| `AboutPage` | `/philosophy` | 진료철학 + MedicalClinic + amenityFeature |
 
 ### 검색엔진 즉시 알림
 - **IndexNow API** → Bing, Yandex, Naver Yeti 동시 알림
@@ -328,6 +356,7 @@ webapp/
 - [x] ✅ Local SEO 슈퍼 업그레이드 — 지역×진료 30개 전용 랜딩페이지 (2026-05-26)
 - [x] ✅ 3차 SEO 슈퍼 업그레이드 — 증상별 20개 랜딩페이지 + Review/Service 스키마 + hreflang (2026-05-26)
 - [x] ✅ 4차 SEO 슈퍼 업그레이드 — 치료비용 10개 + 치료비교 8개 + 사이트맵 312URL + SameAs 확장 (2026-05-26)
+- [x] ✅ 5차 SEO 슈퍼 업그레이드 — HowTo 5개 + Physician 3명 + SearchAction + Service/Price + AboutPage (2026-05-27)
 - [ ] Google Search Console 연동 및 인덱싱 현황 모니터링
 - [ ] 비포애프터 게시물 등록 후 MedicalProcedure 스키마 프로덕션 검증
 - [ ] 자동 블로그 FAQ 품질 모니터링 (FAQPage 스키마 Google 리치 결과 확인)
@@ -336,7 +365,7 @@ webapp/
 
 ---
 
-**Built with Hono + Cloudflare Pages** | Last updated: 2026-05-26 (4차 SEO 슈퍼 업그레이드)
+**Built with Hono + Cloudflare Pages** | Last updated: 2026-05-27 (5차 SEO 슈퍼 업그레이드)
 
 ### SEO 컨텐츠 총계 (전체 랜딩페이지 현황)
 | 카테고리 | 개수 | 파일 |
