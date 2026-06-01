@@ -388,7 +388,7 @@ app.get('/', (c) => {
 
 <!-- 검색엔진 사이트 인증 -->
 <meta name="google-site-verification" content="vYZPm8cqMVJjj5dT_4SefF1Vb064qJHCCcQgz1QYsHw">
-<meta name="naver-site-verification" content="">
+<meta name="naver-site-verification" content="b09b795ebd645faf0bf690fee790d98d6874d9fb">
 <meta property="og:article:author" content="행복한예인치과">
 
 <!-- hreflang (다국어 SEO) -->
@@ -2103,6 +2103,14 @@ app.get('/api/info', (c) => {
 })
 
 // ===== SEO: IndexNow 검증 키 =====
+// ===== Naver Search Advisor 소유 확인 HTML =====
+app.get('/naver8ab260368363ce856b9dacb72bd69fb8.html', (c) => {
+  return c.html('b09b795ebd645faf0bf690fee790d98d6874d9fb', 200, {
+    'Content-Type': 'text/html; charset=utf-8',
+    'Cache-Control': 'public, max-age=604800'
+  });
+})
+
 app.get('/a1b2c3d4e5f6g7h8i9j0happyyein2026.txt', (c) => {
   return c.text('a1b2c3d4e5f6g7h8i9j0happyyein2026', 200, {
     'Content-Type': 'text/plain; charset=utf-8',

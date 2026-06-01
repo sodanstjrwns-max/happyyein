@@ -171,7 +171,7 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
 
 <!-- 검색엔진 사이트 인증 -->
 <meta name="google-site-verification" content="vYZPm8cqMVJjj5dT_4SefF1Vb064qJHCCcQgz1QYsHw">
-<meta name="naver-site-verification" content="">
+<meta name="naver-site-verification" content="b09b795ebd645faf0bf690fee790d98d6874d9fb">
 <meta property="og:article:author" content="${SITE.name}">
 ${o.articlePublishedTime ? `<meta property="article:published_time" content="${o.articlePublishedTime}">` : ''}
 ${o.articleModifiedTime ? `<meta property="article:modified_time" content="${o.articleModifiedTime}">` : ''}
