@@ -15,6 +15,7 @@ import { renderSymptomPage, symptomIndexPage, getAllSymptomSlugs } from './sympt
 import { renderCostPage, costIndexPage, getAllCostSlugs } from './cost-seo'
 import { renderComparisonPage, comparisonIndexPage, getAllComparisonSlugs } from './comparison-seo'
 import { terms as encyclopediaTerms } from './encyclopedia'
+import indexingApi, { indexingDashboardPage } from './indexing-monitor'
 
 type Bindings = { DB: D1Database; R2: R2Bucket; OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; AUTO_BLOG_SECRET?: string }
 const app = new Hono<{ Bindings: Bindings }>()
@@ -2054,6 +2055,10 @@ app.route('/api/auto-blog', autoBlogApi)
 // ===== ADMIN PAGES =====
 app.get('/admin/login', (c) => c.html(adminLoginPage()))
 app.get('/admin', (c) => c.html(adminDashboardPage()))
+app.get('/admin/indexing', (c) => c.html(indexingDashboardPage()))
+
+// ===== INDEXING MONITOR API =====
+app.route('/api/indexing', indexingApi)
 
 // ===== BOARD PAGE ROUTES =====
 // 비포 & 애프터
