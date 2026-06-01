@@ -169,7 +169,8 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
 <meta name="twitter:description" content="${safeDesc}">
 <meta name="twitter:image" content="${ogImage}">
 
-<!-- Naver 검색 최적화 -->
+<!-- 검색엔진 사이트 인증 -->
+<meta name="google-site-verification" content="vYZPm8cqMVJjj5dT_4SefF1Vb064qJHCCcQgz1QYsHw">
 <meta name="naver-site-verification" content="">
 <meta property="og:article:author" content="${SITE.name}">
 ${o.articlePublishedTime ? `<meta property="article:published_time" content="${o.articlePublishedTime}">` : ''}
