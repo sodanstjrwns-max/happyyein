@@ -495,6 +495,11 @@ export function adminDashboardPage(): string {
       <span class="admin-nav-badge" id="badge-notice">-</span>
     </a>
     <div class="admin-nav-divider"></div>
+    <div class="admin-nav-section">SEO Tools</div>
+    <a href="/admin/indexing" class="admin-nav-item">
+      <i class="fas fa-search"></i> 색인 모니터링
+    </a>
+    <div class="admin-nav-divider"></div>
     <div class="admin-nav-section">Links</div>
     <a href="/" class="admin-nav-item" target="_blank">
       <i class="fas fa-globe"></i> 사이트 보기
