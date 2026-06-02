@@ -273,36 +273,44 @@
 | 20 | `dental-sedation-anxiety-seoul` | 진정치료/치과공포증 | Special |
 
 #### 일본어 (JA) — 12페이지
-| # | Slug | 주제 |
-|---|------|------|
-| 1 | `ja/emergency-dentist-myeongdong` | 明洞緊急歯科 |
-| 2 | `ja/broken-tooth-seoul` | 歯が欠けた |
-| 3 | `ja/wisdom-tooth-extraction-seoul` | 親知らず抜歯 |
-| 4 | `ja/teeth-whitening-myeongdong` | ホワイトニング明洞 |
-| 5 | `ja/dental-checkup-cleaning-seoul` | 歯科検診クリーニング |
-| 6 | `ja/lost-crown-filling-seoul` | クラウン・詰め物脱落 |
-| 7 | `ja/toothache-seoul` | 歯の痛み |
-| 8 | `ja/dental-implant-seoul` | インプラント |
-| 9 | `ja/dental-cost-korea-guide` | 韓国歯科費用ガイド |
-| 10 | `ja/saturday-dentist-myeongdong` | 土曜歯科明洞 |
-| 11 | `ja/travel-insurance-dental-korea` | 旅行保険歯科 |
-| 12 | `ja/english-speaking-dentist-seoul` | 英語対応歯科 |
+| # | Slug | 주제 | 소스 |
+|---|------|------|------|
+| 1 | `ja/emergency-dentist-myeongdong` | 明洞緊急歯科 | base |
+| 2 | `ja/broken-tooth-seoul` | 歯が欠けた | base |
+| 3 | `ja/wisdom-tooth-extraction-seoul` | 親知らず抜歯 | expansion |
+| 4 | `ja/teeth-whitening-myeongdong` | ホワイトニング明洞 | expansion |
+| 5 | `ja/dental-checkup-cleaning-seoul` | 歯科検診クリーニング | expansion |
+| 6 | `ja/dental-implant-seoul` | インプラント | expansion |
+| 7 | `ja/dental-cost-korea-guide` | 韓国歯科費用ガイド | expansion |
+| 8 | `ja/dental-abscess-swollen-face` | 歯科膿瘍・顔面腫脹 | expansion |
+| 9 | `ja/saturday-dentist-myeongdong` | 土曜歯科明洞 | expansion |
+| 10 | `ja/night-dentist-wednesday` | 水曜夜間歯科 | expansion |
+| 11 | `ja/lost-crown-filling-seoul` | クラウン・詰め物脱落 | expansion |
+| 12 | `ja/travel-insurance-dental-korea` | 旅行保険歯科 | expansion |
 
 #### 중국어 (ZH) — 12페이지
-| # | Slug | 주제 |
-|---|------|------|
-| 1 | `zh/emergency-dentist-myeongdong` | 明洞急诊牙科 |
-| 2 | `zh/broken-tooth-seoul` | 牙齿断裂 |
-| 3 | `zh/wisdom-tooth-extraction-seoul` | 智齿拔除 |
-| 4 | `zh/teeth-whitening-myeongdong` | 美白明洞 |
-| 5 | `zh/dental-checkup-cleaning-seoul` | 口腔检查洁牙 |
-| 6 | `zh/toothache-seoul` | 牙疼 |
-| 7 | `zh/lost-crown-filling-seoul` | 牙冠脱落 |
-| 8 | `zh/dental-implant-seoul` | 种植牙 |
-| 9 | `zh/dental-cost-korea-guide` | 韩国牙科费用指南 |
-| 10 | `zh/saturday-dentist-myeongdong` | 周六牙科明洞 |
-| 11 | `zh/dental-abscess-swollen-face-seoul` | 牙脓肿面部肿胀 |
-| 12 | `zh/english-speaking-dentist-seoul` | 英语牙科 |
+| # | Slug | 주제 | 소스 |
+|---|------|------|------|
+| 1 | `zh/emergency-dentist-myeongdong` | 明洞急诊牙科 | base |
+| 2 | `zh/broken-tooth-seoul` | 牙齿断裂 | base |
+| 3 | `zh/wisdom-tooth-extraction-seoul` | 智齿拔除 | expansion |
+| 4 | `zh/teeth-whitening-myeongdong` | 美白明洞 | expansion |
+| 5 | `zh/dental-checkup-cleaning-seoul` | 口腔检查洁牙 | expansion |
+| 6 | `zh/dental-implant-seoul` | 种植牙 | expansion |
+| 7 | `zh/dental-cost-korea-guide` | 韩国牙科费用指南 | expansion |
+| 8 | `zh/dental-abscess-swollen-face` | 牙脓肿面部肿胀 | expansion |
+| 9 | `zh/saturday-dentist-myeongdong` | 周六牙科明洞 | expansion |
+| 10 | `zh/night-dentist-wednesday` | 周三夜间牙科 | expansion |
+| 11 | `zh/lost-crown-filling-seoul` | 牙冠脱落 | expansion |
+| 12 | `zh/travel-insurance-dental-korea` | 旅行保险牙科 | expansion |
+
+#### 파일 아키텍처 (모듈 분리)
+| 파일 | 역할 | 페이지 수 |
+|------|------|----------|
+| `foreign-emergency-seo.ts` | 코어: ForeignPage 인터페이스, BASE_PAGES, PAGES 머지, 렌더러, 허브 페이지 | 9 (base) |
+| `foreign-seo-expansion-en.ts` | 영어 확장 페이지 | 15 |
+| `foreign-seo-expansion-ja.ts` | 일본어 확장 페이지 | 10 |
+| `foreign-seo-expansion-zh.ts` | 중국어 확장 페이지 | 10 |
 
 #### 각 페이지 SEO 요소:
 - **EmergencyService + MedicalWebPage + MedicalClinic** JSON-LD
@@ -313,6 +321,8 @@
 - 구글맵 + 카카오맵 링크
 - 가격 범위 표 (₩ / $ / ¥ / ¥(CNY))
 - CTA: 전화 + 카카오맵 길찾기
+- **6개 카테고리 분류**: Emergency, Cosmetic, Surgery, Preventive, Practical Info, Special Needs
+- **IndexNow 제출 완료**: 35개 신규 URL → api.indexnow.org + Naver + Bing (모두 200 OK)
 
 ### 홈페이지 추가 스키마 (2026-05-26 3차 슈퍼 업그레이드)
 - **Review 스키마 (10개 개별 리뷰)** — Google 별점 노출 (평점 4.9, 10개 리뷰)
