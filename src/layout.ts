@@ -230,6 +230,7 @@ export function nav(activeMenu?: string) {
     { label: '🩺 증상별 가이드', href: '/symptoms' },
     { label: '💰 치료비용 안내', href: '/cost' },
     { label: '⚖️ 치료 비교', href: '/compare' },
+    { label: '🌍 Emergency (EN/JA/ZH)', href: '/en' },
   ] as { label: string; href: string; separator?: boolean }[];
   const contentsDropdown = [
     { label: '비포 & 애프터', href: '/before-after' },

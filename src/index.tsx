@@ -16,6 +16,7 @@ import { renderCostPage, costIndexPage, getAllCostSlugs } from './cost-seo'
 import { renderComparisonPage, comparisonIndexPage, getAllComparisonSlugs } from './comparison-seo'
 import { terms as encyclopediaTerms } from './encyclopedia'
 import indexingApi, { indexingDashboardPage } from './indexing-monitor'
+import { renderForeignSeoPage, foreignEmergencyIndexPage, getAllForeignSeoSlugs } from './foreign-emergency-seo'
 
 type Bindings = { DB: D1Database; R2: R2Bucket; OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; AUTO_BLOG_SECRET?: string }
 const app = new Hono<{ Bindings: Bindings }>()
@@ -2038,6 +2039,27 @@ app.get('/compare/:slug', (c) => {
   return c.html(html)
 })
 
+// ===== FOREIGN EMERGENCY SEO: 외국인 응급치과 다국어 (EN/JA/ZH) =====
+app.get('/en', (c) => c.html(foreignEmergencyIndexPage()))
+app.get('/en/:slug', (c) => {
+  const slug = c.req.param('slug')
+  const html = renderForeignSeoPage(slug)
+  if (!html) return c.notFound()
+  return c.html(html)
+})
+app.get('/en/ja/:slug', (c) => {
+  const slug = `ja/${c.req.param('slug')}`
+  const html = renderForeignSeoPage(slug)
+  if (!html) return c.notFound()
+  return c.html(html)
+})
+app.get('/en/zh/:slug', (c) => {
+  const slug = `zh/${c.req.param('slug')}`
+  const html = renderForeignSeoPage(slug)
+  if (!html) return c.notFound()
+  return c.html(html)
+})
+
 // ===== AUTH API =====
 app.route('/api/auth', authApi)
 app.route('/api/user', userAuthApi)
@@ -2238,6 +2260,15 @@ app.get('/sitemap.xml', async (c) => {
       loc: `/encyclopedia/${t.id}`,
       priority: '0.6',
       changefreq: 'monthly' as const,
+      lastmod: today,
+      images: [] as { url: string; title: string }[],
+    })),
+    // Foreign Emergency SEO: 외국인 응급치과 다국어 페이지 (EN/JA/ZH)
+    { loc: '/en', priority: '0.9', changefreq: 'weekly', lastmod: today, images: [] },
+    ...getAllForeignSeoSlugs().map(s => ({
+      loc: `/en/${s}`,
+      priority: '0.9',
+      changefreq: 'weekly' as const,
       lastmod: today,
       images: [] as { url: string; title: string }[],
     })),
