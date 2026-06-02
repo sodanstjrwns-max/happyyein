@@ -17,7 +17,7 @@ const CLINIC = {
 }
 
 // ===== 페이지 데이터 정의 =====
-interface ForeignPage {
+export interface ForeignPage {
   slug: string
   lang: 'en' | 'ja' | 'zh'
   title: string
@@ -34,7 +34,11 @@ interface ForeignPage {
   priceRange?: string
 }
 
-const PAGES: ForeignPage[] = [
+import { EXPANSION_EN_PAGES } from './foreign-seo-expansion-en'
+import { EXPANSION_JA_PAGES } from './foreign-seo-expansion-ja'
+import { EXPANSION_ZH_PAGES } from './foreign-seo-expansion-zh'
+
+const BASE_PAGES: ForeignPage[] = [
   // ===== ENGLISH PAGES =====
   {
     slug: 'emergency-dentist-myeongdong',
@@ -443,6 +447,14 @@ Specialties: Clear aligners, Braces, Bite correction
   },
 ]
 
+// ===== 전체 페이지 통합 (기존 9 + 확장 EN 15 + JA 10 + ZH 10 = 44페이지) =====
+const PAGES: ForeignPage[] = [
+  ...BASE_PAGES,
+  ...EXPANSION_EN_PAGES,
+  ...EXPANSION_JA_PAGES,
+  ...EXPANSION_ZH_PAGES,
+]
+
 // ===== 전체 슬러그 목록 (sitemap용) =====
 export function getAllForeignSeoSlugs(): string[] {
   return PAGES.map(p => p.slug)
@@ -713,12 +725,65 @@ a{color:#F7BA18;text-decoration:none;}a:hover{text-decoration:underline;}
 </html>`
 }
 
-// ===== 인덱스 페이지 (다국어 허브) =====
+// ===== 카테고리 정의 (Hub 페이지용) =====
+interface PageCategory {
+  id: string
+  emoji: string
+  en: string
+  ja: string
+  zh: string
+  slugs: string[] // EN slug 기준
+}
+
+const CATEGORIES: PageCategory[] = [
+  { id: 'emergency', emoji: '🚨', en: 'Emergency & Urgent Care', ja: '緊急・応急処置', zh: '急诊处理',
+    slugs: ['emergency-dentist-myeongdong', 'broken-tooth-seoul', 'lost-crown-filling-seoul', 'toothache-seoul-tourist', 'dental-abscess-swollen-face-seoul', 'knocked-out-tooth-seoul'] },
+  { id: 'cosmetic', emoji: '✨', en: 'Cosmetic & Beauty', ja: '審美・ホワイトニング', zh: '美容牙科',
+    slugs: ['teeth-whitening-myeongdong', 'dental-veneers-seoul-korea', 'same-day-dental-crown-seoul'] },
+  { id: 'surgery', emoji: '🔩', en: 'Implants & Surgery', ja: 'インプラント・外科', zh: '种植牙·手术',
+    slugs: ['dental-implant-seoul-korea', 'wisdom-tooth-extraction-seoul'] },
+  { id: 'preventive', emoji: '🔍', en: 'Check-Up & Prevention', ja: '検診・予防', zh: '检查·预防',
+    slugs: ['dental-checkup-cleaning-seoul', 'english-speaking-dentist-myeongdong'] },
+  { id: 'practical', emoji: '📋', en: 'Practical Info & Cost', ja: '費用・実用情報', zh: '费用·实用信息',
+    slugs: ['dental-cost-korea-vs-usa-guide', 'travel-insurance-dental-korea', 'saturday-dentist-myeongdong', 'night-dentist-myeongdong-wednesday', 'dentist-near-seoul-station'] },
+  { id: 'special', emoji: '🏠', en: 'Special Needs', ja: '特別なケア', zh: '特殊需求',
+    slugs: ['expat-dentist-seoul', 'dental-sedation-anxiety-seoul'] },
+]
+
+// Helper: 카테고리별 페이지 그룹 생성
+function getCategoryPages(lang: 'en' | 'ja' | 'zh') {
+  return CATEGORIES.map(cat => {
+    const pages = cat.slugs
+      .map(baseSlug => {
+        const slug = lang === 'en' ? baseSlug : `${lang}/${baseSlug}`
+        return PAGES.find(p => p.slug === slug)
+      })
+      .filter((p): p is ForeignPage => p != null)
+    return { ...cat, pages }
+  }).filter(cat => cat.pages.length > 0)
+}
+
+// ===== 인덱스 페이지 (다국어 허브 — 카테고리별 정리) =====
 export function foreignEmergencyIndexPage(): string {
-  const pagesByLang = {
-    en: PAGES.filter(p => p.lang === 'en'),
-    ja: PAGES.filter(p => p.lang === 'ja'),
-    zh: PAGES.filter(p => p.lang === 'zh')
+  const totalPages = PAGES.length
+  const enCount = PAGES.filter(p => p.lang === 'en').length
+  const jaCount = PAGES.filter(p => p.lang === 'ja').length
+  const zhCount = PAGES.filter(p => p.lang === 'zh').length
+
+  // 각 언어별 카테고리 그룹
+  const enCategories = getCategoryPages('en')
+  const jaCategories = getCategoryPages('ja')
+  const zhCategories = getCategoryPages('zh')
+
+  const renderCategoryCards = (categories: ReturnType<typeof getCategoryPages>, langLabel: string) => {
+    return categories.map(cat => `
+      <div class="cat-section">
+        <div class="cat-label">${cat.emoji} ${langLabel === 'en' ? cat.en : langLabel === 'ja' ? cat.ja : cat.zh}</div>
+        <div class="page-grid">
+          ${cat.pages.map(p => `<a href="/en/${p.slug}" class="page-card"><h3>${p.heroEmoji} ${p.h1}</h3><p>${p.metaDesc.substring(0, 90)}...</p></a>`).join('')}
+        </div>
+      </div>
+    `).join('')
   }
 
   return `<!DOCTYPE html>
@@ -726,54 +791,70 @@ export function foreignEmergencyIndexPage(): string {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emergency Dental Care for Tourists — Happy Yein Dental Myeongdong</title>
-<meta name="description" content="Emergency dental care in Myeongdong, Seoul for tourists and expats. English, Japanese, Chinese pages available. Walk-in welcome, same-day treatment, affordable prices.">
+<title>Dental Care for Tourists & Expats in Seoul — ${totalPages} Pages in EN/JA/ZH — Happy Yein Dental</title>
+<meta name="description" content="Complete dental care guide for foreigners in Seoul: ${enCount} English, ${jaCount} Japanese, ${zhCount} Chinese pages covering emergencies, cosmetic dentistry, implants, cost guides, and more. Walk-in welcome, Myeongdong.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="${SITE_DOMAIN}/en">
 <link rel="alternate" hreflang="en" href="${SITE_DOMAIN}/en">
 <link rel="alternate" hreflang="ko" href="${SITE_DOMAIN}/">
 <link rel="alternate" hreflang="x-default" href="${SITE_DOMAIN}/en">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Emergency Dental Care for Tourists — Happy Yein Dental">
-<meta property="og:description" content="English, Japanese, Chinese emergency dental care in Myeongdong Seoul.">
+<meta property="og:title" content="Dental Care for Tourists in Myeongdong Seoul — ${totalPages} Multilingual Pages">
+<meta property="og:description" content="Emergency, cosmetic, implant, and preventive dental care for tourists and expats. English, Japanese, Chinese.">
 <meta property="og:url" content="${SITE_DOMAIN}/en">
 <meta property="og:image" content="${SITE_DOMAIN}/static/img/dr-han-smile.jpg">
 <meta name="google-site-verification" content="vYZPm8cqMVJjj5dT_4SefF1Vb064qJHCCcQgz1QYsHw">
 <meta name="naver-site-verification" content="b09b795ebd645faf0bf690fee790d98d6874d9fb">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
 <script type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "EmergencyService",
+    "@type": ["MedicalClinic", "EmergencyService"],
     "name": "Happy Yein Dental Clinic",
+    "alternateName": ["행복한예인치과", "ハッピーイェイン歯科", "幸福艺人牙科诊所"],
     "url": `${SITE_DOMAIN}/en`,
     "telephone": CLINIC.intlTel,
     "address": { "@type": "PostalAddress", "streetAddress": "51 Namdaemun-ro 9-gil, Hyodeok Bldg 3F", "addressLocality": "Jung-gu", "addressRegion": "Seoul", "addressCountry": "KR" },
     "geo": { "@type": "GeoCoordinates", "latitude": 37.5596, "longitude": 126.9784 },
-    "availableLanguage": [{ "@type": "Language", "name": "Korean" }, { "@type": "Language", "name": "English" }]
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Thursday","Friday"], "opens": "09:30", "closes": "18:30" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "09:30", "closes": "20:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "09:30", "closes": "14:00" }
+    ],
+    "availableLanguage": [{ "@type": "Language", "name": "Korean" }, { "@type": "Language", "name": "English" }],
+    "medicalSpecialty": ["Dentistry", "Emergency Medicine"]
   }).replace(/</g, '\\u003c')}</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#0A0A0A;color:#F5F2ED;font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;}
 a{color:#F7BA18;text-decoration:none;}a:hover{text-decoration:underline;}
-.hub{max-width:900px;margin:0 auto;padding:40px 24px 60px;}
-.hub-hero{text-align:center;padding:40px 0;margin-bottom:40px;background:radial-gradient(ellipse at 50% 0%,rgba(247,186,24,0.06),transparent 60%);}
-.hub-hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;margin-bottom:12px;}
+.hub{max-width:1000px;margin:0 auto;padding:40px 24px 60px;}
+.hub-hero{text-align:center;padding:48px 0;margin-bottom:40px;background:radial-gradient(ellipse at 50% 0%,rgba(247,186,24,0.06),transparent 60%);}
+.hub-hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;margin-bottom:12px;line-height:1.3;}
 .hub-hero h1 em{color:#F7BA18;font-style:normal;}
-.hub-hero p{color:#B5B0A8;font-size:0.95rem;max-width:600px;margin:0 auto;}
-.lang-section{margin-bottom:40px;}
-.lang-header{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:#F7BA18;margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:1px solid rgba(247,186,24,0.1);}
-.page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
-.page-card{background:rgba(22,22,22,0.8);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:20px;transition:all 0.3s;display:block;color:#F5F2ED;}
+.hub-hero p{color:#B5B0A8;font-size:0.95rem;max-width:650px;margin:0 auto;line-height:1.6;}
+.stat-bar{display:flex;justify-content:center;gap:32px;margin-top:20px;flex-wrap:wrap;}
+.stat-item{text-align:center;}
+.stat-num{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#F7BA18;}
+.stat-label{font-size:0.72rem;color:#888;text-transform:uppercase;letter-spacing:1px;}
+.lang-tab-row{display:flex;gap:8px;margin-bottom:24px;justify-content:center;flex-wrap:wrap;}
+.lang-tab{padding:10px 24px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.08);background:rgba(22,22,22,0.8);color:#888;transition:all 0.3s;}
+.lang-tab.active,.lang-tab:hover{border-color:#F7BA18;color:#F7BA18;background:rgba(247,186,24,0.06);}
+.lang-panel{display:none;}.lang-panel.active{display:block;}
+.cat-section{margin-bottom:28px;}
+.cat-label{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#F7BA18;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid rgba(247,186,24,0.1);}
+.page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;}
+.page-card{background:rgba(22,22,22,0.8);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px;transition:all 0.3s;display:block;color:#F5F2ED;}
 .page-card:hover{border-color:rgba(247,186,24,0.2);transform:translateY(-2px);text-decoration:none;}
-.page-card h3{font-size:0.92rem;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
-.page-card p{font-size:0.78rem;color:#888;line-height:1.5;}
+.page-card h3{font-size:0.88rem;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.page-card p{font-size:0.75rem;color:#888;line-height:1.5;}
 .cta-bar{text-align:center;padding:40px;background:rgba(247,186,24,0.04);border:1px solid rgba(247,186,24,0.12);border-radius:20px;margin-top:40px;}
 .cta-bar h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:12px;}
 .cta-bar a{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;background:#F7BA18;color:#0A0A0A;font-weight:700;border-radius:12px;font-size:0.95rem;transition:all 0.3s;text-decoration:none;margin-top:8px;}
 .cta-bar a:hover{background:#D4A010;transform:translateY(-2px);}
 .back-link{display:inline-flex;align-items:center;gap:6px;padding:10px 0;font-size:0.85rem;color:#888;}
 .back-link:hover{color:#F7BA18;}
+@media(max-width:600px){.stat-bar{gap:16px;}.stat-num{font-size:1.4rem;}}
 </style>
 </head>
 <body>
@@ -781,37 +862,48 @@ a{color:#F7BA18;text-decoration:none;}a:hover{text-decoration:underline;}
   <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> 행복한예인치과 홈</a>
 
   <div class="hub-hero">
-    <h1>🌍 <em>Emergency</em> Dental Care<br>for Tourists in Myeongdong</h1>
-    <p>Walk-in same-day dental care near Myeongdong Station, Seoul. English · 日本語 · 中文</p>
-  </div>
-
-  <div class="lang-section">
-    <div class="lang-header">🇺🇸 English</div>
-    <div class="page-grid">
-      ${pagesByLang.en.map(p => `<a href="/en/${p.slug}" class="page-card"><h3>${p.heroEmoji} ${p.h1}</h3><p>${p.metaDesc.substring(0, 100)}...</p></a>`).join('')}
+    <h1>🌍 <em>Dental Care</em> for Tourists<br>& Expats in Seoul</h1>
+    <p>Complete dental care guide in your language. Emergency, cosmetic, implants, check-ups, cost guides — everything you need near Myeongdong Station.</p>
+    <div class="stat-bar">
+      <div class="stat-item"><div class="stat-num">${totalPages}</div><div class="stat-label">Total Pages</div></div>
+      <div class="stat-item"><div class="stat-num">${enCount}</div><div class="stat-label">English</div></div>
+      <div class="stat-item"><div class="stat-num">${jaCount}</div><div class="stat-label">日本語</div></div>
+      <div class="stat-item"><div class="stat-num">${zhCount}</div><div class="stat-label">中文</div></div>
     </div>
   </div>
 
-  <div class="lang-section">
-    <div class="lang-header">🇯🇵 日本語</div>
-    <div class="page-grid">
-      ${pagesByLang.ja.map(p => `<a href="/en/${p.slug}" class="page-card"><h3>${p.heroEmoji} ${p.h1}</h3><p>${p.metaDesc.substring(0, 100)}...</p></a>`).join('')}
-    </div>
+  <div class="lang-tab-row">
+    <div class="lang-tab active" onclick="switchLang('en')">🇺🇸 English (${enCount})</div>
+    <div class="lang-tab" onclick="switchLang('ja')">🇯🇵 日本語 (${jaCount})</div>
+    <div class="lang-tab" onclick="switchLang('zh')">🇨🇳 中文 (${zhCount})</div>
   </div>
 
-  <div class="lang-section">
-    <div class="lang-header">🇨🇳 中文</div>
-    <div class="page-grid">
-      ${pagesByLang.zh.map(p => `<a href="/en/${p.slug}" class="page-card"><h3>${p.heroEmoji} ${p.h1}</h3><p>${p.metaDesc.substring(0, 100)}...</p></a>`).join('')}
-    </div>
+  <div id="panel-en" class="lang-panel active">
+    ${renderCategoryCards(enCategories, 'en')}
+  </div>
+
+  <div id="panel-ja" class="lang-panel">
+    ${renderCategoryCards(jaCategories, 'ja')}
+  </div>
+
+  <div id="panel-zh" class="lang-panel">
+    ${renderCategoryCards(zhCategories, 'zh')}
   </div>
 
   <div class="cta-bar">
-    <h2>📞 Emergency? Call Now</h2>
-    <p style="color:#B5B0A8;">No appointment needed · Walk-in welcome</p>
+    <h2>📞 Need Help? Call Now</h2>
+    <p style="color:#B5B0A8;">No appointment needed · Walk-in welcome · English assistance</p>
     <a href="tel:${CLINIC.intlTel}"><i class="fas fa-phone-alt"></i> ${CLINIC.intlTel}</a>
   </div>
 </div>
+<script>
+function switchLang(lang) {
+  document.querySelectorAll('.lang-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + lang).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
 </body>
 </html>`
 }
