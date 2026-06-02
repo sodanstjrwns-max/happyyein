@@ -36,6 +36,10 @@
 | `/cost/:slug` | **치료비용 전용 랜딩페이지** (10개, 예: `/cost/implant-cost`) |
 | `/compare` | **치료 비교 가이드** (Comparison SEO 허브 — 8개 비교 목록) |
 | `/compare/:slug` | **치료 비교 전용 랜딩페이지** (8개, 예: `/compare/implant-vs-bridge`) |
+| `/en` | 🌍 **외국인 치과 허브** (6 카테고리, 탭 언어 전환, 44페이지 대시보드) |
+| `/en/:slug` | **영어 치과 랜딩페이지** (20개, 응급·심미·수술·예방·실용·특수) |
+| `/en/ja/:slug` | **일본어 치과 랜딩페이지** (12개, 응급·관광·예방·실용) |
+| `/en/zh/:slug` | **중국어 치과 랜딩페이지** (12개, 응급·관광·예방·실용) |
 
 ### 관리자 기능
 | 경로 | 설명 |
@@ -43,6 +47,7 @@
 | `/admin` | 관리자 대시보드 (비밀번호 보호) |
 | `/admin/posts` | 게시판 관리 (블로그, 비포애프터, 공지사항 CRUD) |
 | `/admin/auto-blog` | 자동 블로그 설정 및 수동 발행 |
+| `/admin/indexing` | 🆕 **인덱싱 모니터 대시보드** (Chart.js 시각화, 그룹별 진행률) |
 
 ### API 엔드포인트
 | 메서드 | 경로 | 설명 |
@@ -56,8 +61,41 @@
 | POST | `/api/auto-blog/generate` | 자동 블로그 수동 발행 |
 | GET | `/api/auto-blog/status` | 자동 블로그 상태 확인 |
 | GET | `/api/auto-blog/topics` | 토픽 풀 조회 |
-| GET | `/sitemap.xml` | 동적 사이트맵 (DB 기반, 개별 포스트 URL 포함) |
+| GET | `/api/indexing/check` | 🆕 인덱싱 상태 체크 (Google/Naver) |
+| GET | `/api/indexing/history` | 🆕 인덱싱 히스토리 조회 |
+| POST | `/api/indexing/check` | 🆕 인덱싱 체크 트리거 (58개 샘플 URL) |
+| GET | `/sitemap.xml` | 동적 사이트맵 (DB 기반, **363개 URL** 포함) |
 | GET | `/robots.txt` | 크롤러 가이드 |
+
+### 검색엔진 인증 (2026-06-02 추가)
+
+| 검색엔진 | 인증 방식 | 상태 |
+|----------|----------|------|
+| **Google Search Console** | `<meta name="google-site-verification">` (layout.ts + index.tsx) | ✅ 인증 완료 |
+| **Naver Search Advisor** | 메타태그 + HTML 파일 라우트 (`/naver8ab260368363ce856b9dacb72bd69fb8.html`) | ✅ 인증 완료 (3종) |
+| **Bing Webmaster Tools** | GSC 임포트 방식 | ✅ 인증 완료 |
+
+**사이트맵 제출 현황:**
+- ✅ Google Search Console → `https://happyyein.kr/sitemap.xml`
+- ✅ Naver Search Advisor → `https://happyyein.kr/sitemap.xml`
+- ✅ Bing Webmaster Tools → `https://happyyein.kr/sitemap.xml`
+
+### 인덱싱 모니터 대시보드 (2026-06-02 추가)
+
+**`/admin/indexing`** — 검색엔진 인덱싱 진행률 실시간 모니터링
+
+- **58개 샘플 URL** (8개 그룹별 추적)
+  - 메인/정적 페이지 (8개)
+  - 진료과목 (6개)
+  - Local SEO (8개)
+  - 증상 SEO (8개)
+  - 비용 SEO (6개)
+  - 비교 SEO (6개)
+  - 백과사전 (8개)
+  - 외국인 SEO (8개)
+- **Chart.js 시각화** — 전체 인덱싱 트렌드 라인 차트
+- **그룹별 프로그래스바** — 카테고리별 인덱싱 현황
+- **D1 테이블**: `indexing_checks`, `indexing_snapshots`
 
 ### Local SEO 전용 랜딩페이지 (2026-05-26 슈퍼 업그레이드)
 
@@ -198,6 +236,84 @@
 - amenityFeature 6개 (에어샤워, CT, 미세현미경, 독립 수술실, 야간진료, 장애인 편의시설)
 - knowsLanguage: ko, en
 
+### 🌍 외국인 관광객 치과 SEO (2026-06-02 6차 슈퍼 업그레이드)
+
+**44개 다국어 랜딩페이지** — 명동 방문 외국인 관광객의 모든 치과 상황 대응
+
+> 💡 **컨셉**: 명동·시청 지역의 외국인 관광객, 유학생, 주재원이 겪을 수 있는 **모든** 치과 상황을 3개 언어(EN/JA/ZH)로 커버
+
+#### 허브 페이지 (`/en`)
+- **6개 카테고리** 탭 기반 대시보드 (JavaScript 언어 전환)
+- 카테고리: Emergency, Cosmetic, Surgery, Preventive, Practical, Special
+- 통계 바: 총 44페이지 (EN 20 / JA 12 / ZH 12)
+- JSON-LD: MedicalClinic + EmergencyService + openingHoursSpecification
+
+#### 영어 (EN) — 20페이지
+| # | Slug | 주제 | 카테고리 |
+|---|------|------|----------|
+| 1 | `emergency-dentist-myeongdong` | 응급 치과 명동 | Emergency |
+| 2 | `broken-tooth-seoul` | 치아 파절 | Emergency |
+| 3 | `lost-crown-filling-seoul` | 크라운/필링 탈락 | Emergency |
+| 4 | `toothache-seoul-tourist` | 치통 관광객 | Emergency |
+| 5 | `english-speaking-dentist-myeongdong` | 영어 진료 치과 | Preventive |
+| 6 | `dental-abscess-swollen-face-seoul` | 치과 농양/안면부종 | Emergency |
+| 7 | `knocked-out-tooth-seoul` | 치아 탈구 | Emergency |
+| 8 | `wisdom-tooth-extraction-seoul` | 사랑니 발치 | Surgery |
+| 9 | `teeth-whitening-myeongdong` | 미백 명동 | Cosmetic |
+| 10 | `dental-checkup-cleaning-seoul` | 검진/클리닝 | Preventive |
+| 11 | `dental-implant-seoul-korea` | 임플란트 | Surgery |
+| 12 | `dental-veneers-seoul-korea` | 비니어 | Cosmetic |
+| 13 | `dental-cost-korea-vs-usa-guide` | 한국 vs 미국/영국/호주 비용비교 | Practical |
+| 14 | `travel-insurance-dental-korea` | 여행보험 치과 가이드 | Practical |
+| 15 | `saturday-dentist-myeongdong` | 토요일 진료 | Practical |
+| 16 | `night-dentist-myeongdong-wednesday` | 수요일 야간 진료 | Practical |
+| 17 | `same-day-dental-crown-seoul` | 당일 크라운 | Cosmetic |
+| 18 | `expat-dentist-seoul` | 주재원/유학생 전용 | Special |
+| 19 | `dentist-near-seoul-station` | 서울역 근처 치과 | Practical |
+| 20 | `dental-sedation-anxiety-seoul` | 진정치료/치과공포증 | Special |
+
+#### 일본어 (JA) — 12페이지
+| # | Slug | 주제 |
+|---|------|------|
+| 1 | `ja/emergency-dentist-myeongdong` | 明洞緊急歯科 |
+| 2 | `ja/broken-tooth-seoul` | 歯が欠けた |
+| 3 | `ja/wisdom-tooth-extraction-seoul` | 親知らず抜歯 |
+| 4 | `ja/teeth-whitening-myeongdong` | ホワイトニング明洞 |
+| 5 | `ja/dental-checkup-cleaning-seoul` | 歯科検診クリーニング |
+| 6 | `ja/lost-crown-filling-seoul` | クラウン・詰め物脱落 |
+| 7 | `ja/toothache-seoul` | 歯の痛み |
+| 8 | `ja/dental-implant-seoul` | インプラント |
+| 9 | `ja/dental-cost-korea-guide` | 韓国歯科費用ガイド |
+| 10 | `ja/saturday-dentist-myeongdong` | 土曜歯科明洞 |
+| 11 | `ja/travel-insurance-dental-korea` | 旅行保険歯科 |
+| 12 | `ja/english-speaking-dentist-seoul` | 英語対応歯科 |
+
+#### 중국어 (ZH) — 12페이지
+| # | Slug | 주제 |
+|---|------|------|
+| 1 | `zh/emergency-dentist-myeongdong` | 明洞急诊牙科 |
+| 2 | `zh/broken-tooth-seoul` | 牙齿断裂 |
+| 3 | `zh/wisdom-tooth-extraction-seoul` | 智齿拔除 |
+| 4 | `zh/teeth-whitening-myeongdong` | 美白明洞 |
+| 5 | `zh/dental-checkup-cleaning-seoul` | 口腔检查洁牙 |
+| 6 | `zh/toothache-seoul` | 牙疼 |
+| 7 | `zh/lost-crown-filling-seoul` | 牙冠脱落 |
+| 8 | `zh/dental-implant-seoul` | 种植牙 |
+| 9 | `zh/dental-cost-korea-guide` | 韩国牙科费用指南 |
+| 10 | `zh/saturday-dentist-myeongdong` | 周六牙科明洞 |
+| 11 | `zh/dental-abscess-swollen-face-seoul` | 牙脓肿面部肿胀 |
+| 12 | `zh/english-speaking-dentist-seoul` | 英语牙科 |
+
+#### 각 페이지 SEO 요소:
+- **EmergencyService + MedicalWebPage + MedicalClinic** JSON-LD
+- **FAQPage** JSON-LD (페이지당 3~5개 전용 FAQ)
+- **BreadcrumbList** JSON-LD
+- **hreflang** 크로스 링크 (EN ↔ JA ↔ ZH ↔ KO)
+- 각 언어별 독립 `<html lang="en|ja|zh">` (layout.ts 미사용, 자체 렌더링)
+- 구글맵 + 카카오맵 링크
+- 가격 범위 표 (₩ / $ / ¥ / ¥(CNY))
+- CTA: 전화 + 카카오맵 길찾기
+
 ### 홈페이지 추가 스키마 (2026-05-26 3차 슈퍼 업그레이드)
 - **Review 스키마 (10개 개별 리뷰)** — Google 별점 노출 (평점 4.9, 10개 리뷰)
 - **Service + PriceSpecification** — 5개 진료 서비스 (임플란트, 신경치료, 투명교정, 심미치료, 스케일링)
@@ -213,7 +329,7 @@
 - 내부링크 자동 삽입 (진료과목, 비포애프터, 상담예약 페이지)
 - 발행 즉시 **IndexNow + Google Ping** 검색엔진 알림
 
-## SEO / AEO 최적화 (2026-05-14 메가 업그레이드)
+## SEO / AEO 최적화 (전체 현황)
 
 ### 구조화 데이터 (JSON-LD)
 | 스키마 | 적용 페이지 | 설명 |
@@ -248,6 +364,13 @@
 | `Physician` (3명) | `/doctors` | 전문의 개별 스키마 (hasCredential, alumniOf) |
 | `SearchAction` | `/` | Sitelinks Searchbox (potentialAction) |
 | `AboutPage` | `/philosophy` | 진료철학 + MedicalClinic + amenityFeature |
+| `EmergencyService` | `/en/*` | 🆕 외국인 응급 치과 서비스 |
+| `MedicalClinic` | `/en` | 🆕 다국어 의료기관 정보 + openingHoursSpecification |
+
+### 검색엔진 인증 및 사이트맵 제출
+- **Google Search Console** — meta tag 인증 완료, sitemap 제출 완료
+- **Naver Search Advisor** — meta tag + HTML 파일 인증 완료, sitemap 제출 완료
+- **Bing Webmaster Tools** — GSC 임포트 인증 완료, sitemap 제출 완료
 
 ### 검색엔진 즉시 알림
 - **IndexNow API** → Bing, Yandex, Naver Yeti 동시 알림
@@ -264,8 +387,8 @@
 - Canonical URL 자동 설정
 
 ### 사이트맵
-- **총 312개 URL** (기존 68 → 312, +244 URLs)
-- 치료비용 11 + 치료비교 9 + 백과사전 203 + 기존 89
+- **총 363개 URL** (기존 312 → 363, +51 URLs — 외국인 SEO 44 + 허브 1 + 기타 신규)
+- 외국인 치과 SEO 45 + 치료비용 11 + 치료비교 9 + 백과사전 203 + 기존 95
 - **동적 생성**: D1 DB에서 모든 게시물 URL 자동 포함
 - `<image:image>` 태그로 이미지 사이트맵 지원
 - `<lastmod>` 게시물 수정일 기반 동적 업데이트
@@ -277,7 +400,9 @@
 - **데이터베이스**: `yein-dental-db` (production ID: `00671886-3f10-49d2-8731-6766e944223e`)
 - **posts 테이블**: id, board, title, content, author, thumbnail, category, views, seo_keyword, seo_description, seo_tags, auto_generated, created_at, updated_at
 - **before-after 전용 필드**: treatment_type, patient_age, patient_gender, treatment_duration, before_intra, after_intra, before_pano, after_pano, description
-- **마이그레이션**: `migrations/0001_*.sql` ~ `0003_auto_blog.sql`
+- **indexing_checks 테이블** (🆕): id, url, url_group, google_indexed, naver_indexed, checked_at
+- **indexing_snapshots 테이블** (🆕): id, total_urls, google_indexed, naver_indexed, snapshot_date
+- **마이그레이션**: `migrations/0001_*.sql` ~ `0004_indexing_monitor.sql`
 
 ### Cloudflare R2 (이미지 스토리지)
 - **버킷**: `yein-dental-images`
@@ -291,7 +416,7 @@
 - **프로젝트명**: `happyyein`
 - **도메인**: https://happyyein.kr (커스텀), https://happyyein.pages.dev (기본)
 - **상태**: ✅ Active
-- **마지막 배포**: 2026-05-26
+- **마지막 배포**: 2026-06-02
 
 ### Cron Worker
 - **프로젝트명**: `happyyein-cron`
@@ -326,30 +451,48 @@ npm run db:reset
 ```
 webapp/
 ├── src/
-│   ├── index.tsx          # 메인 앱 엔트리 (라우팅, sitemap, robots.txt, IndexNow 키)
-│   ├── layout.ts          # HTML 레이아웃 (head, footer, JSON-LD, safeJsonLd)
-│   ├── pages.ts           # 정적 페이지 (메인, 진료철학, 의료진, 시설 등)
-│   ├── board-pages.ts     # 게시판 페이지 (블로그, 비포애프터, 공지 + SEO/AEO 스키마)
-│   ├── api-boards.ts      # 게시판 API (CRUD + IndexNow 알림)
-│   ├── api-upload.ts      # 이미지 업로드 API (R2)
-│   ├── auto-blog.ts       # GPT-5.5 자동 블로그 (생성 + FAQ + IndexNow)
-│   ├── admin-pages.ts     # 관리자 페이지
-│   ├── treatments.ts      # 진료과목 상세 페이지
-│   ├── local-seo.ts       # 🆕 Local SEO 30개 랜딩페이지 (지역×진료)
-│   ├── symptom-seo.ts     # 🆕 Symptom SEO 20개 랜딩페이지 (증상별 가이드)
-│   ├── cost-seo.ts        # 🆕 Cost SEO 10개 랜딩페이지 (치료비용 안내)
-│   ├── comparison-seo.ts  # 🆕 Comparison SEO 8개 랜딩페이지 (치료 비교)
-│   ├── encyclopedia.ts    # 치과백과사전 (215개 용어, 사이트맵 확장)
-│   └── renderer.tsx       # JSX 렌더러
-├── public/static/         # 정적 자산 (CSS, JS, 이미지)
-├── migrations/            # D1 마이그레이션 SQL
-├── cron-worker/           # 자동 블로그 Cron Worker (별도 배포)
-├── wrangler.jsonc         # Cloudflare 설정 (D1, R2 바인딩)
-├── vite.config.ts         # Vite 빌드 설정
-├── ecosystem.config.cjs   # PM2 설정
-├── .dev.vars              # 로컬 환경변수 (OPENAI_API_KEY 등)
-└── package.json           # 의존성 및 스크립트
+│   ├── index.tsx                    # 메인 앱 엔트리 (라우팅, sitemap, robots.txt, IndexNow 키)
+│   ├── layout.ts                    # HTML 레이아웃 (head, footer, JSON-LD, safeJsonLd, 검색엔진 인증태그)
+│   ├── pages.ts                     # 정적 페이지 (메인, 진료철학, 의료진, 시설 등)
+│   ├── board-pages.ts               # 게시판 페이지 (블로그, 비포애프터, 공지 + SEO/AEO 스키마)
+│   ├── api-boards.ts                # 게시판 API (CRUD + IndexNow 알림)
+│   ├── api-upload.ts                # 이미지 업로드 API (R2)
+│   ├── auto-blog.ts                 # GPT-5.5 자동 블로그 (생성 + FAQ + IndexNow)
+│   ├── admin-pages.ts               # 관리자 페이지 (+ SEO Tools 링크)
+│   ├── treatments.ts                # 진료과목 상세 페이지 (HowTo + Service + PriceSpec)
+│   ├── local-seo.ts                 # Local SEO 30개 랜딩페이지 (지역×진료)
+│   ├── symptom-seo.ts               # Symptom SEO 20개 랜딩페이지 (증상별 가이드)
+│   ├── cost-seo.ts                  # Cost SEO 10개 랜딩페이지 (치료비용 안내)
+│   ├── comparison-seo.ts            # Comparison SEO 8개 랜딩페이지 (치료 비교)
+│   ├── encyclopedia.ts              # 치과백과사전 (215개 용어, 사이트맵 확장)
+│   ├── indexing-monitor.ts          # 🆕 인덱싱 모니터 (API + 대시보드, Chart.js)
+│   ├── foreign-emergency-seo.ts     # 🆕 외국인 치과 SEO 코어 (허브 + 렌더링 + hreflang)
+│   ├── foreign-seo-expansion-en.ts  # 🆕 외국인 SEO 영어 확장 (15페이지)
+│   ├── foreign-seo-expansion-ja.ts  # 🆕 외국인 SEO 일본어 확장 (10페이지)
+│   ├── foreign-seo-expansion-zh.ts  # 🆕 외국인 SEO 중국어 확장 (10페이지)
+│   └── renderer.tsx                 # JSX 렌더러
+├── public/static/                   # 정적 자산 (CSS, JS, 이미지)
+├── migrations/                      # D1 마이그레이션 SQL (0001~0004)
+├── cron-worker/                     # 자동 블로그 Cron Worker (별도 배포)
+├── wrangler.jsonc                   # Cloudflare 설정 (D1, R2 바인딩)
+├── vite.config.ts                   # Vite 빌드 설정
+├── ecosystem.config.cjs             # PM2 설정
+├── .dev.vars                        # 로컬 환경변수 (OPENAI_API_KEY 등)
+└── package.json                     # 의존성 및 스크립트
 ```
+
+## 업데이트 이력
+
+| 날짜 | 업그레이드 | 주요 내용 |
+|------|-----------|----------|
+| 2026-05-14 | SEO/AEO 메가 업그레이드 | JSON-LD 스키마, 자동 블로그, IndexNow, 사이트맵 |
+| 2026-05-26 | 2차 (Local SEO) | 30개 지역×진료 랜딩페이지 |
+| 2026-05-26 | 3차 (Symptom SEO) | 20개 증상별 랜딩페이지, Review/Service 스키마, hreflang |
+| 2026-05-26 | 4차 (Cost/Compare) | 10 비용 + 8 비교 랜딩페이지, 사이트맵 312개 |
+| 2026-05-27 | 5차 (Schema 강화) | HowTo 5 + Physician 3 + SearchAction + AboutPage |
+| 2026-06-02 | 검색엔진 인증 | Google/Naver/Bing 인증 + 사이트맵 제출 |
+| 2026-06-02 | 인덱싱 모니터 | /admin/indexing 대시보드 + D1 테이블 + Chart.js |
+| 2026-06-02 | **6차 (외국인 SEO)** | **44개 다국어 페이지 (EN 20 + JA 12 + ZH 12), 사이트맵 363개** |
 
 ## 향후 개선 사항
 
@@ -357,15 +500,20 @@ webapp/
 - [x] ✅ 3차 SEO 슈퍼 업그레이드 — 증상별 20개 랜딩페이지 + Review/Service 스키마 + hreflang (2026-05-26)
 - [x] ✅ 4차 SEO 슈퍼 업그레이드 — 치료비용 10개 + 치료비교 8개 + 사이트맵 312URL + SameAs 확장 (2026-05-26)
 - [x] ✅ 5차 SEO 슈퍼 업그레이드 — HowTo 5개 + Physician 3명 + SearchAction + Service/Price + AboutPage (2026-05-27)
-- [ ] Google Search Console 연동 및 인덱싱 현황 모니터링
-- [ ] 비포애프터 게시물 등록 후 MedicalProcedure 스키마 프로덕션 검증
-- [ ] 자동 블로그 FAQ 품질 모니터링 (FAQPage 스키마 Google 리치 결과 확인)
+- [x] ✅ Google Search Console 인증 + 사이트맵 제출 (2026-06-02)
+- [x] ✅ Naver Search Advisor 인증 (메타태그 + HTML) + 사이트맵 제출 (2026-06-02)
+- [x] ✅ Bing Webmaster Tools 인증 (GSC 임포트) + 사이트맵 제출 (2026-06-02)
+- [x] ✅ 인덱싱 모니터 대시보드 구축 (2026-06-02)
+- [x] ✅ 6차 SEO 슈퍼 업그레이드 — 외국인 관광객 44개 다국어 치과 페이지 (2026-06-02)
 - [ ] Core Web Vitals 최적화 (LCP, CLS, INP)
 - [ ] 예약 시스템 온라인 통합
+- [ ] 비포애프터 게시물 등록 후 MedicalProcedure 스키마 프로덕션 검증
+- [ ] 자동 블로그 FAQ 품질 모니터링 (FAQPage 스키마 Google 리치 결과 확인)
+- [ ] 인덱싱 진행률 자동 체크 스케줄링 (Cron Worker 통합)
 
 ---
 
-**Built with Hono + Cloudflare Pages** | Last updated: 2026-05-27 (5차 SEO 슈퍼 업그레이드)
+**Built with Hono + Cloudflare Pages** | Last updated: 2026-06-02 (6차 SEO 슈퍼 업그레이드 — 외국인 관광객 다국어 44페이지)
 
 ### SEO 컨텐츠 총계 (전체 랜딩페이지 현황)
 | 카테고리 | 개수 | 파일 |
@@ -375,6 +523,9 @@ webapp/
 | Symptom SEO (증상별) | 20 | symptom-seo.ts |
 | Cost SEO (치료비용) | 10 | cost-seo.ts |
 | Comparison SEO (치료비교) | 8 | comparison-seo.ts |
+| 🌍 외국인 SEO (EN) | 20 | foreign-emergency-seo.ts + foreign-seo-expansion-en.ts |
+| 🌍 외국인 SEO (JA) | 12 | foreign-emergency-seo.ts + foreign-seo-expansion-ja.ts |
+| 🌍 외국인 SEO (ZH) | 12 | foreign-emergency-seo.ts + foreign-seo-expansion-zh.ts |
 | 백과사전 | 215 | encyclopedia.ts |
 | 블로그 (동적) | 232+ | auto-blog.ts + D1 DB |
-| **사이트맵 총 URL** | **312+** | sitemap.xml (동적 생성) |
+| **사이트맵 총 URL** | **363+** | sitemap.xml (동적 생성) |
