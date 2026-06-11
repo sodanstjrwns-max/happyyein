@@ -448,7 +448,7 @@ Specialties: Clear aligners, Braces, Bite correction
 ]
 
 // ===== 전체 페이지 통합 (기존 9 + 확장 EN 15 + JA 10 + ZH 10 = 44페이지) =====
-const PAGES: ForeignPage[] = [
+export const PAGES: ForeignPage[] = [
   ...BASE_PAGES,
   ...EXPANSION_EN_PAGES,
   ...EXPANSION_JA_PAGES,

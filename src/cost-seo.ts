@@ -22,7 +22,7 @@ interface CostPage {
 
 const SITE_DOMAIN = 'https://happyyein.kr';
 
-const costPages: CostPage[] = [
+export const costPages: CostPage[] = [
   {
     slug: 'implant-cost',
     treatment: '임플란트',

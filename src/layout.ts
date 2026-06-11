@@ -188,6 +188,9 @@ ${o.keywords ? `<meta name="keywords" content="${escAttr(o.keywords)}">` : ''}
 <meta name="ICBM" content="${SITE.geo.lat}, ${SITE.geo.lng}">
 <link rel="icon" type="image/png" href="/static/img/logo.png">
 
+<!-- RSS 피드 자동발견 (검색엔진·AI 크롤러) -->
+<link rel="alternate" type="application/rss+xml" title="행복한예인치과 블로그 RSS" href="${SITE.domain}/feed.xml">
+
 <!-- 구조화 데이터 (JSON-LD) -->
 ${jsonLdScripts.join('\n')}
 

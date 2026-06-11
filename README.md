@@ -384,10 +384,22 @@
 
 ### 검색엔진 즉시 알림
 - **IndexNow API** → Bing, Yandex, Naver Yeti 동시 알림
-- **Google Ping** → sitemap 기반 크롤 요청
 - **Bing Direct IndexNow** → Bing 전용 즉시 인덱싱
 - **Naver SearchAdvisor IndexNow** → 네이버 전용
+- ~~Google Ping~~ → 2023년 공식 폐기되어 제거. sitemap lastmod + RSS 피드로 대체
 - IndexNow 인증 키: `/a1b2c3d4e5f6g7h8i9j0happyyein2026.txt`
+
+### 🆕 AEO 인프라 (AI 답변엔진 최적화 — 2026-06-11)
+| 항목 | 경로 | 설명 |
+|------|------|------|
+| **llms.txt** | `/llms.txt` | AI 답변엔진용 사이트 요약 (llmstxt.org 표준) — 핵심 정보 + 전체 페이지 인덱스 |
+| **llms-full.txt** | `/llms-full.txt` | 상세 버전 (~79KB) — 증상/비용/비교 가이드 FAQ 190개 Q&A 전문 포함, AI가 직접 인용 가능 |
+| **RSS 피드** | `/feed.xml` | RSS 2.0 (최신 블로그 30개) — 검색엔진·AI 크롤러 신규 콘텐츠 발견 가속 |
+| **RSS 자동발견** | 전체 페이지 | `<link rel="alternate" type="application/rss+xml">` head 삽입 |
+| **AI 크롤러 허용** | `/robots.txt` | GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, CCBot, Amazonbot, Bytespider, cohere-ai, DuckAssistBot, MistralAI-User 등 20+ 봇 명시적 Allow |
+| **커스텀 404** | 모든 미존재 경로 | noindex + 주요 페이지 내부링크 6개로 크롤러·사용자 재유도 |
+| **hreflang 수정** | `/` | en/ja/zh → `/en` 허브로 정확히 연결 (기존: 잘못된 자기참조) |
+| **sitemap lastmod 안정화** | `/sitemap.xml` | 매일 갱신되던 가짜 lastmod 제거 → 실제 콘텐츠 변경 시에만 갱신 (Google lastmod 신뢰도 회복) |
 
 ### 메타태그 최적화
 - DB의 `seo_description` 우선 사용 (없으면 본문 자동 추출)
@@ -503,6 +515,7 @@ webapp/
 | 2026-06-02 | 검색엔진 인증 | Google/Naver/Bing 인증 + 사이트맵 제출 |
 | 2026-06-02 | 인덱싱 모니터 | /admin/indexing 대시보드 + D1 테이블 + Chart.js |
 | 2026-06-02 | **6차 (외국인 SEO)** | **44개 다국어 페이지 (EN 20 + JA 12 + ZH 12), 사이트맵 363개** |
+| 2026-06-11 | **7차 (AEO 머신화)** | **llms.txt + llms-full.txt(FAQ 190개), RSS 피드, AI 크롤러 20+ 허용, 커스텀 404, hreflang 수정, lastmod 안정화, 폐기된 Google Ping 제거** |
 
 ## 향후 개선 사항
 

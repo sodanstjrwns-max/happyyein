@@ -17,6 +17,7 @@ import { renderComparisonPage, comparisonIndexPage, getAllComparisonSlugs } from
 import { terms as encyclopediaTerms } from './encyclopedia'
 import indexingApi, { indexingDashboardPage } from './indexing-monitor'
 import { renderForeignSeoPage, foreignEmergencyIndexPage, getAllForeignSeoSlugs } from './foreign-emergency-seo'
+import { generateLlmsTxt, generateLlmsFullTxt } from './llms-txt'
 
 type Bindings = { DB: D1Database; R2: R2Bucket; OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; AUTO_BLOG_SECRET?: string }
 const app = new Hono<{ Bindings: Bindings }>()
@@ -37,7 +38,7 @@ app.use('*', async (c, next) => {
   const path = c.req.path
   if (path.startsWith('/static/')) {
     c.header('Cache-Control', 'public, max-age=31536000, immutable')
-  } else if (path === '/robots.txt' || path === '/sitemap.xml') {
+  } else if (path === '/robots.txt' || path === '/sitemap.xml' || path === '/llms.txt' || path === '/llms-full.txt' || path === '/feed.xml') {
     c.header('Cache-Control', 'public, max-age=86400')
   } else {
     c.header('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400')
@@ -395,8 +396,13 @@ app.get('/', (c) => {
 
 <!-- hreflang (다국어 SEO) -->
 <link rel="alternate" hreflang="ko" href="${SITE_DOMAIN}/">
-<link rel="alternate" hreflang="en" href="${SITE_DOMAIN}/">
+<link rel="alternate" hreflang="en" href="${SITE_DOMAIN}/en">
+<link rel="alternate" hreflang="ja" href="${SITE_DOMAIN}/en">
+<link rel="alternate" hreflang="zh" href="${SITE_DOMAIN}/en">
 <link rel="alternate" hreflang="x-default" href="${SITE_DOMAIN}/">
+
+<!-- RSS 피드 자동발견 (검색엔진·AI 크롤러) -->
+<link rel="alternate" type="application/rss+xml" title="행복한예인치과 블로그 RSS" href="${SITE_DOMAIN}/feed.xml">
 
 <!-- 추가 메타 -->
 <meta name="theme-color" content="#F7BA18">
@@ -2145,39 +2151,175 @@ app.get('/a1b2c3d4e5f6g7h8i9j0happyyein2026.txt', (c) => {
   });
 })
 
-// ===== SEO: robots.txt =====
+// ===== SEO: robots.txt (검색엔진 + AI 크롤러 전면 허용) =====
 app.get('/robots.txt', (c) => {
-  const robotsTxt = `User-agent: *
+  const robotsTxt = `# 행복한예인치과 - Happy Yein Dental Clinic
+# https://happyyein.kr
+# AI 답변엔진을 위한 사이트 요약: https://happyyein.kr/llms.txt
+
+User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /admin/
 Disallow: /api/
 Allow: /api/info
 
+# ===== 검색엔진 크롤러 =====
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 1
 
 User-agent: Yeti
 Allow: /
-Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
-Crawl-delay: 2
+
+# ===== AI 답변엔진 크롤러 (AEO/GEO — 명시적 허용) =====
+# OpenAI (ChatGPT 검색/학습)
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic (Claude)
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Google AI (Gemini/AI Overviews)
+User-agent: Google-Extended
+Allow: /
+
+# Meta AI
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+# Apple Intelligence
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Amazon (Alexa)
+User-agent: Amazonbot
+Allow: /
+
+# Common Crawl (LLM 학습 데이터셋)
+User-agent: CCBot
+Allow: /
+
+# ByteDance
+User-agent: Bytespider
+Allow: /
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+
+# DuckDuckGo AI
+User-agent: DuckAssistBot
+Allow: /
+
+# Mistral
+User-agent: MistralAI-User
+Allow: /
 
 Sitemap: https://happyyein.kr/sitemap.xml
-
-# 행복한예인치과 - Happy Yein Dental Clinic
-# https://happyyein.kr
 `;
   return c.text(robotsTxt, 200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=86400' });
+})
+
+// ===== AEO: llms.txt (AI 답변엔진용 사이트 요약 — llmstxt.org 표준) =====
+app.get('/llms.txt', (c) => {
+  return c.text(generateLlmsTxt(), 200, {
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Cache-Control': 'public, max-age=86400'
+  });
+})
+
+app.get('/llms-full.txt', (c) => {
+  return c.text(generateLlmsFullTxt(), 200, {
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Cache-Control': 'public, max-age=86400'
+  });
+})
+
+// ===== SEO/AEO: RSS 2.0 피드 (블로그 — 검색엔진·AI 크롤러 신규 콘텐츠 발견용) =====
+app.get('/feed.xml', async (c) => {
+  const domain = 'https://happyyein.kr';
+  const escXmlF = (s: string) => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+  const stripTags = (s: string) => (s || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+
+  let items = '';
+  let lastBuild = new Date().toUTCString();
+  try {
+    const posts = await c.env.DB.prepare(
+      `SELECT id, title, content, thumbnail_url, created_at, updated_at
+       FROM posts WHERE is_published = 1 AND board = 'blog'
+       ORDER BY created_at DESC LIMIT 30`
+    ).all();
+    const rows = (posts.results || []) as any[];
+    if (rows.length > 0) {
+      lastBuild = new Date(rows[0].created_at + 'Z').toUTCString();
+    }
+    items = rows.map(p => {
+      const url = `${domain}/blog/${p.id}`;
+      const desc = stripTags(p.content).substring(0, 300);
+      const pubDate = new Date((p.created_at || '') + 'Z').toUTCString();
+      return `    <item>
+      <title>${escXmlF(p.title)}</title>
+      <link>${url}</link>
+      <guid isPermaLink="true">${url}</guid>
+      <description>${escXmlF(desc)}</description>
+      <pubDate>${pubDate}</pubDate>
+      <dc:creator>한승대 (통합치의학과 전문의)</dc:creator>${p.thumbnail_url ? `
+      <enclosure url="${escXmlF(p.thumbnail_url.startsWith('http') ? p.thumbnail_url : domain + p.thumbnail_url)}" type="image/jpeg" length="0"/>` : ''}
+    </item>`;
+    }).join('\n');
+  } catch (e) { /* DB 오류 시 빈 피드 */ }
+
+  const rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>행복한예인치과 블로그</title>
+    <link>${domain}/blog</link>
+    <atom:link href="${domain}/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>시청역·명동 행복한예인치과 전문의가 전하는 치과 건강 정보 — 임플란트, 신경치료, 교정, 심미치료</description>
+    <language>ko</language>
+    <lastBuildDate>${lastBuild}</lastBuildDate>
+    <ttl>60</ttl>
+${items}
+  </channel>
+</rss>`;
+  return c.text(rss, 200, { 'Content-Type': 'application/rss+xml; charset=utf-8', 'Cache-Control': 'public, max-age=1800' });
 })
 
 // ===== SEO: sitemap.xml (DB 동적 생성 — 모든 포스트 개별 URL 포함) =====
 app.get('/sitemap.xml', async (c) => {
   const domain = 'https://happyyein.kr';
-  const today = new Date().toISOString().split('T')[0];
+  // [SEO] lastmod에 매일 바뀌는 today를 쓰면 Google이 lastmod 신호 자체를 무시함.
+  // 정적 페이지는 실제 콘텐츠 갱신 시에만 이 상수를 업데이트할 것.
+  const today = '2026-06-11'; // STATIC_CONTENT_LASTMOD — 콘텐츠 대규모 변경 시 수동 갱신
   const db = c.env.DB;
 
   // 정적 페이지
@@ -2336,6 +2478,37 @@ ${allUrls.map(u => `  <url>
   </url>`).join('\n')}
 </urlset>`;
   return c.text(sitemap, 200, { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=1800' });
+})
+
+// ===== SEO: 커스텀 404 페이지 (내부링크로 크롤러·사용자 재유도) =====
+app.notFound((c) => {
+  return c.html(`<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>페이지를 찾을 수 없습니다 | 행복한예인치과</title>
+<meta name="robots" content="noindex, follow">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>body{background:#0a0a0a;color:#fff;font-family:'Noto Sans KR',sans-serif;}</style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+<main class="max-w-xl text-center">
+  <p class="text-7xl font-black text-yellow-400 mb-4">404</p>
+  <h1 class="text-2xl font-bold mb-3">페이지를 찾을 수 없습니다</h1>
+  <p class="text-gray-400 mb-8">주소가 변경되었거나 삭제된 페이지입니다.<br>아래에서 찾으시는 정보로 이동해 보세요.</p>
+  <nav class="grid grid-cols-2 gap-3 text-sm" aria-label="주요 페이지 바로가기">
+    <a href="/" class="block p-4 rounded-xl border border-gray-700 hover:border-yellow-400 transition">🏠 홈페이지</a>
+    <a href="/treatments/implant" class="block p-4 rounded-xl border border-gray-700 hover:border-yellow-400 transition">🦷 임플란트</a>
+    <a href="/symptoms" class="block p-4 rounded-xl border border-gray-700 hover:border-yellow-400 transition">🩺 증상별 가이드</a>
+    <a href="/cost" class="block p-4 rounded-xl border border-gray-700 hover:border-yellow-400 transition">💰 치료비용 안내</a>
+    <a href="/blog" class="block p-4 rounded-xl border border-gray-700 hover:border-yellow-400 transition">📝 블로그</a>
+    <a href="/location" class="block p-4 rounded-xl border border-gray-700 hover:border-yellow-400 transition">📍 오시는 길</a>
+  </nav>
+  <p class="mt-8 text-gray-500 text-sm">전화 상담: <a href="tel:02-756-2828" class="text-yellow-400 font-bold">02-756-2828</a></p>
+</main>
+</body>
+</html>`, 404)
 })
 
 // ===== Cloudflare Cron Trigger — 매일 자동 블로그 생성 =====

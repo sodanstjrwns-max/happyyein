@@ -17,7 +17,7 @@ interface ComparisonPage {
 
 const SITE_DOMAIN = 'https://happyyein.kr';
 
-const comparisons: ComparisonPage[] = [
+export const comparisons: ComparisonPage[] = [
   {
     slug: 'implant-vs-bridge',
     title: '임플란트 vs 브릿지 | 어떤 게 나을까? | 행복한예인치과',

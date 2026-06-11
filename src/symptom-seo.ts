@@ -22,7 +22,7 @@ interface SymptomPage {
   ctaText: string;
 }
 
-const symptoms: SymptomPage[] = [
+export const symptoms: SymptomPage[] = [
   // ===== 1. 이가 아파요 / 치통 =====
   {
     slug: 'toothache',

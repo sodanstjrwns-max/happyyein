@@ -559,11 +559,8 @@ export async function notifySearchEngines(url: string): Promise<void> {
     }).then(r => console.log(`[IndexNow] ${r.status} for ${url}`)).catch(e => console.error('[IndexNow] error:', e))
   );
 
-  // 2. Google Ping (sitemap 기반)
-  promises.push(
-    fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent('https://happyyein.kr/sitemap.xml')}`)
-      .then(r => console.log(`[Google Ping] ${r.status}`)).catch(e => console.error('[Google Ping] error:', e))
-  );
+  // 2. (제거됨) Google Sitemap Ping — 2023년 6월 공식 폐기 (410 Gone 반환)
+  //    Google 인덱싱은 sitemap.xml lastmod + RSS 피드(/feed.xml)로 대체
 
   // 3. Bing URL Submission (IndexNow 경유)
   promises.push(
