@@ -516,6 +516,7 @@ webapp/
 | 2026-06-02 | 인덱싱 모니터 | /admin/indexing 대시보드 + D1 테이블 + Chart.js |
 | 2026-06-02 | **6차 (외국인 SEO)** | **44개 다국어 페이지 (EN 20 + JA 12 + ZH 12), 사이트맵 363개** |
 | 2026-06-11 | **7차 (AEO 머신화)** | **llms.txt + llms-full.txt(FAQ 190개), RSS 피드, AI 크롤러 20+ 허용, 커스텀 404, hreflang 수정, lastmod 안정화, 폐기된 Google Ping 제거** |
+| 2026-06-11 | **8차 (2차 업글)** | **통합검색 `/search` 신설(SearchAction 실타겟), WebP 전환(이미지 68% 절감, 2MB→666KB), 가짜 동적 lastReviewed 제거, 푸터 사이트맵 내부링크 20개** |
 
 ## 향후 개선 사항
 
