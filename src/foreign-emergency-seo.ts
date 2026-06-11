@@ -474,7 +474,7 @@ export function renderForeignSeoPage(slug: string): string | null {
   const callLabel = langCode === 'en' ? 'Call Now' : langCode === 'ja' ? '今すぐ電話' : '立即致电'
   const directionsLabel = langCode === 'en' ? 'Get Directions' : langCode === 'ja' ? '道案内' : '导航'
 
-  const today = new Date().toISOString().split('T')[0]
+  const today = '2026-06-11' // CONTENT_REVIEWED — 콘텐츠 실제 검수/갱신 시 수동 업데이트
 
   // JSON-LD: EmergencyService + MedicalClinic + FAQPage
   const emergencyServiceSchema = {

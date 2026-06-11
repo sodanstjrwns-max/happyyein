@@ -314,7 +314,7 @@ ${footer()}${scripts()}</body></html>`;
 export function renderComparisonPage(slug: string): string | null {
   const page = comparisons.find(p => p.slug === slug);
   if (!page) return null;
-  const today = new Date().toISOString().split('T')[0];
+  const today = '2026-06-11'; // CONTENT_REVIEWED — 콘텐츠 실제 검수/갱신 시 수동 업데이트 (가짜 동적 날짜 금지)
 
   const medicalPageJsonLd = {
     "@context": "https://schema.org", "@type": "MedicalWebPage",

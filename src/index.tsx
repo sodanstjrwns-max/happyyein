@@ -18,6 +18,7 @@ import { terms as encyclopediaTerms } from './encyclopedia'
 import indexingApi, { indexingDashboardPage } from './indexing-monitor'
 import { renderForeignSeoPage, foreignEmergencyIndexPage, getAllForeignSeoSlugs } from './foreign-emergency-seo'
 import { generateLlmsTxt, generateLlmsFullTxt } from './llms-txt'
+import { renderSearchPage } from './search'
 
 type Bindings = { DB: D1Database; R2: R2Bucket; OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; AUTO_BLOG_SECRET?: string }
 const app = new Hono<{ Bindings: Bindings }>()
@@ -50,7 +51,7 @@ app.get('/', (c) => {
   const mainDesc = '서울 시청역·명동·을지로·광화문에서 도보 5~10분. 13년간 한자리에서 쌓아온 신뢰의 치과. 발치즉시 임플란트 80%+, 보존과·교정과 전문의 3인 협진. 수요일 야간진료. 행복한예인치과 02-756-2828.';
   const mainTitle = '행복한예인치과 | 시청역·명동·을지로 치과 - 임플란트·보존·심미·교정 전문의 협진';
   const ogImage = `${SITE_DOMAIN}/static/img/dr-han-logo.jpg`;
-  const today = new Date().toISOString().split('T')[0];
+  const today = '2026-06-11'; // CONTENT_REVIEWED — 메인페이지 dateModified용 고정 검수일
 
   // 1) Dentist + LocalBusiness 통합 스키마
   const orgJsonLd = JSON.stringify({
@@ -264,7 +265,7 @@ app.get('/', (c) => {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": `${SITE_DOMAIN}/blog?q={search_term_string}`
+        "urlTemplate": `${SITE_DOMAIN}/search?q={search_term_string}`
       },
       "query-input": "required name=search_term_string"
     }
@@ -425,7 +426,7 @@ app.get('/', (c) => {
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
 <!-- 히어로 이미지 프리로드 (LCP 최적화) -->
-<link rel="preload" as="image" href="/static/img/dr-han-smile.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="/static/img/dr-han-smile.webp" fetchpriority="high">
 
 <!-- 폰트 프리로드 (렌더링 차단 방지) -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap">
@@ -998,7 +999,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 <main>
 <section class="hero" role="banner">
   <div class="hero-video-bg">
-    <img src="/static/img/dr-han-smile.jpg" alt="행복한예인치과 한승대 대표원장 - 서울 시청역·명동·을지로 치과" width="1200" height="800" fetchpriority="high">
+    <img src="/static/img/dr-han-smile.webp" alt="행복한예인치과 한승대 대표원장 - 서울 시청역·명동·을지로 치과" width="1200" height="800" fetchpriority="high">
     <div class="hero-overlay"></div>
     <div class="hero-noise"></div>
   </div>
@@ -1149,12 +1150,12 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
           </div>
         </div>
         <div class="treat-featured-img">
-          <img src="/static/img/treat-1.jpg" alt="행복한예인치과 발치즉시 임플란트 시술 - 80% 이상 즉시식립" width="600" height="400" loading="lazy">
+          <img src="/static/img/treat-1.webp" alt="행복한예인치과 발치즉시 임플란트 시술 - 80% 이상 즉시식립" width="600" height="400" loading="lazy">
         </div>
       </a>
       <!-- Conservation -->
       <a href="/treatments/preservation" class="treat-card rv" style="text-decoration:none;color:inherit;">
-        <div class="treat-card-bg"><img src="/static/img/treat-2.jpg" alt="치아보존치료 - 보존과 전문의 직접 신경치료" width="600" height="400" loading="lazy"></div>
+        <div class="treat-card-bg"><img src="/static/img/treat-2.webp" alt="치아보존치료 - 보존과 전문의 직접 신경치료" width="600" height="400" loading="lazy"></div>
         <div class="treat-card-content">
           <div class="treat-card-num">02</div>
           <div class="treat-card-tag">Preservation</div>
@@ -1168,7 +1169,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </a>
       <!-- Aesthetic -->
       <a href="/treatments/aesthetic" class="treat-card rv rv-d1" style="text-decoration:none;color:inherit;">
-        <div class="treat-card-bg"><img src="/static/img/treat-3.jpg" alt="앞니 심미치료 - 최소삭제 라미네이트 레진" width="600" height="400" loading="lazy"></div>
+        <div class="treat-card-bg"><img src="/static/img/treat-3.webp" alt="앞니 심미치료 - 최소삭제 라미네이트 레진" width="600" height="400" loading="lazy"></div>
         <div class="treat-card-content">
           <div class="treat-card-num">03</div>
           <div class="treat-card-tag">Aesthetic</div>
@@ -1182,7 +1183,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </a>
       <!-- Orthodontics -->
       <a href="/treatments/orthodontics" class="treat-card rv" style="text-decoration:none;color:inherit;">
-        <div class="treat-card-bg"><img src="/static/img/treat-4.jpg" alt="치아교정 - 교정과 전문의 투명교정 설측교정" width="600" height="400" loading="lazy"></div>
+        <div class="treat-card-bg"><img src="/static/img/treat-4.webp" alt="치아교정 - 교정과 전문의 투명교정 설측교정" width="600" height="400" loading="lazy"></div>
         <div class="treat-card-content">
           <div class="treat-card-num">04</div>
           <div class="treat-card-tag">Orthodontics</div>
@@ -1196,7 +1197,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </a>
       <!-- General -->
       <a href="/treatments/general" class="treat-card rv rv-d1" style="text-decoration:none;color:inherit;">
-        <div class="treat-card-bg"><img src="/static/img/treat-5.jpg" alt="일반 예방 치료 - 정기검진 스케일링 충치치료" width="600" height="400" loading="lazy"></div>
+        <div class="treat-card-bg"><img src="/static/img/treat-5.webp" alt="일반 예방 치료 - 정기검진 스케일링 충치치료" width="600" height="400" loading="lazy"></div>
         <div class="treat-card-content">
           <div class="treat-card-num">05</div>
           <div class="treat-card-tag">General Care</div>
@@ -1220,7 +1221,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
     <div class="team-grid">
       <div class="team-card lead rv">
         <div class="team-photo">
-          <img src="/static/img/dr-han-profile.jpg" alt="한승대 대표원장 - 통합치의학과 전문의 치의학박사" width="400" height="533" loading="lazy">
+          <img src="/static/img/dr-han-profile.webp" alt="한승대 대표원장 - 통합치의학과 전문의 치의학박사" width="400" height="533" loading="lazy">
           <div class="team-photo-overlay"></div>
           <div class="team-badge">Lead Doctor</div>
         </div>
@@ -1277,9 +1278,9 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   <div class="exp-grid">
     <div class="exp-images">
       <div class="exp-images-grid">
-        <img src="/static/img/consult-2.jpg" alt="행복한예인치과 환자 상담 장면" width="600" height="400" loading="lazy">
-        <img src="/static/img/xray-1.jpg" alt="X-ray 디지털 진단 장비" width="600" height="400" loading="lazy">
-        <img src="/static/img/treat-2.jpg" alt="행복한예인치과 보존 치료 진료" width="600" height="400" loading="lazy">
+        <img src="/static/img/consult-2.webp" alt="행복한예인치과 환자 상담 장면" width="600" height="400" loading="lazy">
+        <img src="/static/img/xray-1.webp" alt="X-ray 디지털 진단 장비" width="600" height="400" loading="lazy">
+        <img src="/static/img/treat-2.webp" alt="행복한예인치과 보존 치료 진료" width="600" height="400" loading="lazy">
       </div>
     </div>
     <div class="exp-text">
@@ -1323,27 +1324,27 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 <!-- ===== PHOTO MARQUEE ===== -->
 <div class="photo-marquee">
   <div class="photo-track">
-    <img src="/static/img/consult-1.jpg" alt="행복한예인치과 환자 상담" width="390" height="260" loading="lazy">
-    <img src="/static/img/treat-6.jpg" alt="치과 치료 시술 장면" width="390" height="260" loading="lazy">
-    <img src="/static/img/treat-4.jpg" alt="교정 치료 진행" width="390" height="260" loading="lazy">
-    <img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 로고" width="390" height="260" loading="lazy">
-    <img src="/static/img/consult-3.jpg" alt="X-ray 진단 상담" width="390" height="260" loading="lazy">
-    <img src="/static/img/treat-7.jpg" alt="정밀 치과 시술" width="390" height="260" loading="lazy">
-    <img src="/static/img/treat-5.jpg" alt="예방 치료 스케일링" width="390" height="260" loading="lazy">
-    <img src="/static/img/xray-3.jpg" alt="파노라마 X-ray 촬영" width="390" height="260" loading="lazy">
-    <img src="/static/img/dr-han-front.jpg" alt="한승대 원장 진료" width="390" height="260" loading="lazy">
-    <img src="/static/img/xray-2.jpg" alt="구강내 진단 촬영" width="390" height="260" loading="lazy">
+    <img src="/static/img/consult-1.webp" alt="행복한예인치과 환자 상담" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-6.webp" alt="치과 치료 시술 장면" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-4.webp" alt="교정 치료 진행" width="390" height="260" loading="lazy">
+    <img src="/static/img/dr-han-logo.webp" alt="행복한예인치과 로고" width="390" height="260" loading="lazy">
+    <img src="/static/img/consult-3.webp" alt="X-ray 진단 상담" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-7.webp" alt="정밀 치과 시술" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-5.webp" alt="예방 치료 스케일링" width="390" height="260" loading="lazy">
+    <img src="/static/img/xray-3.webp" alt="파노라마 X-ray 촬영" width="390" height="260" loading="lazy">
+    <img src="/static/img/dr-han-front.webp" alt="한승대 원장 진료" width="390" height="260" loading="lazy">
+    <img src="/static/img/xray-2.webp" alt="구강내 진단 촬영" width="390" height="260" loading="lazy">
     <!-- duplicate for seamless loop -->
-    <img src="/static/img/consult-1.jpg" alt="행복한예인치과 환자 상담" width="390" height="260" loading="lazy">
-    <img src="/static/img/treat-6.jpg" alt="치과 치료 시술 장면" width="390" height="260" loading="lazy">
-    <img src="/static/img/treat-4.jpg" alt="교정 치료 진행" width="390" height="260" loading="lazy">
-    <img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 로고" width="390" height="260" loading="lazy">
-    <img src="/static/img/consult-3.jpg" alt="X-ray 진단 상담" width="390" height="260" loading="lazy">
-    <img src="/static/img/treat-7.jpg" alt="정밀 치과 시술" width="390" height="260" loading="lazy">
-    <img src="/static/img/treat-5.jpg" alt="예방 치료 스케일링" width="390" height="260" loading="lazy">
-    <img src="/static/img/xray-3.jpg" alt="파노라마 X-ray 촬영" width="390" height="260" loading="lazy">
-    <img src="/static/img/dr-han-front.jpg" alt="한승대 원장 진료" width="390" height="260" loading="lazy">
-    <img src="/static/img/xray-2.jpg" alt="구강내 진단 촬영" width="390" height="260" loading="lazy">
+    <img src="/static/img/consult-1.webp" alt="행복한예인치과 환자 상담" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-6.webp" alt="치과 치료 시술 장면" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-4.webp" alt="교정 치료 진행" width="390" height="260" loading="lazy">
+    <img src="/static/img/dr-han-logo.webp" alt="행복한예인치과 로고" width="390" height="260" loading="lazy">
+    <img src="/static/img/consult-3.webp" alt="X-ray 진단 상담" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-7.webp" alt="정밀 치과 시술" width="390" height="260" loading="lazy">
+    <img src="/static/img/treat-5.webp" alt="예방 치료 스케일링" width="390" height="260" loading="lazy">
+    <img src="/static/img/xray-3.webp" alt="파노라마 X-ray 촬영" width="390" height="260" loading="lazy">
+    <img src="/static/img/dr-han-front.webp" alt="한승대 원장 진료" width="390" height="260" loading="lazy">
+    <img src="/static/img/xray-2.webp" alt="구강내 진단 촬영" width="390" height="260" loading="lazy">
   </div>
 </div>
 
@@ -1838,6 +1839,40 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 
 <!-- ===== FOOTER ===== -->
 <footer>
+  <nav class="footer-sitemap" aria-label="주요 콘텐츠 바로가기" style="max-width:1200px;margin:0 auto;padding:32px 24px 8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:24px;font-size:0.78rem;">
+    <div>
+      <strong style="display:block;color:#F7BA18;margin-bottom:10px;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;">진료과목</strong>
+      <a href="/treatments/implant" style="display:block;color:#999;padding:3px 0;">발치즉시 임플란트</a>
+      <a href="/treatments/preservation" style="display:block;color:#999;padding:3px 0;">신경치료·보존</a>
+      <a href="/treatments/orthodontics" style="display:block;color:#999;padding:3px 0;">투명교정</a>
+      <a href="/treatments/aesthetic" style="display:block;color:#999;padding:3px 0;">앞니 심미치료</a>
+      <a href="/treatments/general" style="display:block;color:#999;padding:3px 0;">스케일링·예방</a>
+    </div>
+    <div>
+      <strong style="display:block;color:#F7BA18;margin-bottom:10px;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;">환자 가이드</strong>
+      <a href="/symptoms" style="display:block;color:#999;padding:3px 0;">증상별 가이드</a>
+      <a href="/cost" style="display:block;color:#999;padding:3px 0;">치료비용 안내</a>
+      <a href="/compare" style="display:block;color:#999;padding:3px 0;">치료 비교</a>
+      <a href="/encyclopedia" style="display:block;color:#999;padding:3px 0;">치과백과사전</a>
+      <a href="/search" style="display:block;color:#999;padding:3px 0;">통합 검색</a>
+    </div>
+    <div>
+      <strong style="display:block;color:#F7BA18;margin-bottom:10px;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;">병원 안내</strong>
+      <a href="/doctors" style="display:block;color:#999;padding:3px 0;">의료진 소개</a>
+      <a href="/philosophy" style="display:block;color:#999;padding:3px 0;">진료 철학</a>
+      <a href="/location" style="display:block;color:#999;padding:3px 0;">오시는 길</a>
+      <a href="/local" style="display:block;color:#999;padding:3px 0;">지역별 안내</a>
+      <a href="/blog" style="display:block;color:#999;padding:3px 0;">블로그</a>
+    </div>
+    <div>
+      <strong style="display:block;color:#F7BA18;margin-bottom:10px;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;">International</strong>
+      <a href="/en" style="display:block;color:#999;padding:3px 0;">English / 日本語 / 中文</a>
+      <a href="/en/emergency-dentist-myeongdong" style="display:block;color:#999;padding:3px 0;">Emergency Dental</a>
+      <a href="/en/english-speaking-dentist-myeongdong" style="display:block;color:#999;padding:3px 0;">English-Speaking Dentist</a>
+      <a href="/before-after" style="display:block;color:#999;padding:3px 0;">치료 사례</a>
+      <a href="/notice" style="display:block;color:#999;padding:3px 0;">공지사항</a>
+    </div>
+  </nav>
   <div class="footer-inner">
     <div class="footer-left">
       <strong>행복한예인치과의원</strong><br>
@@ -1996,6 +2031,12 @@ document.querySelectorAll('.num-item .num').forEach(el => numObserver.observe(el
 })
 
 // ===== INDIVIDUAL PAGES =====
+// ===== 통합 검색 (SearchAction 스키마 타겟) =====
+app.get('/search', async (c) => {
+  const q = c.req.query('q') || '';
+  return c.html(await renderSearchPage(q, c.env.DB));
+})
+
 app.get('/philosophy', (c) => c.html(philosophyPage()))
 app.get('/doctors', (c) => c.html(doctorsPage()))
 app.get('/experience', (c) => c.html(experiencePage()))
@@ -2361,6 +2402,7 @@ app.get('/sitemap.xml', async (c) => {
     { loc: '/blog', priority: '0.8', changefreq: 'daily', lastmod: today, images: [] },
     { loc: '/notice', priority: '0.5', changefreq: 'weekly', lastmod: today, images: [] },
     { loc: '/encyclopedia', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
+    { loc: '/search', priority: '0.6', changefreq: 'monthly', lastmod: today, images: [] },
     // Local SEO: 지역×진료 전용 랜딩페이지 (30개+)
     { loc: '/local', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
     ...getAllLocalSeoSlugs().map(s => ({

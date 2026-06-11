@@ -810,7 +810,7 @@ export function renderSymptomPage(slug: string): string | null {
       "cssSelector": ".symptom-content"
     },
     "specialty": { "@type": "MedicalSpecialty", "name": "Dentistry" },
-    "lastReviewed": new Date().toISOString().split('T')[0],
+    "lastReviewed": "2026-06-11",
     "reviewedBy": {
       "@type": "Dentist",
       "name": "한승대",

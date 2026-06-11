@@ -318,6 +318,40 @@ export function footer() {
   </div>
 </section>
 <footer role="contentinfo" aria-label="사이트 정보">
+  <nav class="footer-sitemap" aria-label="주요 콘텐츠 바로가기" style="max-width:1200px;margin:0 auto;padding:32px 24px 8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:24px;font-size:0.78rem;">
+    <div>
+      <strong style="display:block;color:#F7BA18;margin-bottom:10px;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;">진료과목</strong>
+      <a href="/treatments/implant" style="display:block;color:#999;padding:3px 0;">발치즉시 임플란트</a>
+      <a href="/treatments/preservation" style="display:block;color:#999;padding:3px 0;">신경치료·보존</a>
+      <a href="/treatments/orthodontics" style="display:block;color:#999;padding:3px 0;">투명교정</a>
+      <a href="/treatments/aesthetic" style="display:block;color:#999;padding:3px 0;">앞니 심미치료</a>
+      <a href="/treatments/general" style="display:block;color:#999;padding:3px 0;">스케일링·예방</a>
+    </div>
+    <div>
+      <strong style="display:block;color:#F7BA18;margin-bottom:10px;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;">환자 가이드</strong>
+      <a href="/symptoms" style="display:block;color:#999;padding:3px 0;">증상별 가이드</a>
+      <a href="/cost" style="display:block;color:#999;padding:3px 0;">치료비용 안내</a>
+      <a href="/compare" style="display:block;color:#999;padding:3px 0;">치료 비교</a>
+      <a href="/encyclopedia" style="display:block;color:#999;padding:3px 0;">치과백과사전</a>
+      <a href="/search" style="display:block;color:#999;padding:3px 0;">통합 검색</a>
+    </div>
+    <div>
+      <strong style="display:block;color:#F7BA18;margin-bottom:10px;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;">병원 안내</strong>
+      <a href="/doctors" style="display:block;color:#999;padding:3px 0;">의료진 소개</a>
+      <a href="/philosophy" style="display:block;color:#999;padding:3px 0;">진료 철학</a>
+      <a href="/location" style="display:block;color:#999;padding:3px 0;">오시는 길</a>
+      <a href="/local" style="display:block;color:#999;padding:3px 0;">지역별 안내</a>
+      <a href="/blog" style="display:block;color:#999;padding:3px 0;">블로그</a>
+    </div>
+    <div>
+      <strong style="display:block;color:#F7BA18;margin-bottom:10px;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;">International</strong>
+      <a href="/en" style="display:block;color:#999;padding:3px 0;">English / 日本語 / 中文</a>
+      <a href="/en/emergency-dentist-myeongdong" style="display:block;color:#999;padding:3px 0;">Emergency Dental</a>
+      <a href="/en/english-speaking-dentist-myeongdong" style="display:block;color:#999;padding:3px 0;">English-Speaking Dentist</a>
+      <a href="/before-after" style="display:block;color:#999;padding:3px 0;">치료 사례</a>
+      <a href="/notice" style="display:block;color:#999;padding:3px 0;">공지사항</a>
+    </div>
+  </nav>
   <div class="footer-inner">
     <div class="footer-left">
       <strong>행복한예인치과의원</strong><br>

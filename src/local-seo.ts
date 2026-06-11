@@ -546,7 +546,7 @@ ${nav()}
 
 <!-- Hero Section -->
 <section class="hero-title" style="background:linear-gradient(135deg,#1a5276 0%,#2e86c1 50%,#3498db 100%);padding:80px 20px 60px;color:#fff;position:relative;overflow:hidden;">
-  <div style="position:absolute;top:0;right:0;width:40%;height:100%;background:url('${treatment.heroImg}') center/cover;opacity:.15;"></div>
+  <div style="position:absolute;top:0;right:0;width:40%;height:100%;background:url('${treatment.heroImg.replace('.jpg', '.webp')}') center/cover;opacity:.15;"></div>
   <div style="max-width:900px;margin:0 auto;position:relative;z-index:1;">
     <nav style="font-size:.85rem;margin-bottom:20px;opacity:.8;">
       <a href="/" style="color:#fff;text-decoration:none;">홈</a>

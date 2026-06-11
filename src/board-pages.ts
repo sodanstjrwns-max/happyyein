@@ -544,7 +544,7 @@ async function loadPosts(page = 1) {
         '<div class="board-card-img">' + thumb + '</div>' +
         '<div class="board-card-body"><h3>' + escHtml(p.title) + '</h3>' +
         '<div class="board-card-meta"><span><i class="far fa-calendar-alt"></i> ' + formatDate(p.created_at) + '</span><span><i class="fas fa-eye"></i> ' + p.view_count + '</span>' + (p.thumbnail_url ? '<span><i class="fas fa-image"></i></span>' : '') + '</div>' +
-        '<div class="board-card-author"><img src="/static/img/dr-han-profile.jpg" alt="한승대 대표원장"><div class="author-text"><span class="author-name">한승대 대표원장</span><span class="author-role">통합치의학과 전문의</span></div></div>' +
+        '<div class="board-card-author"><img src="/static/img/dr-han-profile.webp" alt="한승대 대표원장"><div class="author-text"><span class="author-name">한승대 대표원장</span><span class="author-role">통합치의학과 전문의</span></div></div>' +
         '</div></a>';
     }).join('') + '</div>';
     `}
@@ -938,7 +938,7 @@ ${nav(cfg.navKey)}
 
         // 블로그: 작성자 카드
         if (board === 'blog') {
-          html += '<div class="detail-author-card"><img src="/static/img/dr-han-profile.jpg" alt="한승대 대표원장 프로필"><div class="detail-author-info"><span class="author-name">한승대 대표원장</span><span class="author-role">Integrative Dentistry Specialist</span><span class="author-desc">통합치의학과 전문의 · 치의학 박사 · 경희대 치의학전문대학원<br>13년간 한자리에서 쌓아온 신뢰의 치과</span></div></div>';
+          html += '<div class="detail-author-card"><img src="/static/img/dr-han-profile.webp" alt="한승대 대표원장 프로필"><div class="detail-author-info"><span class="author-name">한승대 대표원장</span><span class="author-role">Integrative Dentistry Specialist</span><span class="author-desc">통합치의학과 전문의 · 치의학 박사 · 경희대 치의학전문대학원<br>13년간 한자리에서 쌓아온 신뢰의 치과</span></div></div>';
         }
 
         // 비포애프터: 전후 이미지

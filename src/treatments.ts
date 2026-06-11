@@ -350,7 +350,7 @@ export function renderTreatmentPage(slug: string): string | null {
   };
 
   // MedicalWebPage 스키마
-  const today = new Date().toISOString().split('T')[0];
+  const today = '2026-06-11'; // CONTENT_REVIEWED — 콘텐츠 실제 검수/갱신 시 수동 업데이트 (가짜 동적 날짜 금지)
   const medicalPageSchema = {
     "@context": "https://schema.org",
     "@type": "MedicalWebPage",
@@ -453,7 +453,7 @@ ${nav('treatments')}
 <!-- HERO -->
 <section class="sub-hero">
   <div class="sub-hero-bg">
-    <img src="${t.heroImg}" alt="${t.title} - 행복한예인치과 시청역 명동 을지로" width="1200" height="800" loading="eager" fetchpriority="high">
+    <img src="${t.heroImg.replace('.jpg', '.webp')}" alt="${t.title} - 행복한예인치과 시청역 명동 을지로" width="1200" height="800" loading="eager" fetchpriority="high">
     <div class="sub-hero-overlay"></div>
   </div>
   <div class="sub-hero-breadcrumb">
@@ -482,7 +482,7 @@ ${nav('treatments')}
       </div>
     </div>
     <div class="treat-intro-img rv-scale">
-      <img src="${t.introImg}" alt="${t.title} 진료 과정 - 행복한예인치과" width="600" height="450" loading="lazy">
+      <img src="${t.introImg.replace('.jpg', '.webp')}" alt="${t.title} 진료 과정 - 행복한예인치과" width="600" height="450" loading="lazy">
     </div>
   </div>
 </section>
