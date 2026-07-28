@@ -1839,7 +1839,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 
 <!-- ===== FOOTER ===== -->
 <footer>
-  <nav class="footer-sitemap" aria-label="주요 콘텐츠 바로가기" style="max-width:1200px;margin:0 auto;padding:32px 24px 8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:24px;font-size:0.78rem;">
+  <div class="footer-sitemap" role="navigation" aria-label="주요 콘텐츠 바로가기" style="max-width:1200px;margin:0 auto;padding:32px 24px 8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:24px;font-size:0.78rem;">
     <div>
       <strong style="display:block;color:#F7BA18;margin-bottom:10px;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;">진료과목</strong>
       <a href="/treatments/implant" style="display:block;color:#999;padding:3px 0;">발치즉시 임플란트</a>
@@ -1872,7 +1872,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       <a href="/before-after" style="display:block;color:#999;padding:3px 0;">치료 사례</a>
       <a href="/notice" style="display:block;color:#999;padding:3px 0;">공지사항</a>
     </div>
-  </nav>
+  </div>
   <div class="footer-inner">
     <div class="footer-left">
       <strong>행복한예인치과의원</strong><br>
