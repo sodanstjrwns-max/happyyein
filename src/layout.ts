@@ -89,6 +89,20 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
       { "@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "09:30", "closes": "20:00" }
     ],
     "priceRange": "$$",
+    "potentialAction": {
+      "@type": "ReserveAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://naver.me/G0DXGZbi",
+        "actionPlatform": ["http://schema.org/DesktopWebPlatform", "http://schema.org/MobileWebPlatform"],
+        "inLanguage": "ko"
+      },
+      "result": { "@type": "Reservation", "name": "행복한예인치과 진료 예약" }
+    },
+    "contactPoint": [
+      { "@type": "ContactPoint", "telephone": "+82-2-756-2828", "contactType": "reservations", "availableLanguage": ["Korean", "English"] },
+      { "@type": "ContactPoint", "url": "http://pf.kakao.com/_Nxfczxh", "contactType": "customer support", "description": "카카오톡 채널 문의 — 진료시간 내 30분 이내 답변" }
+    ],
     "areaServed": [
       { "@type": "City", "name": "서울특별시" },
       { "@type": "AdministrativeArea", "name": "중구" },
@@ -312,9 +326,10 @@ export function footer() {
     <p class="rv rv-d1">시청역·명동·을지로·광화문에서 10분 이내,<br>회현·충무로·서울역에서도 가까운 행복한예인치과.</p>
     <div class="cta-btns rv rv-d2">
       <a href="tel:02-756-2828" class="btn btn-gold"><i class="fas fa-phone-alt"></i> 전화예약</a>
-      <a href="https://naver.me/G0DXGZbi" target="_blank" class="btn btn-naver"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
-      <a href="https://blog.naver.com/yein2828" target="_blank" class="btn btn-ghost"><i class="fab fa-blogger-b"></i> Naver Blog</a>
+      <a href="https://naver.me/G0DXGZbi" target="_blank" rel="noopener" class="btn btn-naver"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
+      <a href="http://pf.kakao.com/_Nxfczxh" target="_blank" rel="noopener" class="btn btn-ghost" style="border-color:rgba(250,225,0,0.4);color:#FAE100;"><i class="fas fa-comment"></i> 카톡 문의</a>
     </div>
+    <p class="rv rv-d2" style="margin-top:18px;font-family:var(--font-kr);font-size:0.78rem;color:var(--gray);">💬 카카오톡 채널·네이버 톡톡 문의 시 <strong style="color:var(--gold);">진료시간 내 30분 이내</strong>, 이메일 문의는 <strong style="color:var(--gold);">24시간 이내</strong> 답변드립니다.</p>
   </div>
 </section>
 <footer role="contentinfo" aria-label="사이트 정보">
@@ -357,22 +372,24 @@ export function footer() {
       <strong>행복한예인치과의원</strong><br>
       서울 중구 남대문로9길 51 효덕빌딩 3층 301호<br>
       대표자: 한승대 | 사업자등록번호: 104-91-44744<br>
-      TEL 02-756-2828 | FAX 02-754-8188<br>
+      TEL 02-756-2828 | FAX 02-754-8188 | 카톡채널 @행복한예인치과<br>
+      문의 답변: 카톡·톡톡은 진료시간 내 30분 이내, 이메일은 24시간 이내<br>
       &copy; 2005–2026 Happy Yein Dental Clinic. All rights reserved.
     </div>
     <div class="footer-right">
       <a href="/register">Register</a>
       <a href="/login">Login</a>
-      <a href="https://blog.naver.com/yein2828" target="_blank">Blog</a>
-      <a href="https://naver.me/G0DXGZbi" target="_blank">Reservation</a>
+      <a href="https://blog.naver.com/yein2828" target="_blank" rel="noopener">Blog</a>
+      <a href="http://pf.kakao.com/_Nxfczxh" target="_blank" rel="noopener">KakaoTalk</a>
+      <a href="https://naver.me/G0DXGZbi" target="_blank" rel="noopener">Reservation</a>
     </div>
   </div>
 </footer>
 <!-- MOBILE BOTTOM BAR -->
 <div class="mob-bottom-bar">
   <a href="tel:02-756-2828" class="mob-bottom-btn btn-call"><i class="fas fa-phone-alt"></i> 전화</a>
-  <a href="https://naver.me/G0DXGZbi" target="_blank" class="mob-bottom-btn btn-naver-m"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
-  <a href="https://blog.naver.com/yein2828" target="_blank" class="mob-bottom-btn btn-blog"><i class="fab fa-blogger-b"></i> 블로그</a>
+  <a href="https://naver.me/G0DXGZbi" target="_blank" rel="noopener" class="mob-bottom-btn btn-naver-m"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
+  <a href="http://pf.kakao.com/_Nxfczxh" target="_blank" rel="noopener" class="mob-bottom-btn btn-blog" style="background:#FAE100;color:#3C1E1E;"><i class="fas fa-comment"></i> 카톡문의</a>
 </div>`;
 }
 

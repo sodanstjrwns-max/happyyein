@@ -23,6 +23,17 @@ import { renderSearchPage } from './search'
 type Bindings = { DB: D1Database; R2: R2Bucket; OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; AUTO_BLOG_SECRET?: string }
 const app = new Hono<{ Bindings: Bindings }>()
 
+// ===== A4: www → 비www 301 통일 (canonical 정합성) =====
+app.use('*', async (c, next) => {
+  const url = new URL(c.req.url)
+  if (url.hostname === 'www.happyyein.kr') {
+    url.hostname = 'happyyein.kr'
+    url.protocol = 'https:'
+    return c.redirect(url.toString(), 301)
+  }
+  await next()
+})
+
 // ===== 보안 헤더 미들웨어 (SEO/보안 최적화) =====
 app.use('*', async (c, next) => {
   await next()
@@ -154,9 +165,23 @@ app.get('/', (c) => {
       "https://blog.naver.com/yein2828",
       "https://naver.me/G0DXGZbi",
       "https://map.naver.com/v5/entry/place/36682457",
-      "https://www.google.com/maps?cid=YOUR_GOOGLE_CID",
+      "http://pf.kakao.com/_Nxfczxh",
       "https://place.map.kakao.com/7840173"
-    ]
+    ],
+    "contactPoint": [
+      { "@type": "ContactPoint", "telephone": "+82-2-756-2828", "contactType": "reservations", "availableLanguage": ["Korean", "English"], "contactOption": "TollFree" },
+      { "@type": "ContactPoint", "url": "http://pf.kakao.com/_Nxfczxh", "contactType": "customer support", "description": "카카오톡 채널 문의 — 진료시간 내 30분 이내 답변" }
+    ],
+    "potentialAction": {
+      "@type": "ReserveAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://naver.me/G0DXGZbi",
+        "actionPlatform": ["http://schema.org/DesktopWebPlatform", "http://schema.org/MobileWebPlatform"],
+        "inLanguage": "ko"
+      },
+      "result": { "@type": "Reservation", "name": "행복한예인치과 진료 예약" }
+    }
   });
 
   // 2) FAQPage 스키마 (AEO 핵심) - 35개 질문
@@ -172,9 +197,9 @@ app.get('/', (c) => {
     { q: "행복한예인치과는 건강보험 적용이 되나요?", a: "네, 행복한예인치과는 건강보험 적용 치과입니다. 스케일링(연 1회), 충치치료, 신경치료, 발치, 잇몸치료 등 보험 적용 항목에 대해 건강보험 혜택을 받으실 수 있습니다. 임플란트, 라미네이트, 교정 등 일부 항목은 비급여입니다." },
     // === 치료 관련 (8개) ===
     { q: "발치즉시 임플란트란 무엇인가요?", a: "발치즉시 임플란트는 치아를 발치하는 동시에 임플란트를 식립하는 시술입니다. 별도의 치유 기간(3~6개월) 없이 바로 진행하여 전체 치료 기간을 크게 단축합니다. 행복한예인치과 한승대 원장은 80% 이상의 케이스에서 즉시식립을 시행하며, 시청역·명동·을지로 직장인분들의 바쁜 일정에 맞춘 효율적 치료를 제공합니다." },
-    { q: "임플란트 비용은 얼마인가요?", a: "임플란트 비용은 식립 위치, 골이식 필요 여부, 보철물 종류에 따라 달라집니다. 행복한예인치과에서는 CT 촬영과 정밀 진단 후 정확한 비용을 투명하게 안내해 드립니다. 과잉 진료 없이 꼭 필요한 시술만 제안드리며, 분할 납부 상담도 가능합니다." },
+    { q: "임플란트 비용은 얼마인가요?", a: "임플란트 비용은 식립 위치, 골이식(잇몸뼈 이식) 필요 여부, 보철물(씌우는 치아) 종류에 따라 달라집니다. 행복한예인치과에서는 CT 촬영과 정밀 진단 후 정확한 비용을 투명하게 안내해 드립니다. 과잉 진료 없이 꼭 필요한 시술만 제안드리며, 분할 납부 상담도 가능합니다." },
     { q: "신경치료는 얼마나 아픈가요?", a: "행복한예인치과에서는 충분한 마취 후 치료를 진행하므로 시술 중 통증은 거의 없습니다. 표면 마취제를 먼저 도포하여 주사 통증까지 최소화합니다. 보존과 전문의 신정희 원장이 미세현미경을 활용하여 정밀하게 시술하므로 불필요한 자극이 줄어듭니다." },
-    { q: "치아 교정은 성인도 가능한가요?", a: "물론입니다. 성인 교정은 매우 흔하며, 치조골 상태만 건강하다면 나이에 관계없이 가능합니다. 행복한예인치과 박현미 원장(교정 전문의)은 투명교정(인비절라인), 설측교정 등 티 안 나는 교정 방식을 제공하여 직장인도 부담 없이 교정을 시작할 수 있습니다." },
+    { q: "치아 교정은 성인도 가능한가요?", a: "물론입니다. 성인 교정은 매우 흔하며, 치조골(잇몸뼈) 상태만 건강하다면 나이에 관계없이 가능합니다. 행복한예인치과 박현미 원장(교정 전문의)은 투명교정(인비절라인), 설측교정 등 티 안 나는 교정 방식을 제공하여 직장인도 부담 없이 교정을 시작할 수 있습니다." },
     { q: "투명교정(인비절라인)과 일반 교정의 차이는 무엇인가요?", a: "일반 교정(브라켓)은 치아에 장치를 부착하는 방식이고, 투명교정(인비절라인)은 투명한 틀을 착용하여 교정하는 방식입니다. 투명교정은 외관상 거의 보이지 않고 탈착이 가능하여 직장인에게 인기가 많습니다. 교정과 전문의가 케이스에 맞는 최적의 방식을 추천해 드립니다." },
     { q: "라미네이트와 레진 치료의 차이는 무엇인가요?", a: "레진은 치아에 직접 재료를 쌓아올려 즉일 완성하는 방식이고, 라미네이트는 기공소에서 세라믹 쉘을 제작하여 접착하는 방식입니다. 레진은 비용이 낮고 즉시 결과를 얻을 수 있으며, 라미네이트는 내구성과 심미성이 더 뛰어납니다. 행복한예인치과에서는 최소 삭제를 원칙으로 합니다." },
     { q: "스케일링은 아프나요? 얼마나 자주 받아야 하나요?", a: "스케일링은 약간의 시림 증상이 있을 수 있지만 통증은 거의 없습니다. 건강보험 기준 연 1회 보험 적용이 가능하며, 잇몸 상태에 따라 6개월~1년 간격을 권장합니다. 시청역·명동·을지로 직장인분들이 점심시간이나 수요일 야간에 많이 이용하십니다." },
@@ -203,7 +228,7 @@ app.get('/', (c) => {
     // === 추가 기본 정보 (8개) ===
     { q: "행복한예인치과에서 진료 가능한 과목은 무엇인가요?", a: "임플란트(발치즉시 임플란트 포함), 보존치료(신경치료·충치치료), 앞니 심미치료(라미네이트·레진), 치아교정(투명교정·설측교정), 일반진료(스케일링·정기검진·잇몸치료), 사랑니 발치 등 치과 전 분야의 진료가 가능합니다. 전문의 3인(통합치의학, 보존과, 교정과) 협진 체제입니다." },
     { q: "행복한예인치과의 의료진은 어떤 학력을 갖고 있나요?", a: "한승대 대표원장은 고려대 졸업, 경희대 치의학전문대학원 치의학 박사이며, 신정희 원장은 경희대 치과대학 졸업, 경희대 대학원 치의학 박사입니다. 박현미 원장은 연세대 졸업, 연세대 치의학대학원 교정과 석사입니다. 전원 보건복지부 인증 전문의 자격을 보유하고 있습니다." },
-    { q: "행복한예인치과의 진료 환경은 어떤가요?", a: "최신 CT(CBCT), 디지털 X-ray, 미세현미경, 구강스캐너 등 첨단 장비를 갖추고 있습니다. 각 진료실은 독립된 공간으로 프라이버시를 보장하며, 감염 관리 기준을 철저히 준수합니다. 편안한 대기 공간도 마련되어 있습니다." },
+    { q: "행복한예인치과의 진료 환경은 어떤가요?", a: "CBCT(3차원 CT)로 신경관 위치를 0.1mm 단위로 확인하고, 미세현미경으로 육안의 20배까지 확대해 신경치료합니다. 구강스캐너로 본뜨 없이 치아를 스캔하며, 각 진료실은 독립된 공간으로 프라이버시를 보장합니다." },
     { q: "치과 치료 전 상담만 받을 수도 있나요?", a: "물론입니다. 상담만 받고 치료 여부는 충분히 생각하신 후 결정하셔도 됩니다. X-ray 촬영 후 현재 구강 상태와 치료 옵션을 투명하게 설명해 드립니다. 상담에 대한 부담을 갖지 않으셔도 됩니다." },
     { q: "예약 없이 방문해도 진료받을 수 있나요?", a: "행복한예인치과는 예약제로 운영됩니다. 예약 환자분들의 대기 시간을 최소화하기 위해 사전 예약을 권장합니다. 다만 응급 상황(극심한 통증, 외상 등)의 경우에는 내원 시 최대한 수용할 수 있도록 노력합니다. 전화 02-756-2828로 예약해 주세요." },
     { q: "치과 위생사도 전문적으로 교육받은 분들인가요?", a: "네, 행복한예인치과의 모든 치과 위생사는 면허 소지자이며, 정기적으로 내부 교육과 외부 세미나를 수료합니다. 스케일링, 환자 안내, 감염 관리 등 모든 업무에서 전문성을 유지합니다." },
@@ -211,7 +236,7 @@ app.get('/', (c) => {
     { q: "다른 치과에서 받던 치료를 행복한예인치과에서 이어서 받을 수 있나요?", a: "가능합니다. 다른 치과에서 받으시던 임플란트, 교정, 보존치료 등을 이어서 진행할 수 있습니다. 기존 X-ray나 진료 기록을 가져오시면 더 정확한 연속 치료가 가능합니다. 전문의가 현재 상태를 정밀 평가한 후 최적의 계획을 수립합니다." },
     // === 추가 치료 관련 (8개) ===
     { q: "임플란트 수명은 얼마나 되나요?", a: "관리 상태에 따라 다르지만, 일반적으로 10~20년 이상 사용 가능합니다. 정기적인 검진과 올바른 구강 관리를 병행하면 반영구적으로 유지할 수 있습니다. 행복한예인치과에서는 시술 후에도 꾸준한 사후 관리를 제공합니다." },
-    { q: "골이식이 필요하다고 하는데 꼭 해야 하나요?", a: "임플란트를 식립할 부위의 뼈가 부족한 경우 골이식이 필요합니다. 골이식 없이 식립하면 임플란트의 장기적 안정성이 떨어질 수 있으므로, 필요한 경우에는 반드시 시행하는 것이 좋습니다. 한승대 원장은 상악동 거상술, 블록본 이식 등 고난이도 골이식 경험이 풍부합니다." },
+    { q: "골이식(잇몸뼈 이식)이 필요하다고 하는데 꼭 해야 하나요?", a: "임플란트를 식립할 부위의 뼈가 부족한 경우 골이식(잇몸뼈 이식)이 필요합니다. 골이식(잇몸뼈 이식) 없이 식립하면 임플란트의 장기적 안정성이 떨어질 수 있으므로, 필요한 경우에는 반드시 시행하는 것이 좋습니다. 한승대 원장은 상악동(위턱 공간) 거상술, 블록본 이식 등 고난이도 골이식(잇몸뼈 이식) 경험이 풍부합니다." },
     { q: "잇몸병(치주질환)은 어떻게 치료하나요?", a: "잇몸 치료는 스케일링과 치근 활택술(잇몸 아래 치석 제거)로 시작합니다. 심한 경우 잇몸 수술(잇몸 절개 후 깊은 치석 제거)이 필요할 수 있습니다. 행복한예인치과에서는 잇몸 상태에 따라 단계적 치료를 진행하며, 가정 관리 방법도 함께 안내합니다." },
     { q: "앞니가 벌어졌는데 어떤 치료가 좋을까요?", a: "앞니 벌어짐(이개)은 레진 본딩, 라미네이트, 교정 등 다양한 방법으로 치료할 수 있습니다. 벌어진 정도와 전체 교합 상태에 따라 최적의 방법이 달라지며, 상담 시 각 옵션의 장단점과 비용을 투명하게 안내해 드립니다." },
     { q: "치아 미백은 안전한가요?", a: "전문 치과에서 시행하는 치아 미백은 안전합니다. 미백 후 일시적으로 이가 시린 증상이 있을 수 있지만 대부분 자연 소실됩니다. 행복한예인치과에서는 전문 미백(오피스 블리칭)과 자가 미백(홈 블리칭) 모두 가능하며, 환자 치아 상태에 맞는 방법을 추천합니다." },
@@ -1016,9 +1041,15 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
         미뤄두셨던 치료, 이제 시작해보세요.<br>
         시청역 5분 · 명동역 8분 · 수요일 야간진료
       </p>
+      <div class="hero-evidence" style="display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px;">
+        <span style="padding:5px 12px;border-radius:20px;background:rgba(247,186,24,0.1);border:1px solid rgba(247,186,24,0.25);color:var(--gold);font-family:var(--font-kr);font-size:0.68rem;font-weight:700;">발치즉시 임플란트 80%+</span>
+        <span style="padding:5px 12px;border-radius:20px;background:rgba(247,186,24,0.1);border:1px solid rgba(247,186,24,0.25);color:var(--gold);font-family:var(--font-kr);font-size:0.68rem;font-weight:700;">보존·교정·통합치의학 전문의 3인</span>
+        <span style="padding:5px 12px;border-radius:20px;background:rgba(247,186,24,0.1);border:1px solid rgba(247,186,24,0.25);color:var(--gold);font-family:var(--font-kr);font-size:0.68rem;font-weight:700;">NYU Implant Institute 수료</span>
+        <span style="padding:5px 12px;border-radius:20px;background:rgba(247,186,24,0.1);border:1px solid rgba(247,186,24,0.25);color:var(--gold);font-family:var(--font-kr);font-size:0.68rem;font-weight:700;">2013년 개원 · 13년 한자리</span>
+      </div>
       <div class="hero-cta-group">
         <a href="tel:02-756-2828" class="btn btn-gold"><i class="fas fa-phone-alt"></i> 전화예약</a>
-        <a href="https://naver.me/G0DXGZbi" target="_blank" class="btn btn-naver"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
+        <a href="https://naver.me/G0DXGZbi" target="_blank" rel="noopener" class="btn btn-naver"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
       </div>
     </div>
   </div>
@@ -1100,7 +1131,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 <section class="values sec-pad">
   <div class="sec-inner">
     <div class="sec-label">Our Values</div>
-    <h2 class="sec-title rv">치료의 <em>본질</em>에 집중합니다</h2>
+    <h2 class="sec-title rv">꾸미지 않은, <em>꼭 필요한</em> 치료만 받고 싶다면</h2>
     <div class="values-grid">
       <div class="v-card rv">
         <div class="v-card-num">01</div>
@@ -1134,7 +1165,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 <section class="treatments sec-pad" id="treatments">
   <div class="sec-inner">
     <div class="sec-label">Treatments</div>
-    <h2 class="sec-title rv">정확한 진단, <em>최적의</em> 치료</h2>
+    <h2 class="sec-title rv">내 치아, 지금 <em>어떤 상태</em>일까요?</h2>
     <div class="treat-grid">
       <!-- Featured: Immediate Implant -->
       <a href="/treatments/implant" class="treat-card treat-featured rv" style="text-decoration:none;color:inherit;">
@@ -1217,7 +1248,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 <section class="team sec-pad" id="team">
   <div class="sec-inner">
     <div class="sec-label" style="color:var(--gold-deep);">Doctors</div>
-    <h2 class="sec-title rv">각 분야 <em>전문의</em> 협진</h2>
+    <h2 class="sec-title rv">임플란트도 교정도, <em>전문의에게</em> 직접 받고 싶다면</h2>
     <div class="team-grid">
       <div class="team-card lead rv">
         <div class="team-photo">
@@ -1292,7 +1323,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
           <div class="exp-item-icon"><i class="fas fa-hand-sparkles"></i></div>
           <div>
             <h4>Gentle Touch</h4>
-            <p>마취부터 치료까지, 부드럽고 편안한 진료</p>
+            <p>마취 주사 전 도포마취 적용 — 바늘 들어가는 순간부터 다릅니다</p>
           </div>
         </li>
         <li class="exp-item rv rv-d2">
@@ -1449,7 +1480,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">임플란트 비용은 얼마인가요?</h4><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">임플란트 비용은 식립 위치, 골이식 필요 여부, 보철물 종류에 따라 달라집니다. CT 촬영과 정밀 진단 후 정확한 비용을 투명하게 안내해 드립니다. 과잉 진료 없이 꼭 필요한 시술만 제안드리며, 분할 납부 상담도 가능합니다.</p></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">임플란트 비용은 식립 위치, 골이식(잇몸뼈 이식) 필요 여부, 보철물(씌우는 치아) 종류에 따라 달라집니다. CT 촬영과 정밀 진단 후 정확한 비용을 투명하게 안내해 드립니다. 과잉 진료 없이 꼭 필요한 시술만 제안드리며, 분할 납부 상담도 가능합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">신경치료는 얼마나 아픈가요?</h4><i class="fas fa-chevron-down"></i></div>
@@ -1457,7 +1488,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">치아 교정은 성인도 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">물론입니다. 성인 교정은 매우 흔하며, 치조골 상태만 건강하다면 나이에 관계없이 가능합니다. 박현미 원장(교정 전문의)은 투명교정(인비절라인), 설측교정 등 티 안 나는 교정을 제공합니다.</p></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">물론입니다. 성인 교정은 매우 흔하며, 치조골(잇몸뼈) 상태만 건강하다면 나이에 관계없이 가능합니다. 박현미 원장(교정 전문의)은 투명교정(인비절라인), 설측교정 등 티 안 나는 교정을 제공합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">투명교정(인비절라인)과 일반 교정의 차이는?</h4><i class="fas fa-chevron-down"></i></div>
@@ -1567,7 +1598,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">진료 환경과 장비는 어떤가요?</h4><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">최신 CT(CBCT), 디지털 X-ray, 미세현미경, 구강스캐너 등 첨단 장비를 갖추고 있으며, 독립된 진료실로 프라이버시를 보장하고 철저한 감염 관리를 시행합니다.</p></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">CBCT(3차원 CT)로 신경관 위치를 0.1mm 단위로 확인하고, 미세현미경으로 육안의 20배까지 확대해 신경치료합니다. 독립된 진료실로 프라이버시를 보장합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">상담만 받을 수도 있나요?</h4><i class="fas fa-chevron-down"></i></div>
@@ -1596,8 +1627,8 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
         <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">관리에 따라 10~20년 이상 사용 가능하며, 정기 검진과 올바른 구강 관리를 병행하면 반영구적으로 유지됩니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">골이식이 필요하다는데 꼭 해야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">뼈가 부족한 경우 임플란트 장기 안정성을 위해 골이식이 필요합니다. 한승대 원장은 상악동 거상술, 블록본 이식 등 고난이도 골이식 경험이 풍부합니다.</p></div>
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">골이식(잇몸뼈 이식)이 필요하다는데 꼭 해야 하나요?</h4><i class="fas fa-chevron-down"></i></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">뼈가 부족한 경우 임플란트 장기 안정성을 위해 골이식(잇몸뼈 이식)이 필요합니다. 한승대 원장은 상악동(위턱 공간) 거상술, 블록본 이식 등 고난이도 골이식(잇몸뼈 이식) 경험이 풍부합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">잇몸병(치주질환) 치료는 어떻게 하나요?</h4><i class="fas fa-chevron-down"></i></div>
@@ -1830,9 +1861,10 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
     <p class="rv rv-d1">명동·을지로·광화문에서 10분 이내,<br>시청역 도보 5분. 수요일 야간진료까지.</p>
     <div class="cta-btns rv rv-d2">
       <a href="tel:02-756-2828" class="btn btn-gold"><i class="fas fa-phone-alt"></i> 전화예약</a>
-      <a href="https://naver.me/G0DXGZbi" target="_blank" class="btn btn-naver"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
-      <a href="https://blog.naver.com/yein2828" target="_blank" class="btn btn-ghost"><i class="fab fa-blogger-b"></i> Naver Blog</a>
+      <a href="https://naver.me/G0DXGZbi" target="_blank" rel="noopener" class="btn btn-naver"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
+      <a href="http://pf.kakao.com/_Nxfczxh" target="_blank" rel="noopener" class="btn btn-ghost" style="border-color:rgba(250,225,0,0.4);color:#FAE100;"><i class="fas fa-comment"></i> 카톡 문의</a>
     </div>
+    <p class="rv rv-d2" style="margin-top:18px;font-family:var(--font-kr);font-size:0.78rem;color:var(--gray);">💬 카카오톡 채널·네이버 톡톡 문의 시 <strong style="color:var(--gold);">진료시간 내 30분 이내</strong>, 이메일 문의는 <strong style="color:var(--gold);">24시간 이내</strong> 답변드립니다.</p>
   </div>
 </section>
 </main>
@@ -1878,14 +1910,16 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       <strong>행복한예인치과의원</strong><br>
       서울 중구 남대문로9길 51 효덕빌딩 3층 301호<br>
       대표자: 한승대 | 사업자등록번호: 104-91-44744<br>
-      TEL 02-756-2828 | FAX 02-754-8188<br>
+      TEL 02-756-2828 | FAX 02-754-8188 | 카톡채널 @행복한예인치과<br>
+      문의 답변: 카톡·톡톡은 진료시간 내 30분 이내, 이메일은 24시간 이내<br>
       &copy; 2005–2026 Happy Yein Dental Clinic. All rights reserved.
     </div>
     <div class="footer-right">
       <a href="/register">Register</a>
       <a href="/login">Login</a>
-      <a href="https://blog.naver.com/yein2828" target="_blank">Blog</a>
-      <a href="https://naver.me/G0DXGZbi" target="_blank">Reservation</a>
+      <a href="https://blog.naver.com/yein2828" target="_blank" rel="noopener">Blog</a>
+      <a href="http://pf.kakao.com/_Nxfczxh" target="_blank" rel="noopener">KakaoTalk</a>
+      <a href="https://naver.me/G0DXGZbi" target="_blank" rel="noopener">Reservation</a>
     </div>
   </div>
 </footer>
@@ -1893,7 +1927,8 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
 <!-- MOBILE BOTTOM BAR -->
 <div class="mob-bottom-bar">
   <a href="tel:02-756-2828" class="mob-bottom-btn btn-call"><i class="fas fa-phone-alt"></i> 전화 상담</a>
-  <a href="https://blog.naver.com/yein2828" target="_blank" class="mob-bottom-btn btn-blog"><i class="fab fa-blogger-b"></i> 네이버 블로그</a>
+  <a href="https://naver.me/G0DXGZbi" target="_blank" rel="noopener" class="mob-bottom-btn btn-naver-m" style="background:#03C75A;color:#fff;"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
+  <a href="http://pf.kakao.com/_Nxfczxh" target="_blank" rel="noopener" class="mob-bottom-btn btn-blog" style="background:#FAE100;color:#3C1E1E;"><i class="fas fa-comment"></i> 카톡문의</a>
 </div>
 
 <script>

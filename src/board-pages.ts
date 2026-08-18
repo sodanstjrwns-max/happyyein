@@ -512,7 +512,7 @@ async function loadPosts(page = 1) {
       const afterImg = imgs.find(i => i.image_type === 'after_intra') || imgs.find(i => i.image_type === 'after_pano');
       const beforeHtml = beforeImg
         ? '<img src="' + beforeImg.image_url + '" alt="치료 전">'
-        : (p.thumbnail_url ? '<img src="' + p.thumbnail_url + '" alt="">' : '<div class="no-img"><i class="fas fa-image"></i></div>');
+        : (p.thumbnail_url ? '<img src="' + p.thumbnail_url + '" alt="' + escHtml(p.title) + ' 치료 사례 사진">' : '<div class="no-img"><i class="fas fa-image"></i></div>');
       const afterHtml = afterImg
         ? '<img src="' + afterImg.image_url + '" alt="치료 후">'
         : '<div class="no-img"><i class="fas fa-image"></i></div>';
@@ -538,7 +538,7 @@ async function loadPosts(page = 1) {
     ` : `
     // 블로그 카드
     listEl.innerHTML = '<div class="board-grid">' + data.posts.map(p => {
-      const thumb = p.thumbnail_url ? '<img src="' + p.thumbnail_url + '" alt="">' : '<div class="no-img"><i class="fas fa-pen-nib"></i></div>';
+      const thumb = p.thumbnail_url ? '<img src="' + p.thumbnail_url + '" alt="' + escHtml(p.title) + ' 대표 이미지">' : '<div class="no-img"><i class="fas fa-pen-nib"></i></div>';
       // 본문 내 인라인 이미지 수 추출 (content에서 <img 태그 카운트)
       return '<a href="/' + BOARD_SLUG + '/' + p.id + '" class="board-card rv">' +
         '<div class="board-card-img">' + thumb + '</div>' +

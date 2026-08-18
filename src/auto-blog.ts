@@ -49,7 +49,7 @@ const TOPIC_POOL: { category: string; topics: { keyword: string; angle: string; 
       { keyword: '노인 임플란트', angle: '65세 이상 건강보험 임플란트 — 신청 방법과 주의사항', internalLinks: ['/treatments/implant', '/encyclopedia/senior-implant'] },
       { keyword: '임플란트 vs 브릿지', angle: '임플란트 vs 브릿지, 어떤 게 나을까? 비교 총정리', internalLinks: ['/treatments/implant', '/encyclopedia/bridge'] },
       { keyword: '가이드 임플란트', angle: '네비게이션 가이드 임플란트란? 더 정확하고 안전한 수술', internalLinks: ['/treatments/implant', '/encyclopedia/guided-surgery'] },
-      { keyword: '상악동 거상술', angle: '위턱 뼈 부족? 상악동 거상술 후 임플란트 식립 과정', internalLinks: ['/treatments/implant', '/encyclopedia/sinus-lift'] },
+      { keyword: '상악동(위턱 공간) 거상술', angle: '위턱 뼈 부족? 상악동(위턱 공간) 거상술 후 임플란트 식립 과정', internalLinks: ['/treatments/implant', '/encyclopedia/sinus-lift'] },
       { keyword: '임플란트 음식', angle: '임플란트 수술 후 음식 — 언제부터 뭘 먹을 수 있을까?', internalLinks: ['/treatments/implant', '/encyclopedia/implant'] },
       // ── 확장 토픽 ──
       { keyword: '임플란트 브랜드', angle: '오스템 vs 스트라우만 vs 노벨바이오케어 — 임플란트 브랜드 비교', internalLinks: ['/treatments/implant', '/encyclopedia/implant'] },
@@ -97,7 +97,7 @@ const TOPIC_POOL: { category: string; topics: { keyword: string; angle: string; 
       { keyword: '지르코니아 크라운 수명', angle: '지르코니아 크라운 수명은? 10년 후 교체해야 할까?', internalLinks: ['/treatments/preservation', '/encyclopedia/crown'] },
       { keyword: '크라운 탈락', angle: '크라운이 빠졌을 때 — 응급 대처와 재접착 안내', internalLinks: ['/treatments/preservation', '/encyclopedia/crown'] },
       { keyword: '아말감 제거', angle: '아말감 충전물 제거해야 할까? 수은 걱정 바로잡기', internalLinks: ['/treatments/preservation', '/encyclopedia/resin'] },
-      { keyword: '이차 충치', angle: '보철물 아래 이차 충치 — 왜 생기고 어떻게 예방할까?', internalLinks: ['/treatments/preservation', '/encyclopedia/cavity'] },
+      { keyword: '이차 충치', angle: '보철물(씌우는 치아) 아래 이차 충치 — 왜 생기고 어떻게 예방할까?', internalLinks: ['/treatments/preservation', '/encyclopedia/cavity'] },
       { keyword: '치수 보존', angle: '신경 안 죽이고 살리는 치수 보존 치료란?', internalLinks: ['/treatments/preservation', '/encyclopedia/pulpitis'] },
       { keyword: '치아 보존 중요성', angle: '자연치아 보존이 임플란트보다 나은 이유', internalLinks: ['/treatments/preservation', '/treatments/implant'] },
       { keyword: '크라운 가격 비교', angle: '2026년 크라운 가격 — 종류별 비용과 보험 적용 여부', internalLinks: ['/treatments/preservation', '/encyclopedia/crown'] },
@@ -364,6 +364,21 @@ function buildPrompt(topic: typeof ALL_TOPICS[0]): string {
 - 구체적 수치, 기간, 사례를 포함 (예: "보통 2~4개월 소요")
 - 단순 나열이 아닌 '왜 그런지' 설명 포함
 - 부드럽고 신뢰감 있는 톤 (반말 금지, 존댓말)
+
+### 2-1. 첫 두 줄 직답 (AEO 발췌 최적화 — 필수)
+- 글의 **첫 번째 문단은 반드시 핵심 질문에 대한 직접 답변**으로 시작 (결론 우선)
+- 금지: "안녕하세요", "~를 알아보실 때는", "~가 중요합니다"로 시작하는 서론
+- 예시: "임플란트 비용은 뼈 상태에 따라 개당 100~200만원대입니다. 65세 이상은 건강보험 적용 시 30~50만원까지 낮아집니다." (첫 문장에 답, 둘째 문장에 조건)
+
+### 2-2. 진료 장면 삽입 (E-E-A-T 경험 신호 — 필수)
+- 본문 중간에 **실제 진료 장면 1개 이상** 포함. 공식: "○○한 환자가 왔다 → 이렇게 물었다 → 원장은 이렇게 판단했다 → 결론"
+- 예시: "지난달, 어금니가 흔들린다며 내원한 50대 환자분이 '꼭 빼야 하나요?'라고 물으셨습니다. CT로 잇몸뼈 상태를 확인한 뒤..."
+- 개인정보 특정 불가한 수준으로만 (나이대·직업군 정도)
+
+### 2-3. 환자 주어 + 읽기 피로도
+- 제목·H2의 70% 이상은 환자 주어/환자 질문형 (예: "임플란트, 지금 꼭 해야 하나요?" ○ / "저희 병원은 첨단 장비를 보유" ✕)
+- 문장 길이 평균 60자 이내, 한 문단 2~3문장
+- 전문용어는 반드시 환자 언어 병기: 치조골(잇몸뼈), 지대주(임플란트 기둥), 상악동(위턱 공간), 보철물(씌우는 치아), 골유착(뼈와 붙는 과정)
 
 ### 3. HTML 형식
 - 본문은 순수 HTML로 작성 (p, h2, h3, ul, li, strong, em 태그 사용)
