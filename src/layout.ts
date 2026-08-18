@@ -287,6 +287,7 @@ export function nav(activeMenu?: string) {
         const isActive = activeMenu === item.label.toLowerCase();
         return `<a href="${item.href}" class="nav-link ${isActive ? 'active' : ''}">${item.label}</a>`;
       }).join('')}
+      <a href="/en" class="nav-link lang-toggle" title="English" style="padding:8px 14px;border:1px solid rgba(255,255,255,0.15);border-radius:50px;font-size:0.62rem;letter-spacing:1px;"><i class="fas fa-globe" style="font-size:0.6rem;margin-right:4px;"></i>EN</a>
       <a href="/register" class="nav-link" style="padding:10px 24px;border:1px solid rgba(247,186,24,0.3);border-radius:50px;color:var(--gold);font-size:0.65rem;">회원가입</a>
       <a href="tel:02-756-2828" class="nav-link nav-tel">02.756.2828</a>
     </div>
@@ -311,6 +312,7 @@ export function nav(activeMenu?: string) {
   <a href="/encyclopedia" class="mob-link mob-link-sub" onclick="closeMob()">치과 백과사전</a>
   ${contentsDropdown.map(d => `<a href="${d.href}" class="mob-link mob-link-sub" onclick="closeMob()">${d.label}</a>`).join('')}
   <a href="/location" class="mob-link" onclick="closeMob()">Location</a>
+  <a href="/en" class="mob-link" onclick="closeMob()" style="color:#6db3f8;">🌐 English Page</a>
   <a href="/register" class="mob-link" onclick="closeMob()" style="color:var(--gold);font-size:clamp(0.9rem,2.5vw,1.2rem)!important;">회원가입</a>
   <a href="/login" class="mob-link mob-link-sub" onclick="closeMob()">로그인</a>
   <a href="tel:02-756-2828" class="mob-link" onclick="closeMob()" style="color:var(--gold)">02.756.2828</a>

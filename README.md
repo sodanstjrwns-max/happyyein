@@ -518,6 +518,7 @@ webapp/
 | 2026-06-11 | **7차 (AEO 머신화)** | **llms.txt + llms-full.txt(FAQ 190개), RSS 피드, AI 크롤러 20+ 허용, 커스텀 404, hreflang 수정, lastmod 안정화, 폐기된 Google Ping 제거** |
 | 2026-06-11 | **8차 (2차 업글)** | **통합검색 `/search` 신설(SearchAction 실타겟), WebP 전환(이미지 68% 절감, 2MB→666KB), 가짜 동적 lastReviewed 제거, 푸터 사이트맵 내부링크 20개** |
 | 2026-08-18 | **9차 (Patient Grader 감점 회수)** | **A4: www→비www 301 / E5: 카카오채널+응답기대 문구(카톡 30분·이메일 24h) / E1: ReserveAction+ContactPoint 스키마 / B4: 게시판 alt 보강 / D5: 전문용어 병기 6종 일괄 / D3: 클리셰→구체 사실 / D1: 히어로 증거칩 4개 / D2: 환자 주어 헤드라인 / C3: 블로그 4편 서두 직답화+auto-blog 프롬프트 강화 / C4: 진료장면 공식 글 3편 (평가 80.5점 → 목표 87+)** |
+| 2026-08-18 | **10차 (영어 메인 + 한↔영 전환)** | **`/en` 영어 메인 홈페이지 신설(src/en-main.ts — 히어로/진료 6카드/의료진/방문안내/FAQ 6/JSON-LD Dentist+FAQPage), 기존 44페이지 다국어 가이드 허브는 `/en/guides`로 이동(canonical·og:url·breadcrumb 일괄 수정), 한국어 전 페이지 데스크톱 네비에 EN 지구본 버튼 + 모바일 메뉴 English Page 링크, 영어 페이지 상단 KO/EN 필 스위처, KO 메인 ja/zh hreflang→/en/guides 수정, sitemap에 /en/guides 추가** |
 
 ## 향후 개선 사항
 

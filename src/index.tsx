@@ -17,6 +17,7 @@ import { renderComparisonPage, comparisonIndexPage, getAllComparisonSlugs } from
 import { terms as encyclopediaTerms } from './encyclopedia'
 import indexingApi, { indexingDashboardPage } from './indexing-monitor'
 import { renderForeignSeoPage, foreignEmergencyIndexPage, getAllForeignSeoSlugs } from './foreign-emergency-seo'
+import { englishMainPage } from './en-main'
 import { generateLlmsTxt, generateLlmsFullTxt } from './llms-txt'
 import { renderSearchPage } from './search'
 
@@ -423,8 +424,8 @@ app.get('/', (c) => {
 <!-- hreflang (다국어 SEO) -->
 <link rel="alternate" hreflang="ko" href="${SITE_DOMAIN}/">
 <link rel="alternate" hreflang="en" href="${SITE_DOMAIN}/en">
-<link rel="alternate" hreflang="ja" href="${SITE_DOMAIN}/en">
-<link rel="alternate" hreflang="zh" href="${SITE_DOMAIN}/en">
+<link rel="alternate" hreflang="ja" href="${SITE_DOMAIN}/en/guides">
+<link rel="alternate" hreflang="zh" href="${SITE_DOMAIN}/en/guides">
 <link rel="alternate" hreflang="x-default" href="${SITE_DOMAIN}/">
 
 <!-- RSS 피드 자동발견 (검색엔진·AI 크롤러) -->
@@ -985,6 +986,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
         </div>
       </div>
       <a href="/location" class="nav-link">Location</a>
+      <a href="/en" class="nav-link" title="English" style="padding:8px 14px;border:1px solid rgba(255,255,255,0.15);border-radius:50px;font-size:0.62rem;letter-spacing:1px;"><i class="fas fa-globe" style="font-size:0.6rem;margin-right:4px;"></i>EN</a>
       <a href="/register" class="nav-link" style="padding:10px 24px;border:1px solid rgba(247,186,24,0.3);border-radius:50px;color:var(--gold);font-size:0.65rem;">회원가입</a>
       <a href="tel:02-756-2828" class="nav-link nav-tel">02.756.2828</a>
     </div>
@@ -1014,6 +1016,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   <a href="/blog" class="mob-link mob-link-sub" onclick="closeMob()">블로그</a>
   <a href="/notice" class="mob-link mob-link-sub" onclick="closeMob()">공지사항</a>
   <a href="/location" class="mob-link" onclick="closeMob()">Location</a>
+  <a href="/en" class="mob-link" onclick="closeMob()" style="color:#6db3f8;">🌐 English Page</a>
   <a href="/register" class="mob-link" onclick="closeMob()" style="color:var(--gold);font-size:clamp(0.9rem,2.5vw,1.2rem)!important;">회원가입</a>
   <a href="/login" class="mob-link mob-link-sub" onclick="closeMob()">로그인</a>
   <a href="tel:02-756-2828" class="mob-link" onclick="closeMob()" style="color:var(--gold)">02.756.2828</a>
@@ -2121,8 +2124,11 @@ app.get('/compare/:slug', (c) => {
   return c.html(html)
 })
 
-// ===== FOREIGN EMERGENCY SEO: 외국인 응급치과 다국어 (EN/JA/ZH) =====
-app.get('/en', (c) => c.html(foreignEmergencyIndexPage()))
+// ===== ENGLISH MAIN PAGE: 영어 메인 홈페이지 (한↔영 전환) =====
+app.get('/en', (c) => c.html(englishMainPage()))
+
+// ===== FOREIGN EMERGENCY SEO: 외국인 가이드 허브 다국어 (EN/JA/ZH) =====
+app.get('/en/guides', (c) => c.html(foreignEmergencyIndexPage()))
 app.get('/en/:slug', (c) => {
   const slug = c.req.param('slug')
   const html = renderForeignSeoPage(slug)
@@ -2484,6 +2490,7 @@ app.get('/sitemap.xml', async (c) => {
     })),
     // Foreign Emergency SEO: 외국인 응급치과 다국어 페이지 (EN/JA/ZH)
     { loc: '/en', priority: '0.9', changefreq: 'weekly', lastmod: today, images: [] },
+    { loc: '/en/guides', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
     ...getAllForeignSeoSlugs().map(s => ({
       loc: `/en/${s}`,
       priority: '0.9',

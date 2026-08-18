@@ -542,7 +542,7 @@ export function renderForeignSeoPage(slug: string): string | null {
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": homeLabel, "item": SITE_DOMAIN },
-      { "@type": "ListItem", "position": 2, "name": emergencyLabel, "item": `${SITE_DOMAIN}/en` },
+      { "@type": "ListItem", "position": 2, "name": emergencyLabel, "item": `${SITE_DOMAIN}/en/guides` },
       { "@type": "ListItem", "position": 3, "name": page.h1, "item": canonicalUrl }
     ]
   }
@@ -794,14 +794,14 @@ export function foreignEmergencyIndexPage(): string {
 <title>Dental Care for Tourists & Expats in Seoul — ${totalPages} Pages in EN/JA/ZH — Happy Yein Dental</title>
 <meta name="description" content="Complete dental care guide for foreigners in Seoul: ${enCount} English, ${jaCount} Japanese, ${zhCount} Chinese pages covering emergencies, cosmetic dentistry, implants, cost guides, and more. Walk-in welcome, Myeongdong.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="${SITE_DOMAIN}/en">
-<link rel="alternate" hreflang="en" href="${SITE_DOMAIN}/en">
+<link rel="canonical" href="${SITE_DOMAIN}/en/guides">
+<link rel="alternate" hreflang="en" href="${SITE_DOMAIN}/en/guides">
 <link rel="alternate" hreflang="ko" href="${SITE_DOMAIN}/">
-<link rel="alternate" hreflang="x-default" href="${SITE_DOMAIN}/en">
+<link rel="alternate" hreflang="x-default" href="${SITE_DOMAIN}/en/guides">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Dental Care for Tourists in Myeongdong Seoul — ${totalPages} Multilingual Pages">
 <meta property="og:description" content="Emergency, cosmetic, implant, and preventive dental care for tourists and expats. English, Japanese, Chinese.">
-<meta property="og:url" content="${SITE_DOMAIN}/en">
+<meta property="og:url" content="${SITE_DOMAIN}/en/guides">
 <meta property="og:image" content="${SITE_DOMAIN}/static/img/dr-han-smile.jpg">
 <meta name="google-site-verification" content="vYZPm8cqMVJjj5dT_4SefF1Vb064qJHCCcQgz1QYsHw">
 <meta name="naver-site-verification" content="b09b795ebd645faf0bf690fee790d98d6874d9fb">
@@ -812,7 +812,7 @@ export function foreignEmergencyIndexPage(): string {
     "@type": ["MedicalClinic", "EmergencyService"],
     "name": "Happy Yein Dental Clinic",
     "alternateName": ["행복한예인치과", "ハッピーイェイン歯科", "幸福艺人牙科诊所"],
-    "url": `${SITE_DOMAIN}/en`,
+    "url": `${SITE_DOMAIN}/en/guides`,
     "telephone": CLINIC.intlTel,
     "address": { "@type": "PostalAddress", "streetAddress": "51 Namdaemun-ro 9-gil, Hyodeok Bldg 3F", "addressLocality": "Jung-gu", "addressRegion": "Seoul", "addressCountry": "KR" },
     "geo": { "@type": "GeoCoordinates", "latitude": 37.5596, "longitude": 126.9784 },
