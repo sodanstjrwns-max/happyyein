@@ -76,7 +76,7 @@ export function englishMainPage(): string {
 <meta property="og:description" content="Board-certified specialists in implants, root canals & orthodontics. 5 min from City Hall Stn, 8 min from Myeongdong. English receipts for insurance.">
 <meta property="og:url" content="${SITE_DOMAIN}/en">
 <meta property="og:image" content="${SITE_DOMAIN}/static/img/dr-han-logo.jpg">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
 <script type="application/ld+json">${jsonLd}</script>
 <script type="application/ld+json">${faqLd}</script>
@@ -84,14 +84,14 @@ export function englishMainPage(): string {
 :root{--gold:#F7BA18;--navy:#013C88;--dark:#0A0A0A;--white:#F5F2ED;--gray:#B5B0A8;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:var(--dark);color:var(--white);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.7;}
+body{background:var(--dark);color:var(--white);font-family:'Inter',-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.7;}
 a{color:inherit;text-decoration:none;}
 img{max-width:100%;display:block;}
 .container{max-width:1100px;margin:0 auto;padding:0 24px;}
 /* header */
 header.en-header{position:sticky;top:0;z-index:999;background:rgba(10,10,10,0.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.06);}
 .en-header-inner{max-width:1100px;margin:0 auto;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;}
-.en-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;}
+.en-brand{font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:1.1rem;}
 .en-brand em{color:var(--gold);font-style:normal;}
 .en-header-links{display:flex;gap:18px;align-items:center;font-size:0.8rem;}
 .en-header-links a:hover{color:var(--gold);}
@@ -101,7 +101,7 @@ header.en-header{position:sticky;top:0;z-index:999;background:rgba(10,10,10,0.92
 .tel-btn{background:var(--gold);color:#0A0A0A;padding:9px 18px;border-radius:50px;font-weight:700;font-size:0.78rem;white-space:nowrap;}
 /* hero */
 .en-hero{padding:80px 0 56px;background:radial-gradient(ellipse at 50% 0%,rgba(247,186,24,0.07),transparent 55%);text-align:center;}
-.en-hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,5vw,3.2rem);font-weight:800;line-height:1.2;margin-bottom:18px;}
+.en-hero h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.9rem,5vw,3.2rem);font-weight:800;line-height:1.2;margin-bottom:18px;}
 .en-hero h1 em{color:var(--gold);font-style:normal;}
 .en-hero p.sub{color:var(--gray);max-width:640px;margin:0 auto 26px;font-size:1rem;}
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:30px;}
@@ -116,27 +116,27 @@ header.en-header{position:sticky;top:0;z-index:999;background:rgba(10,10,10,0.92
 .reply-note strong{color:var(--gold);}
 /* sections */
 section{padding:64px 0;}
-.sec-label{font-family:'Syne',sans-serif;font-size:0.68rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;text-align:center;}
-h2.sec-title{font-family:'Syne',sans-serif;font-size:clamp(1.5rem,3.4vw,2.2rem);font-weight:800;text-align:center;margin-bottom:36px;line-height:1.3;}
+.sec-label{font-family:'Inter',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;text-align:center;}
+h2.sec-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.5rem,3.4vw,2.2rem);font-weight:800;text-align:center;margin-bottom:36px;line-height:1.3;}
 h2.sec-title em{color:var(--gold);font-style:normal;}
 .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
 .card{background:rgba(22,22,22,0.85);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:26px;transition:all 0.25s;}
 .card:hover{border-color:rgba(247,186,24,0.3);transform:translateY(-3px);}
 .card .ico{font-size:1.5rem;color:var(--gold);margin-bottom:12px;}
-.card h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:8px;}
+.card h3{font-family:'Playfair Display',Georgia,serif;font-size:1rem;font-weight:700;margin-bottom:8px;}
 .card p{color:var(--gray);font-size:0.82rem;}
 .card a.more{display:inline-block;margin-top:12px;color:var(--gold);font-size:0.76rem;font-weight:700;}
 /* doctors */
 .doc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
 .doc-card{background:rgba(22,22,22,0.85);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:26px;text-align:center;}
 .doc-card .avatar{width:84px;height:84px;border-radius:50%;background:rgba(247,186,24,0.1);border:2px solid rgba(247,186,24,0.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 14px;}
-.doc-card h3{font-family:'Syne',sans-serif;font-size:1.05rem;margin-bottom:4px;}
+.doc-card h3{font-family:'Playfair Display',Georgia,serif;font-size:1.05rem;margin-bottom:4px;}
 .doc-card .role{color:var(--gold);font-size:0.76rem;font-weight:700;margin-bottom:10px;}
 .doc-card p{color:var(--gray);font-size:0.78rem;}
 /* info */
 .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
 .info-box{background:rgba(22,22,22,0.85);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:26px;}
-.info-box h3{font-family:'Syne',sans-serif;font-size:0.95rem;color:var(--gold);margin-bottom:14px;}
+.info-box h3{font-family:'Playfair Display',Georgia,serif;font-size:0.95rem;color:var(--gold);margin-bottom:14px;}
 .info-box table{width:100%;border-collapse:collapse;font-size:0.84rem;}
 .info-box td{padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--gray);}
 .info-box td:last-child{text-align:right;color:var(--white);}
@@ -150,7 +150,7 @@ details.faq[open] summary::after{content:'−';}
 details.faq .a{padding:0 22px 18px;color:var(--gray);font-size:0.85rem;}
 /* guides */
 .guide-banner{background:linear-gradient(135deg,rgba(1,60,136,0.15),rgba(247,186,24,0.07));border:1px solid rgba(247,186,24,0.18);border-radius:20px;padding:36px;text-align:center;}
-.guide-banner h3{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:10px;}
+.guide-banner h3{font-family:'Playfair Display',Georgia,serif;font-size:1.25rem;font-weight:800;margin-bottom:10px;}
 .guide-banner p{color:var(--gray);font-size:0.86rem;margin-bottom:20px;}
 /* cta + footer */
 .final-cta{text-align:center;background:radial-gradient(ellipse at 50% 100%,rgba(247,186,24,0.08),transparent 60%);}
