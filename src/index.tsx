@@ -2172,7 +2172,7 @@ app.route('/api/indexing', indexingApi)
 
 // ===== BOARD PAGE ROUTES =====
 // 비포 & 애프터
-app.get('/before-after', (c) => c.html(boardListPage('before-after')))
+app.get('/before-after', async (c) => c.html(await boardListPage('before-after', c.env.DB, parseInt(c.req.query('page') || '1'))))
 app.get('/before-after/write', (c) => c.html(boardWritePage('before-after')))
 app.get('/before-after/:id/edit', (c) => c.html(boardEditPage('before-after')))
 app.get('/before-after/:id', async (c) => {
@@ -2181,7 +2181,7 @@ app.get('/before-after/:id', async (c) => {
 })
 
 // 블로그
-app.get('/blog', (c) => c.html(boardListPage('blog')))
+app.get('/blog', async (c) => c.html(await boardListPage('blog', c.env.DB, parseInt(c.req.query('page') || '1'))))
 app.get('/blog/write', (c) => c.html(boardWritePage('blog')))
 app.get('/blog/:id/edit', (c) => c.html(boardEditPage('blog')))
 app.get('/blog/:id', async (c) => {
@@ -2190,7 +2190,7 @@ app.get('/blog/:id', async (c) => {
 })
 
 // 공지사항
-app.get('/notice', (c) => c.html(boardListPage('notice')))
+app.get('/notice', async (c) => c.html(await boardListPage('notice', c.env.DB, parseInt(c.req.query('page') || '1'))))
 app.get('/notice/write', (c) => c.html(boardWritePage('notice')))
 app.get('/notice/:id/edit', (c) => c.html(boardEditPage('notice')))
 app.get('/notice/:id', async (c) => {

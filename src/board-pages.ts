@@ -437,9 +437,83 @@ updatePreview();
 // ==========================================
 // 리스트 페이지
 // ==========================================
-export function boardListPage(board: string): string {
+// 서버용 날짜 포맷
+function formatDateServer(d: string): string { return d ? String(d).substring(0, 10) : ''; }
+
+export async function boardListPage(board: string, db: D1Database, page: number = 1): Promise<string> {
   const cfg = BOARD_CONFIG[board]
   if (!cfg) return ''
+
+  const limit = 12;
+  if (!page || page < 1 || isNaN(page)) page = 1;
+  const offset = (page - 1) * limit;
+
+  // [SEO] SSR: 서버에서 목록 조회 — 크롤러가 첫 요청에서 모든 포스트 링크를 발견하도록
+  let posts: any[] = [];
+  let total = 0;
+  const imagesByPost: Record<number, { image_url: string; image_type: string }[]> = {};
+  try {
+    const cnt = await db.prepare('SELECT COUNT(*) as total FROM posts WHERE board = ? AND is_published = 1').bind(board).first() as any;
+    total = cnt?.total || 0;
+    const rs = await db.prepare(
+      `SELECT p.id, p.title, p.thumbnail_url, p.view_count, p.created_at,
+              (SELECT COUNT(*) FROM post_images pi WHERE pi.post_id = p.id) as image_count
+       FROM posts p WHERE p.board = ? AND p.is_published = 1
+       ORDER BY p.created_at DESC LIMIT ? OFFSET ?`
+    ).bind(board, limit, offset).all();
+    posts = (rs.results || []) as any[];
+    if (board === 'before-after' && posts.length) {
+      const ids = posts.map(p => p.id);
+      const ph = ids.map(() => '?').join(',');
+      const imgs = await db.prepare(`SELECT post_id, image_url, image_type FROM post_images WHERE post_id IN (${ph}) ORDER BY sort_order ASC`).bind(...ids).all();
+      for (const im of (imgs.results || []) as any[]) {
+        (imagesByPost[im.post_id] = imagesByPost[im.post_id] || []).push(im);
+      }
+    }
+  } catch (e) { /* DB 오류 시 빈 목록으로 진행 */ }
+
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
+  // 카드 목록 (SSR — 실제 <a href> 링크)
+  let listHtml = '';
+  if (!posts.length) {
+    listHtml = `<div class="board-empty"><i class="fas fa-folder-open"></i><p>아직 등록된 ${cfg.name === '비포 & 애프터' ? '사례' : '글'}이 없습니다.</p></div>`;
+  } else if (board === 'before-after') {
+    listHtml = '<div class="board-grid">' + posts.map(p => {
+      const imgs = imagesByPost[p.id] || [];
+      const beforeImg = imgs.find(i => i.image_type === 'before_intra') || imgs.find(i => i.image_type === 'before_pano');
+      const afterImg = imgs.find(i => i.image_type === 'after_intra') || imgs.find(i => i.image_type === 'after_pano');
+      const t = escHtmlServer(p.title);
+      const beforeHtml = beforeImg ? `<img src="${beforeImg.image_url}" alt="${t} 치료 전" loading="lazy">` : (p.thumbnail_url ? `<img src="${p.thumbnail_url}" alt="${t} 치료 사례 사진" loading="lazy">` : '<div class="no-img"><i class="fas fa-image"></i></div>');
+      const afterHtml = afterImg ? `<img src="${afterImg.image_url}" alt="${t} 치료 후" loading="lazy">` : '<div class="no-img"><i class="fas fa-image"></i></div>';
+      return `<a href="/${cfg.slug}/${p.id}" class="ba-card rv"><div class="ba-photos"><div class="ba-photo">${beforeHtml}<span class="ba-photo-label">Before</span></div><div class="ba-photo">${afterHtml}<span class="ba-photo-label after-label">After</span></div></div><div class="ba-card-body"><h3>${t}</h3><div class="ba-card-meta">${formatDateServer(p.created_at)} &middot; <i class="fas fa-eye"></i> ${p.view_count} &middot; <i class="fas fa-images"></i> ${p.image_count}</div></div></a>`;
+    }).join('') + '</div>';
+  } else if (board === 'notice') {
+    listHtml = '<table class="notice-table"><thead><tr><th style="width:60px;text-align:center;">No.</th><th>제목</th><th style="width:100px;">조회</th><th style="width:120px;">날짜</th></tr></thead><tbody>' +
+      posts.map((p, i) => {
+        const num = total - offset - i;
+        return `<tr onclick="location.href='/notice/${p.id}'"><td style="text-align:center;font-family:var(--font-mono);font-size:0.8rem;color:var(--gray);">${num}</td><td class="nt-title"><a href="/notice/${p.id}">${escHtmlServer(p.title)}${p.image_count > 0 ? ' <i class="fas fa-image notice-has-img"></i>' : ''}</a></td><td class="nt-views" style="text-align:center;">${p.view_count}</td><td class="nt-date">${formatDateServer(p.created_at)}</td></tr>`;
+      }).join('') + '</tbody></table>';
+  } else {
+    listHtml = '<div class="board-grid">' + posts.map(p => {
+      const t = escHtmlServer(p.title);
+      const thumb = p.thumbnail_url ? `<img src="${p.thumbnail_url}" alt="${t} 대표 이미지" loading="lazy">` : '<div class="no-img"><i class="fas fa-pen-nib"></i></div>';
+      return `<a href="/${cfg.slug}/${p.id}" class="board-card rv"><div class="board-card-img">${thumb}</div><div class="board-card-body"><h3>${t}</h3><div class="board-card-meta"><span><i class="far fa-calendar-alt"></i> ${formatDateServer(p.created_at)}</span><span><i class="fas fa-eye"></i> ${p.view_count}</span>${p.thumbnail_url ? '<span><i class="fas fa-image"></i></span>' : ''}</div><div class="board-card-author"><img src="/static/img/dr-han-profile.webp" alt="한승대 대표원장"><div class="author-text"><span class="author-name">한승대 대표원장</span><span class="author-role">통합치의학과 전문의</span></div></div></div></a>`;
+    }).join('') + '</div>';
+  }
+
+  // 페이지네이션 (SSR — 실제 href 링크라 크롤러가 2페이지 이후 글도 발견)
+  let pagHtml = '';
+  if (totalPages > 1) {
+    const pageUrl = (n: number) => n === 1 ? `/${cfg.slug}` : `/${cfg.slug}?page=${n}`;
+    pagHtml = '<div class="board-pagination">';
+    if (page > 1) pagHtml += `<a href="${pageUrl(page - 1)}"><i class="fas fa-chevron-left"></i></a>`;
+    for (let i = 1; i <= totalPages; i++) {
+      pagHtml += i === page ? `<span class="active">${i}</span>` : `<a href="${pageUrl(i)}">${i}</a>`;
+    }
+    if (page < totalPages) pagHtml += `<a href="${pageUrl(page + 1)}"><i class="fas fa-chevron-right"></i></a>`;
+    pagHtml += '</div>';
+  }
 
   return `${head({ title: cfg.name, description: cfg.metaDesc, path: `/${cfg.slug}` })}
 ${nav(cfg.navKey)}
@@ -468,117 +542,12 @@ ${nav(cfg.navKey)}
     <div class="sec-label">${cfg.nameEn}</div>
     <h2 class="sec-title rv">${cfg.name === '비포 & 애프터' ? '실제 <em>치료 사례</em>' : cfg.name === '블로그' ? '치과 <em>이야기</em>' : '<em>병원</em> 소식'}</h2>
 
-    <div id="boardList"></div>
-    <div id="boardPagination"></div>
-
-    <!-- EMPTY STATE (JS가 바꿔줌) -->
-    <div id="boardEmpty" class="board-empty" style="display:none;">
-      <i class="fas fa-folder-open"></i>
-      <p>아직 등록된 ${cfg.name === '비포 & 애프터' ? '사례' : '글'}이 없습니다.</p>
-    </div>
+    ${listHtml}
+    ${pagHtml}
   </div>
 </section>
 
-
-
 ${footer()}
-
-<script>
-const BOARD = '${board}';
-const BOARD_SLUG = '${cfg.slug}';
-
-async function loadPosts(page = 1) {
-  try {
-    const res = await fetch('/api/boards/' + BOARD + '?page=' + page + '&limit=12');
-    const data = await res.json();
-    
-    const listEl = document.getElementById('boardList');
-    const pagEl = document.getElementById('boardPagination');
-    const emptyEl = document.getElementById('boardEmpty');
-
-    if (!data.posts || data.posts.length === 0) {
-      listEl.innerHTML = '';
-      pagEl.innerHTML = '';
-      emptyEl.style.display = 'block';
-      return;
-    }
-    emptyEl.style.display = 'none';
-
-    ${board === 'before-after' ? `
-    // 비포애프터 카드 (Before/After 이미지 쌍 표시)
-    listEl.innerHTML = '<div class="board-grid">' + data.posts.map(p => {
-      const imgs = p.images || [];
-      const beforeImg = imgs.find(i => i.image_type === 'before_intra') || imgs.find(i => i.image_type === 'before_pano');
-      const afterImg = imgs.find(i => i.image_type === 'after_intra') || imgs.find(i => i.image_type === 'after_pano');
-      const beforeHtml = beforeImg
-        ? '<img src="' + beforeImg.image_url + '" alt="치료 전">'
-        : (p.thumbnail_url ? '<img src="' + p.thumbnail_url + '" alt="' + escHtml(p.title) + ' 치료 사례 사진">' : '<div class="no-img"><i class="fas fa-image"></i></div>');
-      const afterHtml = afterImg
-        ? '<img src="' + afterImg.image_url + '" alt="치료 후">'
-        : '<div class="no-img"><i class="fas fa-image"></i></div>';
-      return '<a href="/' + BOARD_SLUG + '/' + p.id + '" class="ba-card rv">' +
-        '<div class="ba-photos">' +
-        '<div class="ba-photo">' + beforeHtml + '<span class="ba-photo-label">Before</span></div>' +
-        '<div class="ba-photo">' + afterHtml + '<span class="ba-photo-label after-label">After</span></div>' +
-        '</div>' +
-        '<div class="ba-card-body"><h3>' + escHtml(p.title) + '</h3>' +
-        '<div class="ba-card-meta">' + formatDate(p.created_at) + ' &middot; <i class="fas fa-eye"></i> ' + p.view_count + ' &middot; <i class="fas fa-images"></i> ' + p.image_count + '</div></div></a>';
-    }).join('') + '</div>';
-    ` : board === 'notice' ? `
-    // 공지사항 테이블
-    listEl.innerHTML = '<table class="notice-table"><thead><tr><th style="width:60px;text-align:center;">No.</th><th>제목</th><th style="width:100px;">조회</th><th style="width:120px;">날짜</th></tr></thead><tbody>' +
-      data.posts.map((p, i) => {
-        const num = data.pagination.total - ((data.pagination.page - 1) * data.pagination.limit) - i;
-        return '<tr onclick="location.href=\\'/notice/' + p.id + '\\'">' +
-          '<td style="text-align:center;font-family:var(--font-mono);font-size:0.8rem;color:var(--gray);">' + num + '</td>' +
-          '<td class="nt-title"><a href="/notice/' + p.id + '">' + escHtml(p.title) + (p.image_count > 0 ? ' <i class="fas fa-image notice-has-img"></i>' : '') + '</a></td>' +
-          '<td class="nt-views" style="text-align:center;">' + p.view_count + '</td>' +
-          '<td class="nt-date">' + formatDate(p.created_at) + '</td></tr>';
-      }).join('') + '</tbody></table>';
-    ` : `
-    // 블로그 카드
-    listEl.innerHTML = '<div class="board-grid">' + data.posts.map(p => {
-      const thumb = p.thumbnail_url ? '<img src="' + p.thumbnail_url + '" alt="' + escHtml(p.title) + ' 대표 이미지">' : '<div class="no-img"><i class="fas fa-pen-nib"></i></div>';
-      // 본문 내 인라인 이미지 수 추출 (content에서 <img 태그 카운트)
-      return '<a href="/' + BOARD_SLUG + '/' + p.id + '" class="board-card rv">' +
-        '<div class="board-card-img">' + thumb + '</div>' +
-        '<div class="board-card-body"><h3>' + escHtml(p.title) + '</h3>' +
-        '<div class="board-card-meta"><span><i class="far fa-calendar-alt"></i> ' + formatDate(p.created_at) + '</span><span><i class="fas fa-eye"></i> ' + p.view_count + '</span>' + (p.thumbnail_url ? '<span><i class="fas fa-image"></i></span>' : '') + '</div>' +
-        '<div class="board-card-author"><img src="/static/img/dr-han-profile.webp" alt="한승대 대표원장"><div class="author-text"><span class="author-name">한승대 대표원장</span><span class="author-role">통합치의학과 전문의</span></div></div>' +
-        '</div></a>';
-    }).join('') + '</div>';
-    `}
-
-    // 페이지네이션
-    const { page: cp, totalPages: tp } = data.pagination;
-    if (tp > 1) {
-      let html = '<div class="board-pagination">';
-      if (cp > 1) html += '<a onclick="loadPosts(' + (cp - 1) + ')"><i class="fas fa-chevron-left"></i></a>';
-      for (let i = 1; i <= tp; i++) {
-        html += i === cp ? '<span class="active">' + i + '</span>' : '<a onclick="loadPosts(' + i + ')">' + i + '</a>';
-      }
-      if (cp < tp) html += '<a onclick="loadPosts(' + (cp + 1) + ')"><i class="fas fa-chevron-right"></i></a>';
-      html += '</div>';
-      pagEl.innerHTML = html;
-    } else {
-      pagEl.innerHTML = '';
-    }
-
-    // reveal 재초기화 (io는 layout scripts()에서 선언)
-    if (typeof io !== 'undefined') {
-      document.querySelectorAll('.rv:not(.vis)').forEach(el => io.observe(el));
-    }
-  } catch (err) {
-    console.error('Failed to load posts:', err);
-  }
-}
-
-function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-function formatDate(d) { if (!d) return ''; return d.substring(0, 10); }
-
-// init
-loadPosts(1);
-</script>
 ${scripts()}`
 }
 
@@ -616,6 +585,13 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
     if (post) {
       const images = await db.prepare('SELECT image_url, image_type, sort_order FROM post_images WHERE post_id = ? ORDER BY sort_order').bind(post.id).all();
       postData = { post, images: (images.results || []) as any };
+      // [SEO] 관련 글 SSR 내부링크 — 크롤러가 글→글로 탐색하도록 (색인 전파)
+      try {
+        const rel = await db.prepare(
+          `SELECT id, title, created_at FROM posts WHERE board = ? AND id != ? AND is_published = 1 ORDER BY created_at DESC LIMIT 6`
+        ).bind(board, postId).all();
+        (postData as any).related = (rel.results || []) as any[];
+      } catch (e) { (postData as any).related = []; }
     }
   } catch (e) { /* DB 오류 시 빈 데이터로 진행 */ }
 
@@ -966,6 +942,17 @@ ${nav(cfg.navKey)}
         // 본문
         if (post.content) {
           html += `<article class="board-detail-content">${post.content}</article>`;
+        }
+
+        // [SEO] 관련 글 목록 (SSR 내부링크)
+        const related = (postData as any).related || [];
+        if (related.length > 0) {
+          html += '<div class="related-posts" style="margin-top:64px;padding-top:40px;border-top:1px solid rgba(255,255,255,0.08);">';
+          html += '<h2 style="font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:20px;"><i class="fas fa-book-open" style="margin-right:8px;"></i>함께 읽으면 좋은 글</h2><ul style="list-style:none;padding:0;margin:0;">';
+          for (const r of related) {
+            html += `<li style="padding:10px 0;border-bottom:1px dashed rgba(255,255,255,0.06);"><a href="/${cfg.slug}/${r.id}" style="color:var(--gray-light);text-decoration:none;font-size:0.92rem;display:flex;justify-content:space-between;gap:16px;"><span>${escHtmlServer(r.title)}</span><span style="color:var(--gray);font-size:0.78rem;white-space:nowrap;">${String(r.created_at || '').substring(0, 10)}</span></a></li>`;
+          }
+          html += '</ul></div>';
         }
         return html;
       })() : `<div class="board-empty"><i class="fas fa-exclamation-circle"></i><p>게시글을 찾을 수 없습니다.</p></div>`}
