@@ -45,7 +45,7 @@ app.use('*', async (c, next) => {
   c.header('Referrer-Policy', 'strict-origin-when-cross-origin')
   c.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self "https://map.naver.com" "https://maps.google.com"), payment=()')
   c.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
-  c.header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://openapi.map.naver.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; connect-src 'self' https:; frame-src https://map.naver.com https://maps.google.com https://www.google.com;")
+  c.header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://openapi.map.naver.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; connect-src 'self' https:; frame-src https://map.naver.com https://maps.google.com https://www.google.com;")
   c.header('X-DNS-Prefetch-Control', 'on')
   // 정적 리소스 캐싱
   const path = c.req.path
@@ -937,6 +937,8 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   .mob-bottom-bar{display:none;}
 }
 </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XLNXRXGGJM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XLNXRXGGJM',{anonymize_ip:true});</script>
 </head>
 <body>
 

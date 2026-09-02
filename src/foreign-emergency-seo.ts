@@ -663,6 +663,8 @@ a{color:#F7BA18;text-decoration:none;}a:hover{text-decoration:underline;}
   .article{padding:0 16px 40px;}
 }
 </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XLNXRXGGJM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XLNXRXGGJM',{anonymize_ip:true});</script>
 </head>
 <body>
 
@@ -856,6 +858,8 @@ a{color:#F7BA18;text-decoration:none;}a:hover{text-decoration:underline;}
 .back-link:hover{color:#F7BA18;}
 @media(max-width:600px){.stat-bar{gap:16px;}.stat-num{font-size:1.4rem;}}
 </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XLNXRXGGJM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XLNXRXGGJM',{anonymize_ip:true});</script>
 </head>
 <body>
 <div class="hub">
