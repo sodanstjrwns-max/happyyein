@@ -28,7 +28,7 @@ function buildStaticIndex(): SearchItem[] {
   // 진료과목 (고정 5개)
   const treatmentDefs = [
     { slug: 'implant', name: '발치즉시 임플란트', desc: '발치와 동시에 임플란트를 식립하여 치료 기간을 대폭 단축. 80% 이상 즉시식립 시행.', kw: '임플란트 식립 인공치아 틀니 브릿지 빠진 이' },
-    { slug: 'preservation', name: '치아보존치료·신경치료', desc: '보존과 전문의의 미세현미경 활용 정밀 신경치료. 자연치아를 최대한 보존.', kw: '신경치료 보존 충치 시린이 치통 미세현미경 재신경치료' },
+    { slug: 'preservation', name: '치아보존치료·신경치료', desc: '보존과 담당 원장의 미세현미경 활용 정밀 신경치료. 자연치아를 최대한 보존.', kw: '신경치료 보존 충치 시린이 치통 미세현미경 재신경치료' },
     { slug: 'aesthetic', name: '앞니 심미치료', desc: '최소삭제 원칙의 라미네이트, 즉일 완성 가능한 레진 심미보철.', kw: '라미네이트 레진 앞니 심미 변색 벌어진 깨진' },
     { slug: 'orthodontics', name: '치아교정·투명교정', desc: '교정과 전문의 직접 시행. 인비절라인·설측교정.', kw: '교정 투명교정 인비절라인 설측 돌출입 덧니 부정교합' },
     { slug: 'general', name: '일반·예방진료', desc: '스케일링, 충치치료, 정기검진. 직장인 수요일 야간진료.', kw: '스케일링 충치 검진 예방 잇몸 치석' },
@@ -84,7 +84,7 @@ function buildStaticIndex(): SearchItem[] {
 
   // 주요 정적 페이지
   items.push(
-    { url: '/doctors', title: '의료진 소개', desc: '통합치의학과·보존과·교정과 전문의 3인 약력', category: '병원 안내', categoryIcon: 'fa-user-md', keywords: '의료진 원장 전문의 한승대 신정희 박현미 경력 약력'.toLowerCase() },
+    { url: '/doctors', title: '의료진 소개', desc: '통합치의학과·보존과·교정과 전문의 3인 약력', category: '병원 안내', categoryIcon: 'fa-user-md', keywords: '의료진 원장 전문의 한승대 박미나 박현미 경력 약력'.toLowerCase() },
     { url: '/location', title: '오시는 길·예약', desc: '시청역 도보 5분, 명동·을지로·회현 인근. 02-756-2828', category: '병원 안내', categoryIcon: 'fa-map-marker-alt', keywords: '오시는길 위치 주소 예약 전화 지도 주차 시청역 명동'.toLowerCase() },
     { url: '/philosophy', title: '진료 철학', desc: '과잉진료 없는 정직한 진료 원칙', category: '병원 안내', categoryIcon: 'fa-heart', keywords: '철학 원칙 과잉진료 정직'.toLowerCase() },
     { url: '/local', title: '지역별 진료 안내', desc: '시청·명동·을지로·광화문·종로·서울역 지역별 안내', category: '병원 안내', categoryIcon: 'fa-map', keywords: '지역 시청 명동 을지로 광화문 종로 서울역 근처 가까운'.toLowerCase() },

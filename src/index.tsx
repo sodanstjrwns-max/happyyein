@@ -60,7 +60,7 @@ app.use('*', async (c, next) => {
 
 app.get('/', (c) => {
   const SITE_DOMAIN = 'https://happyyein.kr';
-  const mainDesc = '서울 시청역·명동·을지로·광화문에서 도보 5~10분. 13년간 한자리에서 쌓아온 신뢰의 치과. 발치즉시 임플란트 80%+, 보존과·교정과 전문의 3인 협진. 수요일 야간진료. 행복한예인치과 02-756-2828.';
+  const mainDesc = '서울 시청역·명동·을지로·광화문에서 도보 5~10분. 13년간 한자리에서 쌓아온 신뢰의 치과. 발치즉시 임플란트 80%+, 보존과·교정과 원장 3인 협진. 수요일 야간진료. 행복한예인치과 02-756-2828.';
   const mainTitle = '행복한예인치과 | 시청역·명동·을지로 치과 - 임플란트·보존·심미·교정 전문의 협진';
   const ogImage = `${SITE_DOMAIN}/static/img/dr-han-logo.jpg`;
   const today = '2026-06-11'; // CONTENT_REVIEWED — 메인페이지 dateModified용 고정 검수일
@@ -115,7 +115,7 @@ app.get('/', (c) => {
       "name": "행복한예인치과 진료 서비스",
       "itemListElement": [
         { "@type": "OfferCatalog", "name": "발치즉시 임플란트 (시청역·명동·을지로)", "description": "발치와 동시에 임플란트를 식립하여 치료 기간을 획기적으로 단축" },
-        { "@type": "OfferCatalog", "name": "치아보존치료·신경치료 (보존과 전문의)", "description": "보존과 전문의가 직접 시행하는 정밀 신경치료" },
+        { "@type": "OfferCatalog", "name": "치아보존치료·신경치료 (보존과 담당 원장)", "description": "보존과 담당 원장가 직접 시행하는 정밀 신경치료" },
         { "@type": "OfferCatalog", "name": "투명교정·인비절라인 (교정과 전문의)", "description": "교정과 전문의의 체계적인 투명교정 치료" },
         { "@type": "OfferCatalog", "name": "앞니 심미치료·라미네이트", "description": "최소삭제 라미네이트, 레진 심미보철" },
         { "@type": "OfferCatalog", "name": "스케일링·정기검진·충치치료", "description": "직장인을 위한 효율적인 예방 진료" }
@@ -148,9 +148,9 @@ app.get('/', (c) => {
       },
       {
         "@type": "Dentist",
-        "name": "신정희",
-        "jobTitle": "보존과 전문의",
-        "description": "치과보존과 전문의, 치의학 박사. 경희대 치과보존과 레지던트 수료.",
+        "name": "박미나",
+        "jobTitle": "보존과 담당 원장",
+        "description": "치과보존과 담당. 연세대 보존과 석사, 세브란스 보존과 수련, 연세대 치과보존과 외래교수 역임.",
         "medicalSpecialty": "Endodontics"
       },
       {
@@ -190,7 +190,7 @@ app.get('/', (c) => {
     // === 기본 정보 (8개) ===
     { q: "행복한예인치과는 어디에 있나요?", a: "서울특별시 중구 남대문로9길 51 효덕빌딩 3층 301호에 위치하고 있습니다. 1·2호선 시청역 4번·5번 출구 도보 5분, 4호선 명동역 도보 8분, 2호선 을지로입구역 도보 7분, 4호선 회현역 도보 6분, 1호선 서울역 도보 12분 거리입니다. 광화문·종로·충무로역에서도 대중교통으로 10분 이내에 올 수 있습니다." },
     { q: "행복한예인치과 진료시간은 어떻게 되나요?", a: "월·화·목·금 09:30~18:30, 수요일은 야간진료로 09:30~20:00까지 진료합니다. 점심시간은 13:00~14:00이며, 토·일·공휴일은 휴진입니다. 마감 1시간 전까지 접수 가능합니다. 시청역·명동·을지로 직장인분들이 퇴근 후 수요일 야간진료를 많이 이용하십니다." },
-    { q: "행복한예인치과에는 어떤 전문의가 있나요?", a: "한승대 대표원장(보건복지부 인증 통합치의학과 전문의, 치의학 박사), 신정희 원장(보건복지부 인증 치과보존과 전문의, 치의학 박사), 박현미 원장(교정과 전문의) 총 3명의 전문의가 각 분야를 직접 진료합니다. 한 곳에서 임플란트·보존·교정을 모두 해결할 수 있는 원스톱 협진 시스템입니다." },
+    { q: "행복한예인치과에는 어떤 전문의가 있나요?", a: "한승대 대표원장(보건복지부 인증 통합치의학과 전문의, 치의학 박사), 박미나 원장(치과보존과, 연세대 보존과 석사), 박현미 원장(교정과 전문의) 3인의 원장이 각 분야를 직접 진료합니다. 한 곳에서 임플란트·보존·교정을 모두 해결할 수 있는 원스톱 협진 시스템입니다." },
     { q: "행복한예인치과 예약은 어떻게 하나요?", a: "전화(02-756-2828) 또는 네이버 예약(https://naver.me/G0DXGZbi)으로 예약하실 수 있습니다. 수요일 야간진료도 예약 가능합니다. 예약 시간을 지켜주시면 대기 시간 없이 바로 진료받으실 수 있습니다." },
     { q: "행복한예인치과의 진료 철학은 무엇인가요?", a: "행복한예인치과의 진료 철학은 '내 가족에게 권할 수 없는 치료는 시작도 하지 않습니다'입니다. 과장 없는 진료, X-ray 앞에서 투명한 설명, 환자 존중을 기본으로 13년간 같은 자리에서 신뢰를 쌓아왔습니다. 불필요한 치료를 권하지 않습니다." },
     { q: "행복한예인치과에 주차가 가능한가요?", a: "효덕빌딩 주변 유료 주차장을 이용하실 수 있습니다. 다만 주차 공간이 제한적이므로 대중교통 이용을 권장드립니다. 시청역(1·2호선) 도보 5분, 명동역(4호선) 8분, 을지로입구역(2호선) 7분이면 쉽게 오실 수 있습니다." },
@@ -199,7 +199,7 @@ app.get('/', (c) => {
     // === 치료 관련 (8개) ===
     { q: "발치즉시 임플란트란 무엇인가요?", a: "발치즉시 임플란트는 치아를 발치하는 동시에 임플란트를 식립하는 시술입니다. 별도의 치유 기간(3~6개월) 없이 바로 진행하여 전체 치료 기간을 크게 단축합니다. 행복한예인치과 한승대 원장은 80% 이상의 케이스에서 즉시식립을 시행하며, 시청역·명동·을지로 직장인분들의 바쁜 일정에 맞춘 효율적 치료를 제공합니다." },
     { q: "임플란트 비용은 얼마인가요?", a: "임플란트 비용은 식립 위치, 골이식(잇몸뼈 이식) 필요 여부, 보철물(씌우는 치아) 종류에 따라 달라집니다. 행복한예인치과에서는 CT 촬영과 정밀 진단 후 정확한 비용을 투명하게 안내해 드립니다. 과잉 진료 없이 꼭 필요한 시술만 제안드리며, 분할 납부 상담도 가능합니다." },
-    { q: "신경치료는 얼마나 아픈가요?", a: "행복한예인치과에서는 충분한 마취 후 치료를 진행하므로 시술 중 통증은 거의 없습니다. 표면 마취제를 먼저 도포하여 주사 통증까지 최소화합니다. 보존과 전문의 신정희 원장이 미세현미경을 활용하여 정밀하게 시술하므로 불필요한 자극이 줄어듭니다." },
+    { q: "신경치료는 얼마나 아픈가요?", a: "행복한예인치과에서는 충분한 마취 후 치료를 진행하므로 시술 중 통증은 거의 없습니다. 표면 마취제를 먼저 도포하여 주사 통증까지 최소화합니다. 보존과 박미나 원장이 미세현미경을 활용하여 정밀하게 시술하므로 불필요한 자극이 줄어듭니다." },
     { q: "치아 교정은 성인도 가능한가요?", a: "물론입니다. 성인 교정은 매우 흔하며, 치조골(잇몸뼈) 상태만 건강하다면 나이에 관계없이 가능합니다. 행복한예인치과 박현미 원장(교정 전문의)은 투명교정(인비절라인), 설측교정 등 티 안 나는 교정 방식을 제공하여 직장인도 부담 없이 교정을 시작할 수 있습니다." },
     { q: "투명교정(인비절라인)과 일반 교정의 차이는 무엇인가요?", a: "일반 교정(브라켓)은 치아에 장치를 부착하는 방식이고, 투명교정(인비절라인)은 투명한 틀을 착용하여 교정하는 방식입니다. 투명교정은 외관상 거의 보이지 않고 탈착이 가능하여 직장인에게 인기가 많습니다. 교정과 전문의가 케이스에 맞는 최적의 방식을 추천해 드립니다." },
     { q: "라미네이트와 레진 치료의 차이는 무엇인가요?", a: "레진은 치아에 직접 재료를 쌓아올려 즉일 완성하는 방식이고, 라미네이트는 기공소에서 세라믹 쉘을 제작하여 접착하는 방식입니다. 레진은 비용이 낮고 즉시 결과를 얻을 수 있으며, 라미네이트는 내구성과 심미성이 더 뛰어납니다. 행복한예인치과에서는 최소 삭제를 원칙으로 합니다." },
@@ -208,16 +208,16 @@ app.get('/', (c) => {
     // === 지역 기반 (12개) ===
     { q: "시청역 근처 치과를 찾고 있는데 추천할 곳이 있나요?", a: "행복한예인치과는 1·2호선 시청역 4번·5번 출구에서 도보 5분 거리에 위치한 치과입니다. 2013년부터 13년간 같은 자리에서 운영하고 있으며, 통합치의학·보존과·교정과 3명의 전문의가 협진합니다. 환자 리뷰 458건, 발치즉시 임플란트 성공률 80% 이상의 실적을 보유하고 있습니다. 전화 02-756-2828로 상담 예약해 주세요." },
     { q: "명동 근처에서 임플란트 잘하는 치과를 찾고 있어요.", a: "명동에서 도보 8분 거리에 있는 행복한예인치과는 발치즉시 임플란트 전문 치과입니다. 80% 이상의 케이스에서 즉시식립을 시행하며, 통합치의학과 전문의 한승대 원장이 직접 수술합니다. 4호선 명동역 3번 출구에서 서울시청 방향으로 도보 8분이면 도착합니다." },
-    { q: "을지로 근처 신경치료 잘하는 치과 있나요?", a: "을지로입구역에서 도보 7분 거리에 있는 행복한예인치과에는 보건복지부 인증 치과보존과 전문의 신정희 원장이 직접 신경치료를 시행합니다. 미세현미경을 활용한 정밀 신경치료로 자연 치아를 최대한 살립니다. 2호선 을지로입구역 1번 출구에서 시청 방향으로 도보 7분입니다." },
+    { q: "을지로 근처 신경치료 잘하는 치과 있나요?", a: "을지로입구역에서 도보 7분 거리에 있는 행복한예인치과에는 보건복지부 인증 치과보존과 박미나 원장이 직접 신경치료를 시행합니다. 미세현미경을 활용한 정밀 신경치료로 자연 치아를 최대한 살립니다. 2호선 을지로입구역 1번 출구에서 시청 방향으로 도보 7분입니다." },
     { q: "광화문·종로에서 가까운 교정 치과를 찾고 있어요.", a: "광화문역에서 도보 10분, 종로 세종대로에서 남쪽으로 내려오면 행복한예인치과가 있습니다. 교정과 전문의 박현미 원장이 인비절라인 투명교정부터 설측교정까지 직접 진료합니다. 5호선 광화문역 6번 출구, 1호선 종로3가역에서 대중교통으로 10분 이내입니다." },
     { q: "서울역 근처에서 야간진료 하는 치과 있나요?", a: "서울역에서 도보 12분, 대중교통으로 1정거장 거리에 있는 행복한예인치과는 매주 수요일 야간진료(09:30~20:00)를 시행합니다. 바쁜 직장인도 퇴근 후 진료를 받으실 수 있습니다. 1호선 서울역에서 시청역 방향 한 정거장이면 도착합니다." },
     { q: "회현역·남대문시장 근처 치과를 찾고 있어요.", a: "4호선 회현역에서 도보 6분, 남대문시장에서 도보 3분 거리에 행복한예인치과가 있습니다. 13년간 같은 자리에서 운영하며 통합치의학·보존과·교정과 3명의 전문의가 협진합니다. 서울 중구 남대문로9길 51 효덕빌딩 3층에 위치합니다." },
     { q: "충무로역 근처 치과를 찾고 있어요.", a: "3·4호선 충무로역에서 도보 10분 거리에 행복한예인치과가 있습니다. 충무로에서 명동·남대문 방향으로 이동하면 바로 접근 가능합니다. 발치즉시 임플란트, 보존치료, 교정 등 전문의 협진 체제로 운영하며, 수요일 야간진료도 가능합니다." },
     { q: "명동·을지로 직장인인데 점심시간에 치과 진료를 받을 수 있나요?", a: "행복한예인치과는 시청역·명동·을지로 직장인 밀집 지역에 위치하여 점심시간 진료가 가능합니다. 예약 시간을 지키고 대기 시간을 최소화하여 바쁜 직장인의 시간을 아껴드립니다. 점심시간(13:00~14:00) 외 시간에 예약하시면 됩니다. 수요일은 야간진료(~20:00)도 가능합니다." },
-    { q: "북창동·다동·무교동에서 가까운 치과가 있나요?", a: "행복한예인치과는 북창동에서 도보 3~5분, 다동·무교동에서 도보 5~7분 거리에 있습니다. 남대문로9길 51 효덕빌딩 3층에 위치하며, 서울시청·덕수궁 바로 남쪽입니다. 통합치의학·보존과·교정과 전문의 3인 협진 치과입니다." },
+    { q: "북창동·다동·무교동에서 가까운 치과가 있나요?", a: "행복한예인치과는 북창동에서 도보 3~5분, 다동·무교동에서 도보 5~7분 거리에 있습니다. 남대문로9길 51 효덕빌딩 3층에 위치하며, 서울시청·덕수궁 바로 남쪽입니다. 통합치의학·보존과·교정과 원장 3인 협진 치과입니다." },
     { q: "소공동·남산에서 가까운 치과를 찾고 있어요.", a: "소공동에서 도보 약 8분, 남산(한옥마을)에서 도보 약 12분 거리에 행복한예인치과가 있습니다. 시청역·명동역 사이에 위치하여 소공동·남산 주변에서 접근이 편리합니다. 13년간 같은 자리에서 운영하는 신뢰의 치과입니다." },
     { q: "을지로3가·을지로4가에서 행복한예인치과 가려면 어떻게 가나요?", a: "2호선 을지로3가역 또는 을지로4가역에서 을지로입구역 방향으로 한두 정거장 이동 후, 을지로입구역 1번 출구에서 시청 방향 도보 7분이면 도착합니다. 또는 명동역(4호선)까지 이동 후 도보 8분으로도 올 수 있습니다." },
-    { q: "서울 중구에서 전문의가 직접 진료하는 치과를 찾고 있어요.", a: "행복한예인치과는 서울 중구 남대문로에 위치하며, 보건복지부 인증 전문의 3명(통합치의학, 보존과, 교정과)이 직접 진료합니다. 한승대 대표원장은 치의학 박사·NYU Implant Course 수료, 신정희 원장은 보존과 전문의·치의학 박사, 박현미 원장은 교정 전문의입니다. 전문의가 직접 시술하므로 안심하고 진료받으실 수 있습니다." },
+    { q: "서울 중구에서 전문의가 직접 진료하는 치과를 찾고 있어요.", a: "행복한예인치과는 서울 중구 남대문로에 위치하며, 통합치의학과 전문의, 보존과, 교정과 3인의 원장이 직접 진료합니다. 한승대 대표원장은 치의학 박사·NYU Implant Course 수료, 박미나 원장은 연세대 보존과 석사·세브란스 보존과 수련, 박현미 원장은 교정 전문의입니다. 각 분야 담당 원장이 직접 시술하므로 안심하고 진료받으실 수 있습니다." },
     // === 직장인·생활 밀착 (7개) ===
     { q: "수요일 야간진료는 몇 시까지 하나요?", a: "행복한예인치과는 매주 수요일 야간진료로 저녁 8시(20:00)까지 진료합니다. 시청역·명동·을지로·광화문 직장인분들이 퇴근 후 많이 이용하십니다. 야간진료 마감 1시간 전(19:00)까지 접수 가능하며, 전화(02-756-2828)로 미리 예약하시면 대기 없이 진료받으실 수 있습니다." },
     { q: "사회초년생 할인이 있나요?", a: "행복한예인치과에서는 사회초년생 등 젊은 직장인분들을 위한 배려 프로그램을 운영하고 있습니다. 자세한 내용은 내원 상담 시 안내해 드립니다. 과잉 진료 없이 꼭 필요한 치료만 제안하는 것이 기본 원칙입니다." },
@@ -227,8 +227,8 @@ app.get('/', (c) => {
     { q: "카드 결제, 분할 납부가 가능한가요?", a: "네, 신용카드·체크카드 결제는 물론 무이자 할부도 가능합니다. 임플란트, 교정 등 고액 치료의 경우 분할 납부 상담도 진행하고 있습니다. 자세한 결제 방법은 내원 시 안내해 드립니다." },
     { q: "어린이·아이 치과 진료도 가능한가요?", a: "네, 행복한예인치과에서는 어린이 충치치료, 정기검진, 실란트 등 소아 치과 진료도 가능합니다. 아이가 치과에 대한 두려움을 갖지 않도록 부드럽고 친절한 진료를 지향합니다. 가족 단위 방문도 환영합니다." },
     // === 추가 기본 정보 (8개) ===
-    { q: "행복한예인치과에서 진료 가능한 과목은 무엇인가요?", a: "임플란트(발치즉시 임플란트 포함), 보존치료(신경치료·충치치료), 앞니 심미치료(라미네이트·레진), 치아교정(투명교정·설측교정), 일반진료(스케일링·정기검진·잇몸치료), 사랑니 발치 등 치과 전 분야의 진료가 가능합니다. 전문의 3인(통합치의학, 보존과, 교정과) 협진 체제입니다." },
-    { q: "행복한예인치과의 의료진은 어떤 학력을 갖고 있나요?", a: "한승대 대표원장은 고려대 졸업, 경희대 치의학전문대학원 치의학 박사이며, 신정희 원장은 경희대 치과대학 졸업, 경희대 대학원 치의학 박사입니다. 박현미 원장은 연세대 졸업, 연세대 치의학대학원 교정과 석사입니다. 전원 보건복지부 인증 전문의 자격을 보유하고 있습니다." },
+    { q: "행복한예인치과에서 진료 가능한 과목은 무엇인가요?", a: "임플란트(발치즉시 임플란트 포함), 보존치료(신경치료·충치치료), 앞니 심미치료(라미네이트·레진), 치아교정(투명교정·설측교정), 일반진료(스케일링·정기검진·잇몸치료), 사랑니 발치 등 치과 전 분야의 진료가 가능합니다. 3인 원장(통합치의학 전문의, 보존과, 교정과) 협진 체제입니다." },
+    { q: "행복한예인치과의 의료진은 어떤 학력을 갖고 있나요?", a: "한승대 대표원장은 고려대 졸업, 경희대 치의학전문대학원 치의학 박사이며, 박미나 원장은 연세대학교 치과대학 치의학과 졸업, 연세대 치과대학 보존과 석사입니다. 박현미 원장은 연세대 졸업, 연세대 치의학대학원 교정과 석사입니다. 각 분야를 전공한 원장이 직접 진료합니다." },
     { q: "행복한예인치과의 진료 환경은 어떤가요?", a: "CBCT(3차원 CT)로 신경관 위치를 0.1mm 단위로 확인하고, 미세현미경으로 육안의 20배까지 확대해 신경치료합니다. 구강스캐너로 본뜨 없이 치아를 스캔하며, 각 진료실은 독립된 공간으로 프라이버시를 보장합니다." },
     { q: "치과 치료 전 상담만 받을 수도 있나요?", a: "물론입니다. 상담만 받고 치료 여부는 충분히 생각하신 후 결정하셔도 됩니다. X-ray 촬영 후 현재 구강 상태와 치료 옵션을 투명하게 설명해 드립니다. 상담에 대한 부담을 갖지 않으셔도 됩니다." },
     { q: "예약 없이 방문해도 진료받을 수 있나요?", a: "행복한예인치과는 예약제로 운영됩니다. 예약 환자분들의 대기 시간을 최소화하기 위해 사전 예약을 권장합니다. 다만 응급 상황(극심한 통증, 외상 등)의 경우에는 내원 시 최대한 수용할 수 있도록 노력합니다. 전화 02-756-2828로 예약해 주세요." },
@@ -245,16 +245,16 @@ app.get('/', (c) => {
     { q: "사랑니를 꼭 뽑아야 하나요?", a: "모든 사랑니를 뽑아야 하는 것은 아닙니다. 바르게 나서 기능하고 있다면 유지할 수 있습니다. 하지만 비스듬히 나거나, 충치·염증이 반복되거나, 인접 치아에 악영향을 주는 경우에는 발치를 권합니다. X-ray로 정확한 위치를 확인한 후 안내해 드립니다." },
     { q: "충치 치료 후 이가 시린 건 정상인가요?", a: "깊은 충치를 치료한 후 일시적으로 시린 증상이 나타날 수 있습니다. 이는 치료 과정에서 신경이 자극을 받았기 때문이며, 대부분 1~2주 내에 자연스럽게 완화됩니다. 만약 시린 증상이 3주 이상 지속되거나 심해지면 재내원해 주세요." },
     // === 추가 지역 기반 (12개) ===
-    { q: "덕수궁·서울시청 근처 치과를 찾고 있어요.", a: "행복한예인치과는 서울시청·덕수궁 바로 남쪽, 남대문로9길 51 효덕빌딩 3층에 위치합니다. 시청역 도보 5분 거리로, 덕수궁 돌담길에서도 걸어서 7~8분이면 도착합니다. 통합치의학·보존과·교정과 전문의 3인 협진 치과입니다." },
+    { q: "덕수궁·서울시청 근처 치과를 찾고 있어요.", a: "행복한예인치과는 서울시청·덕수궁 바로 남쪽, 남대문로9길 51 효덕빌딩 3층에 위치합니다. 시청역 도보 5분 거리로, 덕수궁 돌담길에서도 걸어서 7~8분이면 도착합니다. 통합치의학·보존과·교정과 원장 3인 협진 치과입니다." },
     { q: "서소문·서소문공원 근처 치과 있나요?", a: "서소문·서소문공원에서 도보 약 8분 거리에 행복한예인치과가 있습니다. 남대문로를 따라 북쪽으로 올라오시면 됩니다. 13년간 같은 자리에서 운영하며 발치즉시 임플란트 80%+ 성공률을 보유한 전문 치과입니다." },
     { q: "남산타워·남산한옥마을에서 가까운 치과가 있나요?", a: "남산타워 기슭·남산한옥마을에서 택시 5분, 도보 약 15분 거리에 행복한예인치과가 있습니다. 명동역 경유 도보 8분으로도 올 수 있습니다. 관광 중 갑작스러운 치아 통증에도 당일 예약 상담이 가능합니다." },
-    { q: "종각역·인사동 근처에서 치과를 찾고 있어요.", a: "1호선 종각역에서 시청역 방향 한 정거장, 도보 약 12분 거리에 행복한예인치과가 있습니다. 인사동에서도 안국역→시청역 방향으로 대중교통 10분 이내입니다. 교정과 전문의, 보존과 전문의가 직접 진료합니다." },
+    { q: "종각역·인사동 근처에서 치과를 찾고 있어요.", a: "1호선 종각역에서 시청역 방향 한 정거장, 도보 약 12분 거리에 행복한예인치과가 있습니다. 인사동에서도 안국역→시청역 방향으로 대중교통 10분 이내입니다. 교정과 전문의, 보존과 담당 원장가 직접 진료합니다." },
     { q: "동대문·종로5가에서 행복한예인치과 가려면?", a: "1호선 또는 4호선으로 시청역까지 이동하면 약 10분 소요됩니다. 시청역 4번 출구에서 도보 5분이면 행복한예인치과에 도착합니다. 또는 2호선 을지로입구역 경유도 편리합니다." },
     { q: "여의도·마포에서 행복한예인치과 가기 편한가요?", a: "여의도에서 5호선 광화문역까지 약 15분, 광화문역에서 도보 10분이면 행복한예인치과에 도착합니다. 마포에서도 공덕역→시청역(1호선) 경유로 20분 이내입니다. 수요일 야간진료(20시까지)로 퇴근 후 방문도 가능합니다." },
-    { q: "용산·이태원에서 가까운 전문의 치과 있나요?", a: "용산에서 1호선으로 시청역까지 2정거장(약 7분), 이태원에서 6호선→1호선 환승으로 15분 이내에 행복한예인치과에 도착합니다. 통합치의학·보존과·교정과 전문의 3인이 직접 진료하며, 발치즉시 임플란트·미세현미경 신경치료 전문입니다." },
-    { q: "강남·서초에서 행복한예인치과를 찾아가는 방법은?", a: "2호선 강남역에서 시청역까지 약 20분, 3호선 교대역에서 충무로역 환승 후 시청역까지 약 15분 소요됩니다. 발치즉시 임플란트 80%+ 시행률, 보존과 전문의 미세현미경 신경치료 등 강남 못지않은 전문성을 합리적으로 제공합니다." },
+    { q: "용산·이태원에서 가까운 전문의 치과 있나요?", a: "용산에서 1호선으로 시청역까지 2정거장(약 7분), 이태원에서 6호선→1호선 환승으로 15분 이내에 행복한예인치과에 도착합니다. 통합치의학·보존과·교정과 3인 원장이 직접 진료하며, 발치즉시 임플란트·미세현미경 신경치료 전문입니다." },
+    { q: "강남·서초에서 행복한예인치과를 찾아가는 방법은?", a: "2호선 강남역에서 시청역까지 약 20분, 3호선 교대역에서 충무로역 환승 후 시청역까지 약 15분 소요됩니다. 발치즉시 임플란트 80%+ 시행률, 보존과 담당 원장 미세현미경 신경치료 등 강남 못지않은 전문성을 합리적으로 제공합니다." },
     { q: "성수동·건대 근처에서 행복한예인치과 가기 편한가요?", a: "2호선 성수역·건대입구역에서 을지로입구역까지 약 10~15분 소요됩니다. 을지로입구역 1번 출구에서 시청 방향 도보 7분이면 도착합니다. 직장인 밀집 지역에 위치해 점심시간 방문이 가능합니다." },
-    { q: "서울 중구 남대문로에 치과가 많은데, 행복한예인치과만의 차별점은?", a: "행복한예인치과는 ①보건복지부 인증 전문의 3명(통합치의학·보존과·교정과) 직접 진료 ②13년간 같은 자리에서 운영한 신뢰 ③발치즉시 임플란트 80%+ 시행률 ④458건+ 환자 리뷰 평균 4.9점 ⑤수요일 야간진료(20시)가 차별점입니다." },
+    { q: "서울 중구 남대문로에 치과가 많은데, 행복한예인치과만의 차별점은?", a: "행복한예인치과는 ①통합치의학·보존과·교정과 3인 원장 직접 진료 ②13년간 같은 자리에서 운영한 신뢰 ③발치즉시 임플란트 80%+ 시행률 ④458건+ 환자 리뷰 평균 4.9점 ⑤수요일 야간진료(20시)가 차별점입니다." },
     { q: "퇴근 후 치과 가고 싶은데 저녁에 진료하는 시청역 치과 있나요?", a: "행복한예인치과는 매주 수요일 저녁 8시(20:00)까지 야간진료를 시행합니다. 시청역 도보 5분 거리에 위치하여 퇴근 후 바로 방문하실 수 있습니다. 명동·을지로·광화문·종로에서 근무하시는 분들도 수요일 야간을 많이 이용하십니다. 전화 02-756-2828로 예약하세요." },
     { q: "주말 진료는 가능한가요?", a: "현재 행복한예인치과는 토·일·공휴일 휴진입니다. 대신 수요일 야간진료(20시까지)를 시행하여 평일 낮에 시간을 내기 어려운 직장인분들을 배려하고 있습니다. 월~금 09:30~18:30(수요일 20:00) 중 편한 시간에 예약해 주세요." },
     // === 추가 생활 밀착 (7개) ===
@@ -357,12 +357,12 @@ app.get('/', (c) => {
     "review": [
       { "@type": "Review", "author": { "@type": "Person", "name": "김○○" }, "datePublished": "2026-03-15", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "10년 넘게 치과를 미뤘는데, 여기서 처음으로 편하게 치료받았어요. 한승대 원장님이 X-ray 보면서 자세히 설명해주시고, 안 해도 되는 건 안 해도 된다고 솔직하게 말해주셔서 신뢰가 갔습니다." },
       { "@type": "Review", "author": { "@type": "Person", "name": "이○○" }, "datePublished": "2026-02-20", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "시청역 직장인인데 수요일 야간진료 정말 좋습니다. 발치즉시 임플란트로 내원 횟수도 적었고, 과잉진료 없이 필요한 것만 해주셔서 만족합니다." },
-      { "@type": "Review", "author": { "@type": "Person", "name": "박○○" }, "datePublished": "2026-01-28", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "신정희 원장님 신경치료 받았는데 정말 안 아팠어요. 미세현미경으로 세밀하게 해주시고, 매 단계마다 설명해주셔서 불안감이 없었습니다. 보존과 전문의라 더 믿음이 갑니다." },
+      { "@type": "Review", "author": { "@type": "Person", "name": "박○○" }, "datePublished": "2026-01-28", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "박미나 원장님 신경치료 받았는데 정말 안 아팠어요. 미세현미경으로 세밀하게 해주시고, 매 단계마다 설명해주셔서 불안감이 없었습니다. 보존과를 전공하신 분이라 더 믿음이 갑니다." },
       { "@type": "Review", "author": { "@type": "Person", "name": "최○○" }, "datePublished": "2025-12-10", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "을지로에서 근무하는데 도보 7분이라 점심시간에 다니기 좋습니다. 스케일링부터 충치치료까지 한 곳에서 해결하니 편합니다. 다음엔 교정 상담도 받으려구요." },
       { "@type": "Review", "author": { "@type": "Person", "name": "정○○" }, "datePublished": "2025-11-25", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "박현미 원장님 투명교정 진행 중입니다. 직장에서 티 안 나서 좋고, 교정 전문의가 직접 해주시니까 진행이 빠르고 정확해요. 명동에서 가까워서 퇴근 후 편하게 갑니다." },
       { "@type": "Review", "author": { "@type": "Person", "name": "한○○" }, "datePublished": "2025-10-18", "reviewRating": { "@type": "Rating", "ratingValue": "4", "bestRating": "5" }, "reviewBody": "임플란트 2개 했는데 발치하면서 동시에 심어서 시간이 많이 단축됐습니다. 과정마다 사진 찍어서 보여주시고 설명이 꼼꼼합니다. 13년 된 치과답게 안정적인 느낌." },
       { "@type": "Review", "author": { "@type": "Person", "name": "문○○" }, "datePublished": "2025-09-05", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "치과 공포증이 심했는데 여기는 표면 마취부터 해주시고, 중간중간 상태 확인해주셔서 편했습니다. 생각보다 전혀 안 아팠고, 앞으로 정기적으로 다닐 생각입니다." },
-      { "@type": "Review", "author": { "@type": "Person", "name": "송○○" }, "datePublished": "2025-08-12", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "광화문 사무실에서 10분 거리인데, 전문의 3명이 각 분야를 맡아서 좋습니다. 충치는 한 원장님, 신경치료는 신 원장님이 해주시니까 전문성이 높아서 좋아요." },
+      { "@type": "Review", "author": { "@type": "Person", "name": "송○○" }, "datePublished": "2025-08-12", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "광화문 사무실에서 10분 거리인데, 원장님 세 분이 각 분야를 맡아서 좋습니다. 충치는 한 원장님, 신경치료는 담당 원장님이 해주시니까 전문성이 높아서 좋아요." },
       { "@type": "Review", "author": { "@type": "Person", "name": "윤○○" }, "datePublished": "2025-07-20", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "65세 이상 임플란트 보험 적용 받았습니다. 친절하게 보험 절차도 안내해주시고, 시술도 깔끔했어요. 감사합니다." },
       { "@type": "Review", "author": { "@type": "Person", "name": "조○○" }, "datePublished": "2025-06-30", "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }, "reviewBody": "앞니 레진으로 간격 메우기 했는데 자연스러워서 친구들도 모릅니다. 라미네이트 권하지 않고 레진으로 충분하다고 솔직하게 말해주신 점이 좋았습니다." }
     ]
@@ -379,7 +379,7 @@ app.get('/', (c) => {
       "name": "행복한예인치과 진료 서비스 및 비용 안내",
       "itemListElement": [
         { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "발치즉시 임플란트", "procedureType": "Surgical", "description": "발치와 동시에 임플란트를 식립하여 치료 기간을 대폭 단축. 80% 이상 즉시식립 시행." }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "CT 촬영 후 정밀 진단 기반 개인 맞춤 비용 안내. 65세 이상 건강보험 적용 가능." } },
-        { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "치아보존치료(신경치료)", "procedureType": "Noninvasive", "description": "보존과 전문의의 미세현미경 활용 정밀 신경치료. 자연치아를 최대한 보존." }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용 항목. 치아 상태에 따른 투명한 비용 안내." } },
+        { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "치아보존치료(신경치료)", "procedureType": "Noninvasive", "description": "보존과 담당 원장의 미세현미경 활용 정밀 신경치료. 자연치아를 최대한 보존." }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용 항목. 치아 상태에 따른 투명한 비용 안내." } },
         { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "투명교정(인비절라인)", "procedureType": "Noninvasive", "description": "교정 전문의 직접 시행. 티 안 나는 투명한 교정 장치로 직장인에게 인기." }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "교합 상태별 맞춤 비용 안내. 분할 납부 가능." } },
         { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "앞니 심미치료(라미네이트/레진)", "procedureType": "Noninvasive", "description": "최소삭제 원칙의 라미네이트, 즉일 완성 가능한 레진 심미보철." }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "시술 범위에 따른 맞춤 비용 안내." } },
         { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "스케일링", "procedureType": "Noninvasive", "description": "건강보험 적용(연 1회). 치석 제거로 잇몸 건강 유지." }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용 시 본인부담 약 1~2만원." } }
@@ -436,7 +436,7 @@ app.get('/', (c) => {
 <meta name="author" content="행복한예인치과">
 <meta name="format-detection" content="telephone=yes">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="keywords" content="행복한예인치과, 시청역 치과, 명동 치과, 을지로 치과, 광화문 치과, 종로 치과, 서울역 치과, 회현역 치과, 충무로 치과, 남대문 치과, 서울 중구 치과, 발치즉시 임플란트, 즉시식립 임플란트, 명동 임플란트, 시청역 임플란트, 을지로 임플란트, 보존치료, 신경치료, 치과보존과 전문의, 명동 신경치료, 앞니 심미치료, 라미네이트, 치아교정, 투명교정, 인비절라인, 명동 교정, 을지로 교정, 야간진료 치과, 수요일 야간, 직장인 치과, 통합치의학 전문의, 서울 직장인 치과, 남산 치과, 북창동 치과, 다동 치과, 무교동 치과">
+<meta name="keywords" content="행복한예인치과, 시청역 치과, 명동 치과, 을지로 치과, 광화문 치과, 종로 치과, 서울역 치과, 회현역 치과, 충무로 치과, 남대문 치과, 서울 중구 치과, 발치즉시 임플란트, 즉시식립 임플란트, 명동 임플란트, 시청역 임플란트, 을지로 임플란트, 보존치료, 신경치료, 치과보존과 담당 원장, 명동 신경치료, 앞니 심미치료, 라미네이트, 치아교정, 투명교정, 인비절라인, 명동 교정, 을지로 교정, 야간진료 치과, 수요일 야간, 직장인 치과, 통합치의학 전문의, 서울 직장인 치과, 남산 치과, 북창동 치과, 다동 치과, 무교동 치과">
 <meta name="geo.region" content="KR-11">
 <meta name="geo.placename" content="서울특별시 중구">
 <meta name="geo.position" content="37.566;126.978">
@@ -1046,7 +1046,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </p>
       <div class="hero-evidence" style="display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px;">
         <span style="padding:5px 12px;border-radius:20px;background:rgba(247,186,24,0.1);border:1px solid rgba(247,186,24,0.25);color:var(--gold);font-family:var(--font-kr);font-size:0.68rem;font-weight:700;">발치즉시 임플란트 80%+</span>
-        <span style="padding:5px 12px;border-radius:20px;background:rgba(247,186,24,0.1);border:1px solid rgba(247,186,24,0.25);color:var(--gold);font-family:var(--font-kr);font-size:0.68rem;font-weight:700;">보존·교정·통합치의학 전문의 3인</span>
+        <span style="padding:5px 12px;border-radius:20px;background:rgba(247,186,24,0.1);border:1px solid rgba(247,186,24,0.25);color:var(--gold);font-family:var(--font-kr);font-size:0.68rem;font-weight:700;">보존·교정·통합치의학 원장 3인</span>
         <span style="padding:5px 12px;border-radius:20px;background:rgba(247,186,24,0.1);border:1px solid rgba(247,186,24,0.25);color:var(--gold);font-family:var(--font-kr);font-size:0.68rem;font-weight:700;">NYU Implant Institute 수료</span>
         <span style="padding:5px 12px;border-radius:20px;background:rgba(247,186,24,0.1);border:1px solid rgba(247,186,24,0.25);color:var(--gold);font-family:var(--font-kr);font-size:0.68rem;font-weight:700;">2013년 개원 · 13년 한자리</span>
       </div>
@@ -1189,12 +1189,12 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </a>
       <!-- Conservation -->
       <a href="/treatments/preservation" class="treat-card rv" style="text-decoration:none;color:inherit;">
-        <div class="treat-card-bg"><img src="/static/img/treat-2.webp" alt="치아보존치료 - 보존과 전문의 직접 신경치료" width="600" height="400" loading="lazy"></div>
+        <div class="treat-card-bg"><img src="/static/img/treat-2.webp" alt="치아보존치료 - 보존과 담당 원장 직접 신경치료" width="600" height="400" loading="lazy"></div>
         <div class="treat-card-content">
           <div class="treat-card-num">02</div>
           <div class="treat-card-tag">Preservation</div>
           <h3>치아 보존 치료</h3>
-          <p>보존과 전문의가 직접 치료. 최대한 자연 치아를 살리는 신경치료 및 보존 수복.</p>
+          <p>보존과 담당 원장가 직접 치료. 최대한 자연 치아를 살리는 신경치료 및 보존 수복.</p>
           <div class="treat-pills">
             <span class="treat-pill">Specialist</span>
             <span class="treat-pill">Natural Tooth</span>
@@ -1276,14 +1276,14 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
           <div class="team-photo-placeholder"><i class="fas fa-user-md"></i></div>
         </div>
         <div class="team-info">
-          <h3>신정희</h3>
-          <div class="role">Conservative Dentistry, Ph.D.</div>
+          <h3>박미나</h3>
+          <div class="role">Conservative Dentistry</div>
           <ul class="team-creds">
-            <li>경희대학교 치과대학 졸업</li>
-            <li>경희대 대학원 치의학 박사</li>
-            <li>보건복지부 인증 치과보존과 전문의</li>
-            <li>경희대 치과보존과 레지던트 수료</li>
-            <li>경희대 치과보존과 외래강사 역임</li>
+            <li>연세대학교 치과대학 치의학과 졸업</li>
+            <li>연세대학교 치과대학 보존과 석사</li>
+            <li>연세대 신촌 세브란스 치과병원 보존과 수련</li>
+            <li>연세대 치과대학 치과보존과 외래교수 역임</li>
+            <li>SCI 논문 등재 (J Endod 2014)</li>
           </ul>
         </div>
       </div>
@@ -1453,7 +1453,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">어떤 전문의가 있나요?</h4><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">한승대 대표원장(보건복지부 인증 통합치의학과 전문의, 치의학 박사), 신정희 원장(보건복지부 인증 치과보존과 전문의, 치의학 박사), 박현미 원장(교정과 전문의) 총 3명의 전문의가 각 분야를 직접 진료합니다.</p></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">한승대 대표원장(보건복지부 인증 통합치의학과 전문의, 치의학 박사), 박미나 원장(치과보존과, 연세대 보존과 석사), 박현미 원장(교정과 전문의) 3인의 원장이 각 분야를 직접 진료합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">예약은 어떻게 하나요?</h4><i class="fas fa-chevron-down"></i></div>
@@ -1487,7 +1487,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">신경치료는 얼마나 아픈가요?</h4><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">충분한 마취 후 치료를 진행하므로 시술 중 통증은 거의 없습니다. 표면 마취제를 먼저 도포하여 주사 통증까지 최소화합니다. 보존과 전문의 신정희 원장이 미세현미경을 활용하여 정밀하게 시술하므로 불필요한 자극이 줄어듭니다.</p></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">충분한 마취 후 치료를 진행하므로 시술 중 통증은 거의 없습니다. 표면 마취제를 먼저 도포하여 주사 통증까지 최소화합니다. 보존과 박미나 원장이 미세현미경을 활용하여 정밀하게 시술하므로 불필요한 자극이 줄어듭니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="treatment" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">치아 교정은 성인도 가능한가요?</h4><i class="fas fa-chevron-down"></i></div>
@@ -1521,7 +1521,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">을지로 근처 신경치료 잘하는 치과 있나요?</h4><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">을지로입구역에서 도보 7분 거리에 보존과 전문의 신정희 원장이 미세현미경 정밀 신경치료를 직접 시행합니다. 자연 치아를 최대한 살리는 보존 치료 전문입니다. 2호선 을지로입구역 1번 출구에서 시청 방향으로 도보 7분입니다.</p></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">을지로입구역에서 도보 7분 거리에 보존과 박미나 원장이 미세현미경 정밀 신경치료를 직접 시행합니다. 자연 치아를 최대한 살리는 보존 치료 전문입니다. 2호선 을지로입구역 1번 출구에서 시청 방향으로 도보 7분입니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">광화문·종로에서 가까운 교정 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
@@ -1553,7 +1553,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">서울 중구에서 전문의가 직접 진료하는 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">행복한예인치과는 서울 중구 남대문로에 위치하며, 보건복지부 인증 전문의 3명(통합치의학, 보존과, 교정과)이 직접 진료합니다. 전문의가 직접 시술하므로 안심하고 진료받으실 수 있습니다. 전화 02-756-2828.</p></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">행복한예인치과는 서울 중구 남대문로에 위치하며, 통합치의학과 전문의, 보존과, 교정과 3인의 원장이 직접 진료합니다. 각 분야 담당 원장이 직접 시술하므로 안심하고 진료받으실 수 있습니다. 전화 02-756-2828.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">명동·을지로 직장인인데 점심시간에 진료받을 수 있나요?</h4><i class="fas fa-chevron-down"></i></div>
@@ -1597,7 +1597,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">의료진의 학력이 궁금해요.</h4><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">한승대 원장(고려대 졸업, 경희대 치의학 박사), 신정희 원장(경희대 졸업, 경희대 치의학 박사), 박현미 원장(연세대 졸업, 연세대 교정과 석사). 전원 보건복지부 인증 전문의입니다.</p></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">한승대 원장(고려대 졸업, 경희대 치의학 박사), 박미나 원장(연세대 치의학과 졸업, 연세대 보존과 석사), 박현미 원장(연세대 졸업, 연세대 교정과 석사). 각 분야를 전공한 원장이 직접 진료합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="basic" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">진료 환경과 장비는 어떤가요?</h4><i class="fas fa-chevron-down"></i></div>
@@ -1673,7 +1673,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">종각역·인사동 근처에서 치과를 찾고 있어요.</h4><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">종각역에서 시청역 한 정거장, 도보 약 12분입니다. 인사동에서도 대중교통 10분 이내. 교정·보존과 전문의가 직접 진료합니다.</p></div>
+        <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">종각역에서 시청역 한 정거장, 도보 약 12분입니다. 인사동에서도 대중교통 10분 이내. 교정·보존과 담당 원장가 직접 진료합니다.</p></div>
       </div>
       <div class="faq-item rv" data-cat="location" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this);}"><h4 itemprop="name">동대문·종로5가에서 행복한예인치과 가려면?</h4><i class="fas fa-chevron-down"></i></div>

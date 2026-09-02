@@ -136,7 +136,7 @@ ${nav('philosophy')}
         <div class="story-year">2016</div>
         <div class="story-text">
           <h4>전문의 협진 시스템 구축</h4>
-          <p>보존과 전문의, 교정 전문의를 영입하여 분야별 전문의 협진 체계를 갖추었습니다.</p>
+          <p>보존과 담당 원장, 교정 전문의를 영입하여 분야별 전문의 협진 체계를 갖추었습니다.</p>
         </div>
       </div>
       <div class="story-item rv rv-d2">
@@ -214,16 +214,16 @@ ${scripts()}`;
 export function doctorsPage(): string {
   const docFaq = [
     { q: '한승대 대표원장의 전문 분야는 무엇인가요?', a: '한승대 대표원장은 보건복지부 인증 통합치의학과 전문의이자 치의학 박사입니다. 발치즉시 임플란트, 고난이도 임플란트(상악동(위턱 공간) 거상술, 골이식(잇몸뼈 이식)), 전악 임플란트 재건, 앞니 심미 치료(레진, 라미네이트)를 전문으로 합니다. 경희대 치의학전문대학원 졸업, NYU Implant Institute Course 수료의 경력을 보유하고 있습니다.' },
-    { q: '신정희 원장의 전문 분야는 무엇인가요?', a: '신정희 원장은 보건복지부 인증 치과보존과 전문의이자 치의학 박사입니다. 미세현미경을 활용한 정밀 신경치료, 보존 수복, 충치 치료를 전문으로 합니다. 경희대 치과대학 졸업, 경희대 치과보존과 레지던트 수료, 경희대 치과보존과 외래강사를 역임했습니다.' },
+    { q: '박미나 원장의 전문 분야는 무엇인가요?', a: '박미나 원장은 치과보존과 진료를 담당합니다. 미세현미경을 활용한 정밀 신경치료, 보존 수복, 충치 치료를 전문으로 합니다. 연세대학교 치과대학 치의학과 졸업, 연세대 치과대학 보존과 석사, 연세대 신촌 세브란스 치과병원 보존과 수련을 거쳤으며, 연세대 치과대학 치과보존과 외래교수를 역임했습니다.' },
     { q: '박현미 원장의 전문 분야는 무엇인가요?', a: '박현미 원장은 교정과 전문의로, 인비절라인 투명교정, 설측교정, 세라믹 교정, 성인 교정을 전문으로 합니다. 연세대 졸업, 연세대 치의학대학원 교정과 석사, 에이플러스치과병원 교정과 전임의, Columbia University CE 수료의 경력을 보유합니다.' },
     { q: '전문의 협진의 장점은 무엇인가요?', a: '한 환자에게 임플란트, 보존치료, 교정이 동시에 필요할 수 있습니다. 전문의 협진 시스템에서는 각 분야 전문의가 함께 논의하여 최적의 치료 방향을 결정합니다. 다른 병원을 전전하지 않아도 되므로 환자의 시간과 비용을 절약합니다.' },
     { q: '전문의와 일반 치과의사의 차이는 무엇인가요?', a: '전문의는 치과의사 면허 취득 후 해당 분야에서 추가로 3~4년간의 수련(레지던트 과정)을 이수하고, 보건복지부 인증 시험에 합격한 의사입니다. 해당 분야에 대한 깊은 전문 지식과 수술 경험을 갖추고 있어 더 정확하고 안전한 치료가 가능합니다.' },
     { q: '시청역·명동 근처에서 전문의가 직접 진료하는 치과가 있나요?', a: '행복한예인치과는 시청역 도보 5분, 명동역 8분 거리에 위치하며, 3명의 보건복지부 인증 전문의(통합치의학, 보존과, 교정과)가 직접 진료합니다. 을지로입구역 7분, 광화문·종로·회현·충무로에서도 10분 이내입니다.' },
     { q: '한승대 원장은 임플란트 경력이 어느 정도인가요?', a: '한승대 원장은 2013년 개원 이래 13년간 수천 건의 임플란트를 시술했습니다. 발치즉시 임플란트 80%+ 시행률, 상악동(위턱 공간) 거상술·골이식(잇몸뼈 이식) 등 고난이도 케이스까지 직접 집당합니다. NYU Implant Institute Course도 수료했습니다.' },
-    { q: '신정희 원장의 미세현미경 치료 경험은 어느 정도인가요?', a: '신정희 원장은 경희대 치과보존과에서 레지던트 과정과 외래강사를 역임하며 다년간의 미세현미경 치료 경험을 쌓았습니다. 미세현미경(25배 확대) 아래에서 정밀한 신경치료를 시행하여 재치료율을 최소화합니다.' },
+    { q: '박미나 원장의 신경치료 경험은 어느 정도인가요?', a: '박미나 원장은 연세대 신촌 세브란스 치과병원 보존과 수련과 목동 예치과 보존과 과장, 연세대 치과대학 치과보존과 외래교수를 거치며 풍부한 신경치료 경험을 쌓았습니다. 근관치료 분야 SCI 국제학술지(J Endod, 2014) 논문이 등재되어 있으며, 대한치과근관치료학회·대한치과보존학회 정회원으로 활동하고 있습니다.' },
     { q: '박현미 원장은 인비절라인 자격이 있나요?', a: '네, 박현미 원장은 인비절라인 공식 인증 제공자(Certified Provider)이며, 투명교정·설측교정·세라믹 교정 등 다양한 교정 방식의 전문 교육을 이수했습니다. Columbia University CE도 수료하여 최신 교정 트렌드에 맞는 치료를 제공합니다.' },
-    { q: '원장님들이 직접 진료하시나요, 아니면 다른 분이 하시나요?', a: '행복한예인치과의 3명의 전문의가 모든 진료를 직접 시행합니다. 임플란트는 한승대 원장, 신경치료·보존치료는 신정희 원장, 교정은 박현미 원장이 직접 진단·시술합니다. 전문의가 직접 하지 않는 치료는 없습니다.' },
-    { q: '을지로·광화문 근처에서 보존과 전문의가 있는 치과가 있나요?', a: '을지로입구역에서 도보 7분, 광화문역 10분 거리의 행복한예인치과에서 보건복지부 인증 보존과 전문의 신정희 원장이 직접 진료합니다. 미세현미경 정밀 신경치료로 자연 치아를 최대한 보존합니다. 수요일 야간진료도 가능합니다.' },
+    { q: '원장님들이 직접 진료하시나요, 아니면 다른 분이 하시나요?', a: '행복한예인치과의 3인의 원장이 모든 진료를 직접 시행합니다. 임플란트는 한승대 원장, 신경치료·보존치료는 박미나 원장, 교정은 박현미 원장이 직접 진단·시술합니다. 담당 원장이 직접 하지 않는 치료는 없습니다.' },
+    { q: '을지로·광화문 근처에서 보존과 진료를 잘하는 치과가 있나요?', a: '을지로입구역에서 도보 7분, 광화문역 10분 거리의 행복한예인치과에서 연세대 치과대학 보존과 석사·세브란스 보존과 수련의 박미나 원장이 직접 진료합니다. 미세현미경 정밀 신경치료로 자연 치아를 최대한 보존합니다. 수요일 야간진료도 가능합니다.' },
   ];
   const docFaqJsonLd = { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": docFaq.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })) };
   // Physician JSON-LD — 3명 전문의 개별 스키마 (Google Knowledge Panel 대응)
@@ -263,26 +263,29 @@ export function doctorsPage(): string {
     {
       "@context": "https://schema.org",
       "@type": "Physician",
-      "@id": "https://happyyein.kr/#dr-shin",
-      "name": "신정희",
-      "alternateName": "Shin Junghee",
+      "@id": "https://happyyein.kr/#dr-park-mina",
+      "name": "박미나",
+      "alternateName": "Park Mina",
       "jobTitle": "원장",
-      "description": "보건복지부 인증 치과보존과 전문의, 치의학 박사. 미세현미경(25배) 정밀 신경치료, 보존 수복, 충치 치료 전문.",
-      "image": "https://happyyein.kr/static/img/dr-shin-profile.jpg",
+      "description": "치과보존과 담당. 연세대 치과대학 보존과 석사, 세브란스 치과병원 보존과 수련, 연세대 치과보존과 외래교수 역임. SCI 논문 등재(J Endod 2014). 정밀 신경치료, 보존 수복, 충치 치료 전문.",
       "url": "https://happyyein.kr/doctors",
       "telephone": "+82-2-756-2828",
       "medicalSpecialty": { "@type": "MedicalSpecialty", "name": "치과보존과" },
       "hasCredential": [
-        { "@type": "EducationalOccupationalCredential", "credentialCategory": "보건복지부 인증 전문의", "name": "치과보존과 전문의" },
-        { "@type": "EducationalOccupationalCredential", "credentialCategory": "학위", "name": "치의학 박사 (경희대학교)" }
+        { "@type": "EducationalOccupationalCredential", "credentialCategory": "학위", "name": "치과보존과 석사 (연세대학교)" },
+        { "@type": "EducationalOccupationalCredential", "credentialCategory": "수련", "name": "연세대학교 신촌 세브란스 치과병원 보존과 수련" }
       ],
       "alumniOf": [
-        { "@type": "CollegeOrUniversity", "name": "경희대학교 치과대학" }
+        { "@type": "CollegeOrUniversity", "name": "연세대학교 치과대학" }
       ],
       "worksFor": { "@type": "Dentist", "@id": "https://happyyein.kr/#organization", "name": "행복한예인치과" },
-      "knowsAbout": ["미세현미경 신경치료", "보존 수복", "충치 치료", "레진 치료"],
+      "memberOf": [
+        { "@type": "Organization", "name": "대한치과근관치료학회" },
+        { "@type": "Organization", "name": "대한치과보존학회" }
+      ],
+      "knowsAbout": ["정밀 신경치료", "근관치료", "보존 수복", "충치 치료", "레진 치료"],
       "availableService": [
-        { "@type": "MedicalProcedure", "name": "미세현미경 신경치료" },
+        { "@type": "MedicalProcedure", "name": "정밀 신경치료" },
         { "@type": "MedicalProcedure", "name": "보존 수복" },
         { "@type": "MedicalProcedure", "name": "충치 치료" }
       ]
@@ -317,7 +320,7 @@ export function doctorsPage(): string {
       ]
     }
   ];
-  return `${head({ title: '의료진 소개', description: '시청역·명동·을지로 전문의 협진 치과 | 행복한예인치과 의료진. 한승대 대표원장(통합치의학 전문의, 치의학 박사), 신정희 원장(보존과 전문의), 박현미 원장(교정 전문의). 시청역 5분, 명동역 8분. 02-756-2828', path: '/doctors', ogImage: '/static/img/dr-han-profile.jpg', keywords: '행복한예인치과 의료진, 한승대 원장, 시청역 치과 전문의, 명동 치과 전문의, 을지로 치과, 광화문 치과, 보존과 전문의, 교정과 전문의, 서울 중구 치과, 직장인 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '의료진 소개', url: '/doctors' }], jsonLd: [docFaqJsonLd, ...physicianSchemas] })}
+  return `${head({ title: '의료진 소개', description: '시청역·명동·을지로 전문의 협진 치과 | 행복한예인치과 의료진. 한승대 대표원장(통합치의학 전문의, 치의학 박사), 박미나 원장(보존과, 연세대 석사), 박현미 원장(교정 전문의). 시청역 5분, 명동역 8분. 02-756-2828', path: '/doctors', ogImage: '/static/img/dr-han-profile.jpg', keywords: '행복한예인치과 의료진, 한승대 원장, 시청역 치과 전문의, 명동 치과 전문의, 을지로 치과, 광화문 치과, 보존과 담당 원장, 교정과 전문의, 서울 중구 치과, 직장인 치과', breadcrumbs: [{ name: '홈', url: '/' }, { name: '의료진 소개', url: '/doctors' }], jsonLd: [docFaqJsonLd, ...physicianSchemas] })}
 ${nav('doctors')}
 
 <!-- HERO -->
@@ -386,7 +389,7 @@ ${nav('doctors')}
   </div>
 </section>
 
-<!-- DOCTOR 2: 신정희 -->
+<!-- DOCTOR 2: 박미나 -->
 <section class="page-section bg-dark">
   <div class="page-inner">
     <div class="sec-label">Specialist</div>
@@ -395,20 +398,23 @@ ${nav('doctors')}
         <i class="fas fa-microscope"></i>
       </div>
       <div class="doc-h-info">
-        <h2>신정희 <span class="doc-name-en">Shin Jeonghee</span></h2>
-        <div class="doc-role">치과보존과 전문의 &middot; 치의학 박사</div>
-        <p class="doc-h-desc">자연 치아를 살리는 것이 최선입니다. 미세현미경을 활용한 정밀 신경치료와 보존 수복으로, "뽑아야 한다"는 진단을 받으셨더라도 한 번 더 가능성을 확인해 드립니다.</p>
+        <h2>박미나 <span class="doc-name-en">Park Mina</span></h2>
+        <div class="doc-role">치과보존과 &middot; 연세대 보존과 석사</div>
+        <p class="doc-h-desc">자연 치아를 살리는 것이 최선입니다. 정확한 진단과 섬세한 신경치료·보존 수복으로, "뽑아야 한다"는 진단을 받으셨더라도 한 번 더 가능성을 확인해 드립니다.</p>
         <div class="doc-creds-simple rv rv-d1">
-          <span><i class="fas fa-graduation-cap"></i> 경희대학교 치과대학 졸업</span>
-          <span><i class="fas fa-graduation-cap"></i> 경희대 대학원 치의학 박사</span>
-          <span><i class="fas fa-award"></i> 보건복지부 인증 치과보존과 전문의</span>
-          <span><i class="fas fa-hospital"></i> 경희대 치과보존과 레지던트 수료</span>
-          <span><i class="fas fa-chalkboard-teacher"></i> 경희대 치과보존과 외래강사 역임</span>
+          <span><i class="fas fa-graduation-cap"></i> 연세대학교 치과대학 치의학과 졸업</span>
+          <span><i class="fas fa-graduation-cap"></i> 연세대학교 치과대학 보존과 석사</span>
+          <span><i class="fas fa-hospital"></i> 연세대 신촌 세브란스 치과병원 보존과 수련</span>
+          <span><i class="fas fa-chalkboard-teacher"></i> 연세대학교 치과대학 치과보존과 외래교수 역임</span>
+          <span><i class="fas fa-hospital"></i> 전) 목동 예치과 보존과 과장</span>
+          <span><i class="fas fa-file-alt"></i> SCI 논문 등재 (J Endod 2014;40:182-6)</span>
+          <span><i class="fas fa-users"></i> 대한치과근관치료학회 정회원</span>
+          <span><i class="fas fa-users"></i> 대한치과보존학회 정회원</span>
         </div>
         <div class="doc-specialty-tags rv rv-d2">
           <span>신경치료</span>
+          <span>근관치료</span>
           <span>보존 수복</span>
-          <span>미세현미경</span>
           <span>충치 치료</span>
         </div>
       </div>
@@ -623,7 +629,7 @@ ${nav('experience')}
       </div>
       <div class="review-card rv rv-d1">
         <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-        <p>"다른 치과에서 발치하라고 했는데, 여기서 신경치료로 살렸어요. 보존과 전문의가 직접 해주시니 믿음이 갑니다."</p>
+        <p>"다른 치과에서 발치하라고 했는데, 여기서 신경치료로 살렸어요. 보존과 담당 원장가 직접 해주시니 믿음이 갑니다."</p>
         <span class="review-author">&mdash; 40대 주부</span>
       </div>
       <div class="review-card rv rv-d2">

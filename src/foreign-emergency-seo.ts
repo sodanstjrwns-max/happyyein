@@ -201,9 +201,9 @@ Seoul National University (DDS & MS) · Integrated Dentistry Specialist<br>
 Specialties: Implants, Full-mouth rehabilitation, Complex restorations
 </div>
 <div style="background:rgba(255,255,255,0.03);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-<strong>Dr. Shin Jeonghee</strong> — Conservative Dentistry<br>
-Seoul National University · Endodontics Specialist<br>
-Specialties: Root canal, Tooth-colored fillings, Microscope dentistry
+<strong>Dr. Park Mina</strong> — Conservative Dentistry (Yonsei Univ. M.S., Severance-trained)<br>
+Yonsei University College of Dentistry · Published in J Endod (SCI)<br>
+Specialties: Root canal, Retreatment, Tooth-colored fillings
 </div>
 <div style="background:rgba(255,255,255,0.03);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
 <strong>Dr. Park Hyunmi</strong> — Orthodontics<br>

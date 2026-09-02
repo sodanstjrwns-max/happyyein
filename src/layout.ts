@@ -121,7 +121,7 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
       "name": "행복한예인치과 진료 서비스",
       "itemListElement": [
         { "@type": "OfferCatalog", "name": "시청역·명동 발치즉시 임플란트", "description": "발치와 동시에 임플란트를 식립. 80% 이상 즉시식립." },
-        { "@type": "OfferCatalog", "name": "을지로·광화문 치아보존·신경치료", "description": "보존과 전문의 직접 시행하는 정밀 신경치료." },
+        { "@type": "OfferCatalog", "name": "을지로·광화문 치아보존·신경치료", "description": "보존과 담당 원장 직접 시행하는 정밀 신경치료." },
         { "@type": "OfferCatalog", "name": "명동·종로 투명교정·인비절라인", "description": "교정과 전문의의 체계적인 투명교정 치료." },
         { "@type": "OfferCatalog", "name": "서울 중구 앞니 심미치료·라미네이트", "description": "최소삭제 라미네이트, 레진 심미보철." },
         { "@type": "OfferCatalog", "name": "시청역 직장인 스케일링·정기검진", "description": "수요일 야간진료 포함 예방 진료." }

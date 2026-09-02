@@ -265,9 +265,9 @@ footer.en-footer a:hover{color:var(--gold);}
       </div>
       <div class="doc-card">
         <div class="avatar">👩‍⚕️</div>
-        <h3>Dr. Shin Jung-hee</h3>
-        <div class="role">Board-Certified Endodontist · Ph.D.</div>
-        <p>Root canals and retreatment under the microscope. Kyung Hee University conservative dentistry residency. Her mission: keep your natural tooth.</p>
+        <h3>Dr. Park Mina</h3>
+        <div class="role">Conservative Dentistry · M.S. (Yonsei Univ.)</div>
+        <p>Root canals and retreatment with precision. Yonsei University College of Dentistry, M.S. in Conservative Dentistry, trained at Severance Dental Hospital. Published in J Endod (SCI). Her mission: keep your natural tooth.</p>
       </div>
       <div class="doc-card">
         <div class="avatar">👩‍⚕️</div>
