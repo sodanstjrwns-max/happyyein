@@ -2237,6 +2237,7 @@ app.get('/a1b2c3d4e5f6g7h8i9j0happyyein2026.txt', (c) => {
 })
 
 // ===== SEO: robots.txt (검색엔진 + AI 크롤러 전면 허용) =====
+app.get('/916056a8b3464834b7dca5b2c1dfd406.txt', (c) => c.text('916056a8b3464834b7dca5b2c1dfd406'))
 app.get('/robots.txt', (c) => {
   const robotsTxt = `# 행복한예인치과 - Happy Yein Dental Clinic
 # https://happyyein.kr
