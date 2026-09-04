@@ -429,7 +429,7 @@ app.get('/', (c) => {
 <link rel="alternate" hreflang="x-default" href="${SITE_DOMAIN}/">
 
 <!-- RSS 피드 자동발견 (검색엔진·AI 크롤러) -->
-<link rel="alternate" type="application/rss+xml" title="행복한예인치과 블로그 RSS" href="${SITE_DOMAIN}/feed.xml">
+<link rel="alternate" type="application/rss+xml" title="행복한예인치과 블로그 RSS" href="${SITE_DOMAIN}/rss.xml">
 
 <!-- 추가 메타 -->
 <meta name="theme-color" content="#F7BA18">
@@ -2351,7 +2351,8 @@ app.get('/llms-full.txt', (c) => {
 })
 
 // ===== SEO/AEO: RSS 2.0 피드 (블로그 — 검색엔진·AI 크롤러 신규 콘텐츠 발견용) =====
-app.get('/feed.xml', async (c) => {
+// /rss.xml(표준 경로) + /feed.xml(기존 제출분 호환) 동일 피드 서빙
+const rssFeedHandler = async (c: any) => {
   const domain = 'https://happyyein.kr';
   const escXmlF = (s: string) => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
   const stripTags = (s: string) => (s || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -2389,7 +2390,7 @@ app.get('/feed.xml', async (c) => {
   <channel>
     <title>행복한예인치과 블로그</title>
     <link>${domain}/blog</link>
-    <atom:link href="${domain}/feed.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="${domain}/rss.xml" rel="self" type="application/rss+xml"/>
     <description>시청역·명동 행복한예인치과 전문의가 전하는 치과 건강 정보 — 임플란트, 신경치료, 교정, 심미치료</description>
     <language>ko</language>
     <lastBuildDate>${lastBuild}</lastBuildDate>
@@ -2398,7 +2399,9 @@ ${items}
   </channel>
 </rss>`;
   return c.text(rss, 200, { 'Content-Type': 'application/rss+xml; charset=utf-8', 'Cache-Control': 'public, max-age=1800' });
-})
+}
+app.get('/rss.xml', rssFeedHandler)
+app.get('/feed.xml', rssFeedHandler)
 
 // ===== SEO: sitemap.xml (DB 동적 생성 — 모든 포스트 개별 URL 포함) =====
 app.get('/sitemap.xml', async (c) => {
