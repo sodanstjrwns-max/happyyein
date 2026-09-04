@@ -499,6 +499,9 @@ export function adminDashboardPage(): string {
     <a href="/admin/indexing" class="admin-nav-item">
       <i class="fas fa-search"></i> 색인 모니터링
     </a>
+    <a href="/admin/stats" class="admin-nav-item">
+      <i class="fas fa-chart-line"></i> 통계
+    </a>
     <div class="admin-nav-divider"></div>
     <div class="admin-nav-section">Links</div>
     <a href="/" class="admin-nav-item" target="_blank">

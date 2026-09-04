@@ -7,6 +7,7 @@ import boardsApi from './api-boards'
 import authApi, { requireAdmin } from './api-auth'
 import userAuthApi from './api-user-auth'
 import { adminLoginPage, adminDashboardPage } from './admin-pages'
+import statsApp from './stats-page'
 import { registerPage, loginPage } from './auth-pages'
 import { encyclopediaListPage, encyclopediaDetailPage } from './encyclopedia'
 import autoBlogApi, { handleScheduled, notifySearchEngines } from './auto-blog'
@@ -2169,6 +2170,9 @@ app.route('/api/auto-blog', autoBlogApi)
 app.get('/admin/login', (c) => c.html(adminLoginPage()))
 app.get('/admin', (c) => c.html(adminDashboardPage()))
 app.get('/admin/indexing', (c) => c.html(indexingDashboardPage()))
+
+// ===== ADMIN STATS (중앙 대시보드 연동 통계) =====
+app.route('/', statsApp)
 
 // ===== INDEXING MONITOR API =====
 app.route('/api/indexing', indexingApi)
