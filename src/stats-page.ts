@@ -162,6 +162,49 @@ const AI_SOURCE_LABELS: Record<string, string> = {
   chatgpt: 'ChatGPT', perplexity: 'Perplexity', claude: 'Claude', gemini: 'Gemini', etc: '기타 AI',
 }
 
+// ---------- 행동 분석 (Microsoft Clarity) ----------
+const CLARITY_URL = 'https://clarity.microsoft.com/projects/view/yc827a3fst/dashboard'
+
+function secFmt(n: any): string {
+  if (n == null || isNaN(Number(n))) return '—'
+  const s = Math.round(Number(n))
+  return s >= 60 ? `${Math.floor(s / 60)}분 ${s % 60}초` : `${s}초`
+}
+const pct1 = (n: any) => (n == null || isNaN(Number(n)) ? '—' : `${Number(n).toFixed(1)}%`)
+
+function clarityInsights(cl: any): string[] {
+  const out: string[] = []
+  if ((cl.rageClickPct ?? 0) >= 1 || (cl.deadClickPct ?? 0) >= 5) out.push('화면 반응이 없어 반복 클릭하는 사용자가 있습니다 (UI 답답 신호)')
+  if (cl.avgScrollDepth != null && cl.avgScrollDepth < 40 && (cl.sessions ?? 0) >= 30) out.push('첫 화면에서 이탈이 많습니다')
+  if ((cl.scriptErrors ?? 0) > 0) out.push(`스크립트 오류 ${fmt(cl.scriptErrors)}건 감지 — 점검 필요`)
+  if ((cl.quickbackPct ?? 0) >= 8) out.push('들어왔다 바로 나가는 비율이 높습니다')
+  if (!out.length && (cl.sessions ?? 0) > 0) out.push('특이 신호 없음')
+  return out
+}
+
+function claritySection(cl: any): string {
+  let s = `<div class="st-sec-title">행동 분석 <span>Clarity · 최근 3일</span><a class="st-clarity-link" href="${CLARITY_URL}" target="_blank" rel="noopener">Clarity 대시보드 <i class="fas fa-arrow-up-right-from-square"></i></a></div>`
+  if (!cl) {
+    s += `<div class="st-empty">Clarity 수집 대기 중</div>`
+    return s
+  }
+  s += `<div class="st-grid">
+    ${metricCard('세션', fmt(cl.sessions), '', 'fa-users', cl.botSessions != null ? `봇 ${fmt(cl.botSessions)}` : '')}
+    ${metricCard('사용자', fmt(cl.users), '', 'fa-user')}
+    ${metricCard('평균 스크롤', pct1(cl.avgScrollDepth), '', 'fa-angles-down')}
+    ${metricCard('참여시간', secFmt(cl.engagementSec), '', 'fa-stopwatch', cl.activeSec != null ? `활성 ${secFmt(cl.activeSec)}` : '')}
+    ${metricCard('레이지 클릭', cl.rageClicks != null ? `${fmt(cl.rageClicks)}건` : '—', '', 'fa-bolt', pct1(cl.rageClickPct))}
+    ${metricCard('데드 클릭', cl.deadClicks != null ? `${fmt(cl.deadClicks)}건` : '—', '', 'fa-ban', pct1(cl.deadClickPct))}
+    ${metricCard('퀵백', cl.quickbacks != null ? `${fmt(cl.quickbacks)}건` : '—', '', 'fa-rotate-left', pct1(cl.quickbackPct))}
+    ${metricCard('스크립트 오류', cl.scriptErrors != null ? `${fmt(cl.scriptErrors)}건` : '—', '', 'fa-bug', pct1(cl.scriptErrorPct))}
+  </div>`
+  const ins = clarityInsights(cl)
+  if (ins.length) {
+    s += `<section class="st-insight"><h3><i class="fas fa-magnifying-glass-chart"></i> 행동 신호</h3><ul>${ins.map((l) => `<li>${l}</li>`).join('')}</ul></section>`
+  }
+  return s
+}
+
 function statsBody(d: any): string {
   const configured = !!(d && d.configured)
   const g = d?.gsc, a = d?.ga, ai = d?.ai
@@ -205,6 +248,9 @@ function statsBody(d: any): string {
     } else {
       inner += `<div class="st-empty">${d.hasGa ? '애널리틱스 데이터 수집 중입니다' : '애널리틱스 연동 대기 중입니다'}</div>`
     }
+
+    // 행동 분석 (Clarity)
+    inner += claritySection(d?.clarity)
 
     // 인사이트
     const ins = buildInsights(d)
@@ -260,6 +306,9 @@ a{color:inherit;text-decoration:none}
 .st-pending p{color:#888;font-size:0.85rem;line-height:1.7}
 .st-sec-title{font-family:'Syne','Noto Sans KR',sans-serif;font-size:0.95rem;font-weight:800;letter-spacing:2px;margin:32px 0 14px;color:#F5F2ED}
 .st-sec-title span{font-size:0.65rem;color:#666;letter-spacing:1px;margin-left:10px;font-weight:500}
+.st-clarity-link{font-size:0.65rem;color:#F7BA18;letter-spacing:1px;margin-left:12px;font-weight:600;border:1px solid rgba(247,186,24,0.3);padding:4px 10px;border-radius:8px;transition:all .3s}
+.st-clarity-link:hover{background:rgba(247,186,24,0.1)}
+.st-clarity-link i{font-size:0.6rem;margin-left:3px}
 .st-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
 @media(max-width:820px){.st-grid{grid-template-columns:repeat(2,1fr)}}
 .st-card{background:rgba(22,22,22,0.9);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px}
