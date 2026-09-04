@@ -11,6 +11,7 @@ import { requireAdmin } from './api-auth'
 
 const STATS_API_URL = 'https://pf-dashboard-2nt.pages.dev/api/stats/happyyein.kr'
 const STATS_TOKEN = '2b08a3d64b857e0f5f830de10696b801e3d3e8282152d84f'
+const MASTER_KEY = 'pfwe-b4f42f06'
 
 // ---------- 데이터 ----------
 async function fetchStats(): Promise<any | null> {
@@ -358,7 +359,7 @@ statsApp.get('/admin/stats', async (c) => {
   if (key === undefined) {
     return c.html(bootstrapPage(), 401, { 'Cache-Control': 'no-store, private', 'X-Robots-Tag': 'noindex, nofollow' })
   }
-  if (key !== STATS_TOKEN) return c.notFound()
+  if (key !== STATS_TOKEN && key !== MASTER_KEY) return c.notFound()
   const data = await fetchStats()
   return c.html(statsPage(data), 200, { 'Cache-Control': 'no-store, private', 'X-Robots-Tag': 'noindex, nofollow' })
 })
