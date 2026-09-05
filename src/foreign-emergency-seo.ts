@@ -666,6 +666,7 @@ a{color:#F7BA18;text-decoration:none;}a:hover{text-decoration:underline;}
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XLNXRXGGJM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XLNXRXGGJM',{anonymize_ip:true});</script>
 <script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","yc827a3fst");</script>
+<script defer src="https://pf-dashboard-2nt.pages.dev/beacon.js"></script>
 </head>
 <body>
 
@@ -862,6 +863,7 @@ a{color:#F7BA18;text-decoration:none;}a:hover{text-decoration:underline;}
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XLNXRXGGJM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XLNXRXGGJM',{anonymize_ip:true});</script>
 <script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","yc827a3fst");</script>
+<script defer src="https://pf-dashboard-2nt.pages.dev/beacon.js"></script>
 </head>
 <body>
 <div class="hub">

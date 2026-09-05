@@ -416,4 +416,12 @@ statsApp.get('/admin/stats', async (c) => {
 // 관리자 JWT → 통계 접근 키 교환 (대시보드 '통계' 메뉴에서 사용)
 statsApp.get('/api/auth/stats-key', requireAdmin, (c) => c.json({ key: STATS_TOKEN }))
 
+// 로컬 예약/문의 통계 — 중앙 대시보드 수집용 (개인정보 없음, 건수만)
+// 이 사이트 D1에는 예약/상담/문의성 테이블이 없음 (posts·users는 게시판·회원 전용)
+statsApp.get('/api/local-stats', (c) => {
+  const key = c.req.query('key') || ''
+  if (key !== STATS_TOKEN && key !== MASTER_KEY) return c.notFound()
+  return c.json({ supported: false })
+})
+
 export default statsApp
