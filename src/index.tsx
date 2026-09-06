@@ -21,6 +21,8 @@ import { renderForeignSeoPage, foreignEmergencyIndexPage, getAllForeignSeoSlugs 
 import { englishMainPage } from './en-main'
 import { generateLlmsTxt, generateLlmsFullTxt } from './llms-txt'
 import { renderSearchPage } from './search'
+import feesApi, { getPublishedFees } from './api-fees'
+import { feesPublicPage, feesAdminPage } from './fees-page'
 
 type Bindings = { DB: D1Database; R2: R2Bucket; OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; AUTO_BLOG_SECRET?: string }
 const app = new Hono<{ Bindings: Bindings }>()
@@ -2121,6 +2123,12 @@ app.get('/cost/:slug', (c) => {
 })
 
 // ===== COMPARISON SEO: 치료 비교 콘텐츠 (8개) =====
+// 비급여 진료비 안내 (공개) — D1 fee_items 공개 항목만, 폴백 내장
+app.get('/fees', async (c) => {
+  const items = await getPublishedFees(c.env.DB)
+  return c.html(feesPublicPage(items))
+})
+
 app.get('/compare', (c) => c.html(comparisonIndexPage()))
 app.get('/compare/:slug', (c) => {
   const slug = c.req.param('slug')
@@ -2166,11 +2174,13 @@ app.route('/api/upload', uploadApi)
 app.route('/api/images', imagesApi)
 app.route('/api/boards', boardsApi)
 app.route('/api/auto-blog', autoBlogApi)
+app.route('/api/fees', feesApi)
 
 // ===== ADMIN PAGES =====
 app.get('/admin/login', (c) => c.html(adminLoginPage()))
 app.get('/admin', (c) => c.html(adminDashboardPage()))
 app.get('/admin/indexing', (c) => c.html(indexingDashboardPage()))
+app.get('/admin/fees', (c) => c.html(feesAdminPage()))
 
 // ===== ADMIN STATS (중앙 대시보드 연동 통계) =====
 app.route('/', statsApp)
