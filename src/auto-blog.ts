@@ -353,11 +353,16 @@ function buildPrompt(topic: typeof ALL_TOPICS[0]): string {
 ## 필수 규칙
 
 ### 1. SEO 구조
-- H2 태그 3~5개 사용 (각 H2 아래 본문 2~4문단)
-- H3 태그 적절히 활용 (리스트형 콘텐츠에서)
+- H2 태그 5~7개 사용 (각 H2 아래 본문 3~5문단) — 주제를 얕게 훑지 말고 하위 측면까지 깊이 다룰 것
+- H3 태그 적절히 활용 (리스트형·단계형 콘텐츠에서)
 - 메인 키워드를 제목, 서두, 중간, 결론에 자연스럽게 배치
 - LSI(관련) 키워드도 본문에 녹여 넣기
-- 전체 분량: 1,500~2,500자 (한글 기준)
+- 전체 분량: 3,000~4,500자 (한글 기준) — 깊이 있는 정보성 장문. 단, 채우기용 반복 금지
+
+### 1-1. 표(table) — 필수, 2~3개
+- 비교·수치·단계 정보는 반드시 <table> 로 정리 (예: 종류별 비교, 시기별 경과, 비용 범위, 증상별 대처)
+- <table> 안에 <thead><tr><th>…</th></tr></thead><tbody><tr><td>…</td></tr></tbody> 구조 사용
+- 표 제목은 바로 위 <p><strong>…</strong></p> 로. 최소 2개, 가능하면 3개
 
 ### 2. 콘텐츠 품질
 - 전문적이되 환자가 이해할 수 있는 눈높이로 작성
@@ -387,7 +392,7 @@ function buildPrompt(topic: typeof ALL_TOPICS[0]): string {
 - CTA 문구 예시: "행복한예인치과에서 정확한 진단을 받아보세요. 전문의 3인이 협진합니다."
 
 ### 3-1. FAQ 섹션 (AEO 최적화 — 필수)
-- 글 말미(CTA 전)에 **자주 묻는 질문 3~5개**를 반드시 포함
+- 글 말미(CTA 전)에 **자주 묻는 질문 5~7개**를 반드시 포함
 - H2 태그로 "자주 묻는 질문" 제목 추가
 - 각 질문은 H3 태그, 답변은 P 태그로 작성
 - 질문은 반드시 "?"로 끝나야 함 (예: "임플란트 수명은 얼마나 되나요?")
@@ -438,12 +443,12 @@ async function callGPT(prompt: string, env: Bindings): Promise<any> {
       'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'gpt-5.5',
+      model: env.OPENAI_MODEL || 'gpt-5.6-sol',
       messages: [
-        { role: 'system', content: '당신은 치과 전문 SEO 콘텐츠 라이터입니다. 반드시 유효한 JSON만 응답하세요.' },
+        { role: 'system', content: '당신은 치과 전문 SEO 콘텐츠 라이터입니다. 깊이 있는 장문 정보성 글을 쓰되, 반드시 유효한 JSON만 응답하세요.' },
         { role: 'user', content: prompt },
       ],
-      max_completion_tokens: 4000,
+      max_completion_tokens: 12000,
     }),
   })
 

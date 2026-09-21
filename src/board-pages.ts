@@ -118,6 +118,13 @@ const boardCSS = `
 .board-detail-content ul li{list-style:disc;margin-bottom:6px;}
 .board-detail-content ol li{list-style:decimal;margin-bottom:6px;}
 .board-detail-content blockquote{border-left:3px solid var(--gold);padding:16px 24px;margin:24px 0;background:rgba(247,186,24,0.04);border-radius:0 12px 12px 0;font-style:italic;}
+.board-detail-content table{width:100%;border-collapse:collapse;margin:28px 0;font-family:var(--font-kr);font-size:0.92rem;background:rgba(255,255,255,0.02);border:1px solid rgba(247,186,24,0.12);border-radius:12px;overflow:hidden;}
+.board-detail-content thead th{background:rgba(247,186,24,0.08);color:var(--gold);font-weight:700;text-align:left;padding:14px 18px;border-bottom:1px solid rgba(247,186,24,0.2);letter-spacing:-0.3px;}
+.board-detail-content tbody td{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--gray-light);vertical-align:top;line-height:1.7;}
+.board-detail-content tbody tr:last-child td{border-bottom:none;}
+.board-detail-content tbody tr:hover td{background:rgba(247,186,24,0.03);}
+.board-detail-content th:first-child,.board-detail-content td:first-child{color:var(--white);font-weight:500;}
+@media(max-width:768px){.board-detail-content table{font-size:0.82rem;display:block;overflow-x:auto;}}
 
 /* BEFORE-AFTER DETAIL */
 .ba-detail-grid{display:grid;gap:48px;margin-bottom:48px;}
