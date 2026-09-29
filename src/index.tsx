@@ -38,6 +38,26 @@ app.use('*', async (c, next) => {
   await next()
 })
 
+// ===== 분석 태그 보강: 태그가 빠진 공개 HTML 페이지에 GA4·Clarity·비콘 삽입 =====
+// 메인(/)과 /en 템플릿에만 태그가 있어 한국어 하위 페이지(블로그·백과·진료 등)가 집계되지 않던 문제 (2026-09-29)
+const ANALYTICS_TAGS = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-XLNXRXGGJM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XLNXRXGGJM',{anonymize_ip:true});</script>
+<script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","yc827a3fst");</script>
+<script defer src="https://pf-dashboard-2nt.pages.dev/beacon.js"></script>
+`
+app.use('*', async (c, next) => {
+  await next()
+  const path = c.req.path
+  if (path.startsWith('/admin') || path.startsWith('/api/') || path.startsWith('/stats')) return
+  if (!(c.res.headers.get('Content-Type') || '').includes('text/html')) return
+  const html = await c.res.clone().text()
+  if (html.includes('G-XLNXRXGGJM') || !html.includes('</head>')) return
+  const res = new Response(html.replace('</head>', ANALYTICS_TAGS + '</head>'), c.res)
+  res.headers.delete('Content-Length')
+  c.res = undefined
+  c.res = res
+})
+
 // ===== 보안 헤더 미들웨어 (SEO/보안 최적화) =====
 app.use('*', async (c, next) => {
   await next()
