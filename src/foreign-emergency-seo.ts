@@ -548,11 +548,14 @@ export function renderForeignSeoPage(slug: string): string | null {
   }
 
   // hreflang 대응 페이지 찾기
-  const baseSlug = page.slug.replace(/^(ja|zh)\//, '')
+  const rawBase = page.slug.replace(/^(ja|zh)\//, '')
+  // ja/zh 4쌍은 EN과 slug가 달라 LOCALIZED_SLUG로 짝을 맞춘다
+  const baseSlug = Object.keys(LOCALIZED_SLUG).find(en => LOCALIZED_SLUG[en] === rawBase) || rawBase
+  const locSlug = LOCALIZED_SLUG[baseSlug] || baseSlug
   const koPage = `/treatments/general` // 한국어 대응
   const enPage = PAGES.find(p => p.lang === 'en' && p.slug === baseSlug)
-  const jaPage = PAGES.find(p => p.lang === 'ja' && p.slug === `ja/${baseSlug}`)
-  const zhPage = PAGES.find(p => p.lang === 'zh' && p.slug === `zh/${baseSlug}`)
+  const jaPage = PAGES.find(p => p.lang === 'ja' && (p.slug === `ja/${baseSlug}` || p.slug === `ja/${locSlug}`))
+  const zhPage = PAGES.find(p => p.lang === 'zh' && (p.slug === `zh/${baseSlug}` || p.slug === `zh/${locSlug}`))
 
   const hreflangTags = [
     `<link rel="alternate" hreflang="ko" href="${SITE_DOMAIN}${koPage}">`,
@@ -754,13 +757,22 @@ const CATEGORIES: PageCategory[] = [
     slugs: ['expat-dentist-seoul', 'dental-sedation-anxiety-seoul'] },
 ]
 
+// 일본어·중국어 페이지 중 EN과 slug가 다른 것 (허브에서 누락돼 고아 페이지가 되던 4쌍)
+const LOCALIZED_SLUG: Record<string, string> = {
+  'dental-implant-seoul-korea': 'dental-implant-seoul',
+  'dental-cost-korea-vs-usa-guide': 'dental-cost-korea-guide',
+  'dental-abscess-swollen-face-seoul': 'dental-abscess-swollen-face',
+  'night-dentist-myeongdong-wednesday': 'night-dentist-wednesday',
+}
+
 // Helper: 카테고리별 페이지 그룹 생성
 function getCategoryPages(lang: 'en' | 'ja' | 'zh') {
   return CATEGORIES.map(cat => {
     const pages = cat.slugs
       .map(baseSlug => {
-        const slug = lang === 'en' ? baseSlug : `${lang}/${baseSlug}`
-        return PAGES.find(p => p.slug === slug)
+        if (lang === 'en') return PAGES.find(p => p.slug === baseSlug)
+        return PAGES.find(p => p.slug === `${lang}/${baseSlug}`)
+          || (LOCALIZED_SLUG[baseSlug] ? PAGES.find(p => p.slug === `${lang}/${LOCALIZED_SLUG[baseSlug]}`) : undefined)
       })
       .filter((p): p is ForeignPage => p != null)
     return { ...cat, pages }

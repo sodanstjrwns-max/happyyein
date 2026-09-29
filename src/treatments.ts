@@ -434,8 +434,9 @@ export function renderTreatmentPage(slug: string): string | null {
     }
   };
 
+  // 검색 결과 제목에 병원 소재 권역(시청역·명동)을 함께 노출한다.
   return `${head({
-    title: t.title,
+    title: `시청역·명동 ${t.title.replace(' / ', '·')}`,
     description: t.metaDesc,
     path: `/treatments/${t.slug}`,
     ogImage: t.heroImg,

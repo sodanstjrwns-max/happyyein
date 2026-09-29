@@ -2238,7 +2238,19 @@ app.get('/notice/:id', async (c) => {
 
 // 치과 백과사전
 app.get('/encyclopedia', (c) => c.html(encyclopediaListPage()))
+// 블로그 본문 등에 남은 옛/오타 용어 주소 → 실제 용어로 301 (크롤 감사 2026-09 404 6건 + 자동블로그 tooth-structure)
+const ENCYCLOPEDIA_ALIASES: Record<string, string> = {
+  'caries': 'cavity',
+  'chijogol': 'alveolar-bone',
+  'osseo': 'osseointegration',
+  'osseo-integration': 'osseointegration',
+  'dental-ct': 'cbct',
+  'ct': 'cbct',
+  'tooth-structure': 'dental-formula',
+}
 app.get('/encyclopedia/:id', (c) => {
+  const alias = ENCYCLOPEDIA_ALIASES[c.req.param('id')]
+  if (alias) return c.redirect(`/encyclopedia/${alias}`, 301)
   const html = encyclopediaDetailPage(c.req.param('id'))
   if (!html) return c.notFound()
   return c.html(html)
@@ -2541,6 +2553,22 @@ app.get('/sitemap.xml', async (c) => {
       images: [] as { url: string; title: string }[],
     })),
   ];
+
+  // 게시물이 0건인 목록(/notice·/before-after·/blog)은 얇은 페이지라 noindex 처리되므로 사이트맵에서도 뺀다.
+  // DB 조회 실패 시에는 기존대로 유지한다(일시 오류로 URL이 빠지지 않도록).
+  try {
+    const cnt = await db.prepare(
+      `SELECT board, COUNT(*) AS n FROM posts WHERE is_published = 1 AND board IN ('blog','before-after','notice') GROUP BY board`
+    ).all();
+    const counts: Record<string, number> = {};
+    for (const r of (cnt.results || []) as any[]) counts[r.board] = Number(r.n) || 0;
+    for (const board of ['blog', 'before-after', 'notice']) {
+      if (!counts[board]) {
+        const i = staticUrls.findIndex(u => u.loc === `/${board}`);
+        if (i >= 0) staticUrls.splice(i, 1);
+      }
+    }
+  } catch (e) { /* 목록 URL 유지 */ }
 
   // DB에서 모든 발행된 포스트 조회 (블로그 + 비포애프터 개별 URL)
   let postUrls: typeof staticUrls = [];

@@ -458,10 +458,12 @@ export async function boardListPage(board: string, db: D1Database, page: number 
   // [SEO] SSR: 서버에서 목록 조회 — 크롤러가 첫 요청에서 모든 포스트 링크를 발견하도록
   let posts: any[] = [];
   let total = 0;
+  let countOk = false;
   const imagesByPost: Record<number, { image_url: string; image_type: string }[]> = {};
   try {
     const cnt = await db.prepare('SELECT COUNT(*) as total FROM posts WHERE board = ? AND is_published = 1').bind(board).first() as any;
     total = cnt?.total || 0;
+    countOk = true;
     const rs = await db.prepare(
       `SELECT p.id, p.title, p.thumbnail_url, p.view_count, p.created_at,
               (SELECT COUNT(*) FROM post_images pi WHERE pi.post_id = p.id) as image_count
@@ -522,7 +524,8 @@ export async function boardListPage(board: string, db: D1Database, page: number 
     pagHtml += '</div>';
   }
 
-  return `${head({ title: cfg.name, description: cfg.metaDesc, path: `/${cfg.slug}` })}
+  // 게시물이 하나도 없는 목록은 얇은 페이지 — 글이 생길 때까지 noindex, follow (사이트맵에서도 제외)
+  return `${head({ title: cfg.name, description: cfg.metaDesc, path: `/${cfg.slug}`, noindexFollow: countOk && total === 0 })}
 ${nav(cfg.navKey)}
 
 <!-- HERO -->

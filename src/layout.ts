@@ -28,6 +28,7 @@ interface HeadOptions {
   ogType?: string;        // 'website' | 'article' 등
   ogImage?: string;       // 커스텀 OG 이미지 (없으면 기본 사용)
   noindex?: boolean;      // true면 noindex
+  noindexFollow?: boolean; // true면 noindex, follow (빈 목록 등 — 링크는 따라가도록)
   jsonLd?: object | object[];  // 추가 JSON-LD 구조화 데이터 (단일 또는 배열)
   keywords?: string;      // 페이지별 키워드
   articlePublishedTime?: string; // 게시일 (article 타입)
@@ -59,7 +60,7 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
     ? (o.ogImage.startsWith('http') ? o.ogImage : `${SITE.domain}${o.ogImage}`)
     : `${SITE.domain}${SITE.ogImage}`;
   const ogType = o.ogType || 'website';
-  const robots = o.noindex ? 'noindex, nofollow' : 'index, follow';
+  const robots = o.noindex ? 'noindex, nofollow' : o.noindexFollow ? 'noindex, follow' : 'index, follow';
 
   // JSON-LD: 기본 DentalClinic + 페이지별 추가
   const orgJsonLd = {

@@ -319,7 +319,7 @@ const TOPIC_POOL: { category: string; topics: { keyword: string; angle: string; 
   {
     category: '치과 상식·궁금증',
     topics: [
-      { keyword: '치아 개수', angle: '사람 치아는 몇 개? 치아 번호와 명칭 총정리', internalLinks: ['/encyclopedia/tooth-structure', '/treatments/general'] },
+      { keyword: '치아 개수', angle: '사람 치아는 몇 개? 치아 번호와 명칭 총정리', internalLinks: ['/encyclopedia/dental-formula', '/treatments/general'] },
       { keyword: '치아 재생', angle: '치아 재생 기술은 어디까지 왔을까? 2026년 최신 연구', internalLinks: ['/treatments/general', '/encyclopedia/implant'] },
       { keyword: '치아 색깔', angle: '건강한 치아 색깔은? 너무 하얀 이도 문제일 수 있다', internalLinks: ['/treatments/aesthetic', '/encyclopedia/bleaching'] },
       { keyword: '치과 방사선 안전', angle: '치과 엑스레이, 방사선 걱정해야 할까? 안전성 총정리', internalLinks: ['/treatments/general', '/encyclopedia/cbct'] },
