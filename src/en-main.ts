@@ -301,7 +301,7 @@ footer.en-footer a:hover{color:var(--gold);}
         🚇 Myeongdong Stn (Line 4) — 8 min walk<br>
         🚇 Hoehyeon Stn (Line 4) — 6 min walk<br>
         🚇 Euljiro 1-ga Stn (Line 2) — 7 min walk</p>
-        <p><a href="https://map.naver.com/v5/entry/place/36682457" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700;">Open in Naver Map →</a></p>
+        <p><a href="https://map.naver.com/p/entry/place/13148712" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700;">Open in Naver Map →</a></p>
       </div>
       <div class="info-box">
         <h3><i class="fas fa-credit-card"></i> Payment & Insurance</h3>

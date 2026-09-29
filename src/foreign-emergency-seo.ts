@@ -507,9 +507,9 @@ export function renderForeignSeoPage(slug: string): string | null {
     "currenciesAccepted": "KRW",
     "paymentAccepted": "Cash, Credit Card, Debit Card",
     "image": `${SITE_DOMAIN}/static/img/dr-han-smile.jpg`,
+    // 네이버 예약 링크(naver.me/G0DXGZbi)가 가리키는 실제 플레이스로 교정, 존재하지 않는 구글 단축 링크 제거 (2026-09-29)
     "sameAs": [
-      "https://map.naver.com/v5/entry/place/11684573",
-      "https://maps.app.goo.gl/YbP8Q8Z8Z8Z8Z8Z8A"
+      "https://map.naver.com/p/entry/place/13148712"
     ]
   }
 
@@ -682,7 +682,7 @@ a{color:#F7BA18;text-decoration:none;}a:hover{text-decoration:underline;}
       <a href="/en/zh/emergency-dentist-myeongdong" class="${langCode === 'zh' ? 'active' : ''}">ZH</a>
       <a href="/">KO</a>
     </div>
-    <a href="https://map.naver.com/v5/entry/place/11684573" target="_blank" class="fh-btn dir"><i class="fas fa-map-marker-alt"></i> ${directionsLabel}</a>
+    <a href="https://map.naver.com/p/entry/place/13148712" target="_blank" class="fh-btn dir"><i class="fas fa-map-marker-alt"></i> ${directionsLabel}</a>
     <a href="tel:${CLINIC.intlTel}" class="fh-btn call"><i class="fas fa-phone-alt"></i> ${callLabel}</a>
   </div>
 </header>

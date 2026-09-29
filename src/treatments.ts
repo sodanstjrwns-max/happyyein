@@ -351,24 +351,33 @@ export function renderTreatmentPage(slug: string): string | null {
 
   // MedicalWebPage 스키마
   const today = '2026-06-11'; // CONTENT_REVIEWED — 콘텐츠 실제 검수/갱신 시 수동 업데이트 (가짜 동적 날짜 금지)
+  const pageUrl = `https://happyyein.kr/treatments/${t.slug}`;
+  // 상단 핵심 요약 = 기존 도입 본문 첫 단락(새 주장 없음) — 화면 #tx-answer 와 MedicalProcedure.description 동일 (2026-09-29)
+  const answer = t.introText[0];
+  // 감수자 = 대표원장 (pages.ts /doctors Physician @id #dr-han)
+  const reviewer = { "@type": "Physician", "@id": "https://happyyein.kr/#dr-han", "name": "한승대", "jobTitle": "대표원장" };
   const medicalPageSchema = {
     "@context": "https://schema.org",
     "@type": "MedicalWebPage",
+    "@id": `${pageUrl}#webpage`,
     "name": t.title,
     "description": t.metaDesc,
-    "url": `https://happyyein.kr/treatments/${t.slug}`,
+    "url": pageUrl,
     "about": {
       "@type": "MedicalProcedure",
+      "@id": `${pageUrl}#procedure`,
       "name": t.title,
-      "procedureType": "Surgical",
+      "description": answer,
       "bodyLocation": "Mouth"
     },
     "lastReviewed": today,
     "dateModified": today,
+    "reviewedBy": reviewer,
+    "publisher": { "@id": "https://happyyein.kr/#organization" },
     "medicalAudience": { "@type": "MedicalAudience", "audienceType": "Patient" },
     "speakable": {
       "@type": "SpeakableSpecification",
-      "cssSelector": [".sub-hero-content h1", ".treat-intro-text h2", ".faq-q h4", ".faq-a p"]
+      "cssSelector": [".sub-hero-content h1", "#tx-answer", ".faq-q h4", ".faq-a p"]
     }
   };
 
@@ -391,11 +400,7 @@ export function renderTreatmentPage(slug: string): string | null {
       "text": p.desc,
       "url": `https://happyyein.kr/treatments/${t.slug}#step-${i + 1}`
     })),
-    "performedBy": {
-      "@type": "Dentist",
-      "name": "행복한예인치과",
-      "url": "https://happyyein.kr"
-    }
+    "performedBy": { "@id": "https://happyyein.kr/#organization" }
   };
 
   // Service + PriceSpecification 스키마
@@ -468,6 +473,15 @@ ${nav('treatments')}
     <div class="sub-hero-tag">${t.tag}</div>
     <h1>${t.titleHtml}</h1>
     <p class="sub-hero-desc">${t.desc}</p>
+  </div>
+</section>
+
+<!-- 핵심 요약 + 감수 줄 (AEO 답변 우선 블록, 2026-09-29) -->
+<section class="tx-answer-wrap" style="max-width:1100px;margin:0 auto;padding:40px 20px 0;">
+  <div style="border-left:3px solid var(--gold);background:#fffdf6;padding:18px 22px;border-radius:0 10px 10px 0;">
+    <p style="font-size:12px;font-weight:700;letter-spacing:0.06em;color:var(--gold-deep);margin:0 0 6px;">${t.title} 핵심 요약</p>
+    <p id="tx-answer" style="font-size:15px;line-height:1.8;color:#222;margin:0;">${answer}</p>
+    <p class="tx-reviewer" style="font-size:12px;color:#888;margin:10px 0 0;">감수: <a href="/doctors" style="color:inherit;text-decoration:underline;">한승대 대표원장</a> · 최종 검토 <time datetime="${today}">${today}</time></p>
   </div>
 </section>
 

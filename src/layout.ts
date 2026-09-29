@@ -66,6 +66,7 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
   const orgJsonLd = {
     "@context": "https://schema.org",
     "@type": "Dentist",
+    "@id": `${SITE.domain}/#organization`, // 병원 엔티티 @id 통일 (홈 #organization 과 동일, 2026-09-29)
     "name": SITE.name,
     "alternateName": SITE.nameEn,
     "url": SITE.domain,

@@ -304,12 +304,6 @@ function generateJsonLd(region: Region, treatment: Treatment, faq: { q: string; 
     priceRange: '$$',
     currenciesAccepted: 'KRW',
     paymentAccepted: '현금, 카드, 계좌이체',
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      reviewCount: '287',
-      bestRating: '5',
-    },
   };
 
   // 2. FAQPage
