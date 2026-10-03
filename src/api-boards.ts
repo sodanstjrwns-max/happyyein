@@ -218,7 +218,9 @@ boards.post('/:board', requireAdmin, async (c) => {
     // [SEO] IndexNow + Google Ping — 즉시 인덱싱 알림
     if (board !== 'notice') {
       const postUrl = `https://happyyein.kr/${board === 'before-after' ? 'before-after' : 'blog'}/${postId}`;
-      notifySearchEngines(postUrl).catch(() => {});
+      // 응답 뒤에도 핑이 끊기지 않도록 waitUntil (없으면 기존처럼 비동기 호출)
+      const ping = notifySearchEngines(postUrl).catch(() => {});
+      try { c.executionCtx.waitUntil(ping) } catch {}
     }
 
     return c.json({ success: true, id: postId })
@@ -277,7 +279,9 @@ boards.put('/:board/:id', requireAdmin, async (c) => {
     // [SEO] 수정 시에도 IndexNow 알림 (재크롤링 유도)
     if (board !== 'notice') {
       const postUrl = `https://happyyein.kr/${board === 'before-after' ? 'before-after' : 'blog'}/${id}`;
-      notifySearchEngines(postUrl).catch(() => {});
+      // 응답 뒤에도 핑이 끊기지 않도록 waitUntil (없으면 기존처럼 비동기 호출)
+      const ping = notifySearchEngines(postUrl).catch(() => {});
+      try { c.executionCtx.waitUntil(ping) } catch {}
     }
 
     return c.json({ success: true })

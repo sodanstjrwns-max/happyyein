@@ -325,9 +325,12 @@ const treatments: TreatmentPage[] = [
   },
 ];
 
-const allTreatmentLinks = treatments.map(t => ({ slug: t.slug, title: t.title, tag: t.tag }));
+export const allTreatmentLinks = treatments.map(t => ({ slug: t.slug, title: t.title, tag: t.tag }));
 
-export function renderTreatmentPage(slug: string): string | null {
+type RelatedPost = { id: number; title: string; created_at: string };
+const escT = (x: string) => (x || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+export function renderTreatmentPage(slug: string, related: { columns: RelatedPost[]; cases: RelatedPost[] } = { columns: [], cases: [] }): string | null {
   const t = treatments.find(x => x.slug === slug);
   if (!t) return null;
 
@@ -552,6 +555,20 @@ ${nav('treatments')}
     </div>
   </div>
 </section>
+
+<!-- 관련 칼럼·치료 사례 (진료 ↔ 칼럼/사례 내부 링크, 2026-10-03) -->
+${related.columns.length || related.cases.length ? `<section class="tx-related" style="max-width:1100px;margin:0 auto;padding:40px 20px 0;">
+  ${related.columns.length ? `<h2 style="font-size:clamp(18px,3vw,22px);font-weight:800;color:#1a1a1a;margin:0 0 14px;">${t.title} 관련 칼럼</h2>
+  <ul style="list-style:none;padding:0;margin:0 0 12px;border-top:1px solid #eee;">
+    ${related.columns.map(p => `<li style="border-bottom:1px solid #eee;"><a href="/blog/${p.id}" style="display:flex;justify-content:space-between;gap:16px;padding:12px 4px;color:#222;text-decoration:none;font-size:15px;"><span>${escT(p.title)}</span><time datetime="${String(p.created_at).slice(0, 10)}" style="color:#999;font-size:13px;white-space:nowrap;">${String(p.created_at).slice(0, 10)}</time></a></li>`).join('')}
+  </ul>
+  <p style="margin:0 0 24px;"><a href="/blog?cat=${t.slug}" style="color:var(--gold-deep);font-weight:700;font-size:14px;">${t.title} 칼럼 전체 보기 →</a></p>` : ''}
+  ${related.cases.length ? `<h2 style="font-size:clamp(18px,3vw,22px);font-weight:800;color:#1a1a1a;margin:0 0 14px;">${t.title} 치료 사례</h2>
+  <ul style="list-style:none;padding:0;margin:0 0 12px;border-top:1px solid #eee;">
+    ${related.cases.map(p => `<li style="border-bottom:1px solid #eee;"><a href="/before-after/${p.id}" style="display:block;padding:12px 4px;color:#222;text-decoration:none;font-size:15px;">${escT(p.title)}</a></li>`).join('')}
+  </ul>
+  <p style="margin:0;"><a href="/before-after?cat=${t.slug}" style="color:var(--gold-deep);font-weight:700;font-size:14px;">${t.title} 사례 전체 보기 →</a></p>` : ''}
+</section>` : ''}
 
 <!-- 지역별 진료 안내 (Local SEO 내부 링크) -->
 <section style="max-width:1100px; margin:0 auto; padding:40px 20px;">

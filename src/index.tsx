@@ -1,7 +1,8 @@
 import { Hono } from 'hono'
 import { renderTreatmentPage } from './treatments'
 import { philosophyPage, doctorsPage, experiencePage, locationPage } from './pages'
-import { boardListPage, boardDetailPage, boardWritePage, boardEditPage } from './board-pages'
+import { boardListPage, boardDetailPage, boardWritePage, boardEditPage, relatedForTreatment, fetchLitePosts } from './board-pages'
+import { treatmentForPost, kstYmd } from './column-seo'
 import { uploadApi, imagesApi } from './api-upload'
 import boardsApi from './api-boards'
 import authApi, { requireAdmin } from './api-auth'
@@ -1792,9 +1793,11 @@ app.get('/experience', (c) => c.html(experiencePage()))
 app.get('/location', (c) => c.html(locationPage()))
 
 // ===== TREATMENT DETAIL PAGES =====
-app.get('/treatments/:slug', (c) => {
+app.get('/treatments/:slug', async (c) => {
   const slug = c.req.param('slug')
-  const html = renderTreatmentPage(slug)
+  // 진료 상세에 같은 진료의 최신 칼럼·치료 사례 링크 노출 (DB 실패 시 빈 목록)
+  const related = await relatedForTreatment(c.env.DB, slug).catch(() => ({ columns: [], cases: [] }))
+  const html = renderTreatmentPage(slug, related)
   if (!html) return c.notFound()
   return c.html(html)
 })
@@ -1894,29 +1897,32 @@ app.route('/api/indexing', indexingApi)
 
 // ===== BOARD PAGE ROUTES =====
 // 비포 & 애프터
-app.get('/before-after', async (c) => c.html(await boardListPage('before-after', c.env.DB, parseInt(c.req.query('page') || '1'))))
+app.get('/before-after', async (c) => c.html(await boardListPage('before-after', c.env.DB, parseInt(c.req.query('page') || '1'), c.req.query('cat') || '')))
 app.get('/before-after/write', (c) => c.html(boardWritePage('before-after')))
 app.get('/before-after/:id/edit', (c) => c.html(boardEditPage('before-after')))
 app.get('/before-after/:id', async (c) => {
   const html = await boardDetailPage('before-after', c.env.DB, c.req.param('id'))
+  if (!html) return c.notFound() // 없는 글은 soft 404 대신 404
   return c.html(html)
 })
 
 // 블로그
-app.get('/blog', async (c) => c.html(await boardListPage('blog', c.env.DB, parseInt(c.req.query('page') || '1'))))
+app.get('/blog', async (c) => c.html(await boardListPage('blog', c.env.DB, parseInt(c.req.query('page') || '1'), c.req.query('cat') || '')))
 app.get('/blog/write', (c) => c.html(boardWritePage('blog')))
 app.get('/blog/:id/edit', (c) => c.html(boardEditPage('blog')))
 app.get('/blog/:id', async (c) => {
   const html = await boardDetailPage('blog', c.env.DB, c.req.param('id'))
+  if (!html) return c.notFound() // 없는 글은 soft 404 대신 404
   return c.html(html)
 })
 
 // 공지사항
-app.get('/notice', async (c) => c.html(await boardListPage('notice', c.env.DB, parseInt(c.req.query('page') || '1'))))
+app.get('/notice', async (c) => c.html(await boardListPage('notice', c.env.DB, parseInt(c.req.query('page') || '1'), c.req.query('cat') || '')))
 app.get('/notice/write', (c) => c.html(boardWritePage('notice')))
 app.get('/notice/:id/edit', (c) => c.html(boardEditPage('notice')))
 app.get('/notice/:id', async (c) => {
   const html = await boardDetailPage('notice', c.env.DB, c.req.param('id'))
+  if (!html) return c.notFound() // 없는 글은 soft 404 대신 404
   return c.html(html)
 })
 
@@ -2265,7 +2271,7 @@ app.get('/sitemap.xml', async (c) => {
 
     for (const post of (posts.results || []) as any[]) {
       const slug = post.board === 'before-after' ? 'before-after' : 'blog';
-      const postDate = (post.updated_at || post.created_at || today).substring(0, 10);
+      const postDate = kstYmd(post.updated_at || post.created_at) || today; // D1 UTC → KST 날짜 (스키마 dateModified 와 일치)
       const images: { url: string; title: string }[] = [];
 
       // 썸네일 이미지
@@ -2296,6 +2302,24 @@ app.get('/sitemap.xml', async (c) => {
     }
   } catch (e) { /* DB 오류 시 정적 URL만 */ }
 
+  // 목록(/blog·/before-after) lastmod = 그 게시판 최신 글 날짜(고정 상수 대신 실제 값),
+  // 진료별 칼럼·사례 목록(?cat=)도 글이 있는 진료만 포함 (2026-10-03 칼럼·케이스 표준)
+  try {
+    const lite = await fetchLitePosts(db);
+    for (const board of ['blog', 'before-after']) {
+      const rows = lite.filter(p => p.board === board);
+      if (!rows.length) continue;
+      const latestOf = (rs: typeof rows) => rs.map(p => kstYmd(p.updated_at || p.created_at)).sort().pop() || today;
+      const listEntry = staticUrls.find(u => u.loc === `/${board}`);
+      if (listEntry) listEntry.lastmod = latestOf(rows);
+      const byCat: Record<string, typeof rows> = {};
+      for (const p of rows) { const s = treatmentForPost(p.seo_keyword, p.title); if (s) (byCat[s] = byCat[s] || []).push(p); }
+      for (const [cat, rs] of Object.entries(byCat)) {
+        postUrls.push({ loc: `/${board}?cat=${cat}`, priority: '0.6', changefreq: 'weekly', lastmod: latestOf(rs), images: [] });
+      }
+    }
+  } catch (e) { /* 목록 lastmod 기존값 유지 */ }
+
   const allUrls = [...staticUrls, ...postUrls];
 
   // XML 특수문자 이스케이프
@@ -2305,7 +2329,7 @@ app.get('/sitemap.xml', async (c) => {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${allUrls.map(u => `  <url>
-    <loc>${domain}${u.loc}</loc>
+    <loc>${domain}${escXml(u.loc)}</loc>
     <lastmod>${u.lastmod}</lastmod>
     <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>${u.images.map(img => `

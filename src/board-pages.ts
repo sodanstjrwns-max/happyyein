@@ -1,6 +1,7 @@
 // 게시판 페이지 렌더러 — 비포애프터, 블로그, 공지사항
 // 리스트 페이지, 상세 페이지, 관리자 작성/수정 페이지
 import { head, nav, footer, scripts } from './layout'
+import { SITE_URL, ORG_ID, WEBSITE_ID, DR_HAN_ID, treatmentForPost, treatmentTitle, withAnswerSummary, faqsFromArticleHtml, enhanceContentImages, stripTags, escHtml, isoKst, kstYmd } from './column-seo'
 
 // ==========================================
 // 게시판별 설정
@@ -277,6 +278,32 @@ const boardCSS = `
   .board-detail-title{font-size:clamp(1.1rem,4vw,1.5rem);}
   .board-card-body h3{font-size:0.88rem;}
 }
+/* ===== 칼럼·사례 SEO 블록 (2026-10-03, 사이트 토큰 사용) ===== */
+.answer-summary{margin:8px 0 40px;padding:22px 26px;border:1px solid rgba(247,186,24,0.25);border-left:4px solid var(--gold);border-radius:0 16px 16px 0;background:rgba(247,186,24,0.05);}
+.answer-summary .answer-summary-label{font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:2px;color:var(--gold);margin:0 0 8px;text-transform:uppercase;}
+.answer-summary p{margin:0;color:var(--white);font-size:1.02rem;line-height:1.9;font-weight:400;}
+.answer-summary p strong{color:var(--white);}
+.detail-author-card a{color:inherit;text-decoration:none;}
+.detail-author-info .author-updated{font-family:var(--font-mono);font-size:0.68rem;color:var(--gray);letter-spacing:0.5px;margin-top:4px;}
+.post-disclaimer{margin-top:40px;font-size:0.78rem;color:var(--gray);line-height:1.7;border-top:1px solid rgba(255,255,255,0.06);padding-top:16px;}
+.post-links{margin-top:56px;padding-top:36px;border-top:1px solid rgba(255,255,255,0.08);display:grid;gap:36px;}
+.post-links h2{font-family:var(--font-kr);font-size:1.05rem;font-weight:700;color:var(--gold);margin:0 0 14px;}
+.post-links ul{list-style:none;padding:0;margin:0;}
+.post-links li{padding:10px 0;border-bottom:1px dashed rgba(255,255,255,0.06);}
+.post-links li a{color:var(--gray-light);text-decoration:none;font-size:0.92rem;display:flex;justify-content:space-between;gap:16px;}
+.post-links li a:hover{color:var(--gold);}
+.post-links li time{color:var(--gray);font-size:0.78rem;white-space:nowrap;font-family:var(--font-mono);}
+.post-tx-link{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border:1px solid rgba(247,186,24,0.35);border-radius:999px;color:var(--gold);text-decoration:none;font-weight:600;font-size:0.92rem;}
+.post-tx-link:hover{background:rgba(247,186,24,0.08);}
+.case-summary{margin:32px 0;padding:22px 26px;border:1px solid rgba(255,255,255,0.08);border-radius:16px;background:rgba(255,255,255,0.02);}
+.case-summary h2{font-family:var(--font-kr);font-size:1.05rem;font-weight:700;color:var(--gold);margin:0 0 12px;}
+.case-summary dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;margin:0;font-size:0.92rem;}
+.case-summary dt{color:var(--gray);}
+.case-summary dd{margin:0;color:var(--gray-light);}
+.board-cat-filter{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 8px;}
+.board-cat-filter a{padding:8px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:999px;color:var(--gray-light);text-decoration:none;font-size:0.82rem;}
+.board-cat-filter a.active,.board-cat-filter a:hover{border-color:var(--gold);color:var(--gold);}
+
 `;
 
 // ==========================================
@@ -447,30 +474,58 @@ updatePreview();
 // 서버용 날짜 포맷
 function formatDateServer(d: string): string { return d ? String(d).substring(0, 10) : ''; }
 
-export async function boardListPage(board: string, db: D1Database, page: number = 1): Promise<string> {
+export async function boardListPage(board: string, db: D1Database, page: number = 1, cat: string = ''): Promise<string> {
   const cfg = BOARD_CONFIG[board]
   if (!cfg) return ''
 
   const limit = 12;
   if (!page || page < 1 || isNaN(page)) page = 1;
   const offset = (page - 1) * limit;
+  // 진료별 필터(?cat=implant 등) — 칼럼·사례만, 알려진 진료 slug 만 허용
+  if (board === 'notice' || !treatmentTitle(cat)) cat = '';
+  const catName = cat ? treatmentTitle(cat) : '';
 
   // [SEO] SSR: 서버에서 목록 조회 — 크롤러가 첫 요청에서 모든 포스트 링크를 발견하도록
   let posts: any[] = [];
   let total = 0;
   let countOk = false;
   const imagesByPost: Record<number, { image_url: string; image_type: string }[]> = {};
+  const catCounts: Record<string, number> = {};
   try {
-    const cnt = await db.prepare('SELECT COUNT(*) as total FROM posts WHERE board = ? AND is_published = 1').bind(board).first() as any;
-    total = cnt?.total || 0;
-    countOk = true;
-    const rs = await db.prepare(
-      `SELECT p.id, p.title, p.thumbnail_url, p.view_count, p.created_at,
-              (SELECT COUNT(*) FROM post_images pi WHERE pi.post_id = p.id) as image_count
-       FROM posts p WHERE p.board = ? AND p.is_published = 1
-       ORDER BY p.created_at DESC LIMIT ? OFFSET ?`
-    ).bind(board, limit, offset).all();
-    posts = (rs.results || []) as any[];
+    if (board !== 'notice') {
+      const lite = (await fetchLitePosts(db)).filter(p => p.board === board);
+      for (const p of lite) {
+        const s = treatmentForPost(p.seo_keyword, p.title);
+        if (s) catCounts[s] = (catCounts[s] || 0) + 1;
+      }
+      if (cat) {
+        const ids = lite.filter(p => treatmentForPost(p.seo_keyword, p.title) === cat).map(p => p.id);
+        total = ids.length;
+        countOk = true;
+        const pageIds = ids.slice(offset, offset + limit);
+        if (pageIds.length) {
+          const ph = pageIds.map(() => '?').join(',');
+          const rs = await db.prepare(
+            `SELECT p.id, p.title, p.thumbnail_url, p.view_count, p.created_at, p.updated_at,
+                    (SELECT COUNT(*) FROM post_images pi WHERE pi.post_id = p.id) as image_count
+             FROM posts p WHERE p.id IN (${ph}) ORDER BY p.created_at DESC`
+          ).bind(...pageIds).all();
+          posts = (rs.results || []) as any[];
+        }
+      }
+    }
+    if (!cat) {
+      const cnt = await db.prepare('SELECT COUNT(*) as total FROM posts WHERE board = ? AND is_published = 1').bind(board).first() as any;
+      total = cnt?.total || 0;
+      countOk = true;
+      const rs = await db.prepare(
+        `SELECT p.id, p.title, p.thumbnail_url, p.view_count, p.created_at, p.updated_at,
+                (SELECT COUNT(*) FROM post_images pi WHERE pi.post_id = p.id) as image_count
+         FROM posts p WHERE p.board = ? AND p.is_published = 1
+         ORDER BY p.created_at DESC LIMIT ? OFFSET ?`
+      ).bind(board, limit, offset).all();
+      posts = (rs.results || []) as any[];
+    }
     if (board === 'before-after' && posts.length) {
       const ids = posts.map(p => p.id);
       const ph = ids.map(() => '?').join(',');
@@ -482,6 +537,9 @@ export async function boardListPage(board: string, db: D1Database, page: number 
   } catch (e) { /* DB 오류 시 빈 목록으로 진행 */ }
 
   const totalPages = Math.max(1, Math.ceil(total / limit));
+  const basePath = cat ? `/${cfg.slug}?cat=${cat}` : `/${cfg.slug}`;
+  const pageUrl = (n: number) => n === 1 ? basePath : `${basePath}${cat ? '&' : '?'}page=${n}`;
+  const selfPath = pageUrl(page);
 
   // 카드 목록 (SSR — 실제 <a href> 링크)
   let listHtml = '';
@@ -493,8 +551,9 @@ export async function boardListPage(board: string, db: D1Database, page: number 
       const beforeImg = imgs.find(i => i.image_type === 'before_intra') || imgs.find(i => i.image_type === 'before_pano');
       const afterImg = imgs.find(i => i.image_type === 'after_intra') || imgs.find(i => i.image_type === 'after_pano');
       const t = escHtmlServer(p.title);
-      const beforeHtml = beforeImg ? `<img src="${beforeImg.image_url}" alt="${t} 치료 전" loading="lazy">` : (p.thumbnail_url ? `<img src="${p.thumbnail_url}" alt="${t} 치료 사례 사진" loading="lazy">` : '<div class="no-img"><i class="fas fa-image"></i></div>');
-      const afterHtml = afterImg ? `<img src="${afterImg.image_url}" alt="${t} 치료 후" loading="lazy">` : '<div class="no-img"><i class="fas fa-image"></i></div>';
+      const txn = escHtmlServer(treatmentTitle(treatmentForPost(null, p.title)) || p.title);
+      const beforeHtml = beforeImg ? `<img src="${beforeImg.image_url}" alt="${txn} 치료 전" loading="lazy" decoding="async">` : (p.thumbnail_url ? `<img src="${p.thumbnail_url}" alt="${t} 치료 사례 사진" loading="lazy" decoding="async">` : '<div class="no-img"><i class="fas fa-image"></i></div>');
+      const afterHtml = afterImg ? `<img src="${afterImg.image_url}" alt="${txn} 치료 후" loading="lazy" decoding="async">` : '<div class="no-img"><i class="fas fa-image"></i></div>';
       return `<a href="/${cfg.slug}/${p.id}" class="ba-card rv"><div class="ba-photos"><div class="ba-photo">${beforeHtml}<span class="ba-photo-label">Before</span></div><div class="ba-photo">${afterHtml}<span class="ba-photo-label after-label">After</span></div></div><div class="ba-card-body"><h3>${t}</h3><div class="ba-card-meta">${formatDateServer(p.created_at)} &middot; <i class="fas fa-eye"></i> ${p.view_count} &middot; <i class="fas fa-images"></i> ${p.image_count}</div></div></a>`;
     }).join('') + '</div>';
   } else if (board === 'notice') {
@@ -506,26 +565,68 @@ export async function boardListPage(board: string, db: D1Database, page: number 
   } else {
     listHtml = '<div class="board-grid">' + posts.map(p => {
       const t = escHtmlServer(p.title);
-      const thumb = p.thumbnail_url ? `<img src="${p.thumbnail_url}" alt="${t} 대표 이미지" loading="lazy">` : '<div class="no-img"><i class="fas fa-pen-nib"></i></div>';
-      return `<a href="/${cfg.slug}/${p.id}" class="board-card rv"><div class="board-card-img">${thumb}</div><div class="board-card-body"><h3>${t}</h3><div class="board-card-meta"><span><i class="far fa-calendar-alt"></i> ${formatDateServer(p.created_at)}</span><span><i class="fas fa-eye"></i> ${p.view_count}</span>${p.thumbnail_url ? '<span><i class="fas fa-image"></i></span>' : ''}</div><div class="board-card-author"><img src="/static/img/dr-han-profile.webp" alt="한승대 대표원장"><div class="author-text"><span class="author-name">한승대 대표원장</span><span class="author-role">통합치의학과 전문의</span></div></div></div></a>`;
+      const thumb = p.thumbnail_url ? `<img src="${p.thumbnail_url}" alt="${t} 대표 이미지" loading="lazy" decoding="async">` : '<div class="no-img"><i class="fas fa-pen-nib"></i></div>';
+      return `<a href="/${cfg.slug}/${p.id}" class="board-card rv"><div class="board-card-img">${thumb}</div><div class="board-card-body"><h3>${t}</h3><div class="board-card-meta"><span><i class="far fa-calendar-alt"></i> ${formatDateServer(p.created_at)}</span><span><i class="fas fa-eye"></i> ${p.view_count}</span>${p.thumbnail_url ? '<span><i class="fas fa-image"></i></span>' : ''}</div><div class="board-card-author"><img src="/static/img/dr-han-profile.webp" alt="한승대 대표원장" width="36" height="36" loading="lazy" decoding="async"><div class="author-text"><span class="author-name">한승대 대표원장</span><span class="author-role">통합치의학과 전문의</span></div></div></div></a>`;
     }).join('') + '</div>';
+  }
+
+  // 진료별 필터 링크 (a 태그 — 크롤 가능)
+  let filterHtml = '';
+  const catSlugs = Object.keys(catCounts);
+  if (board !== 'notice' && catSlugs.length) {
+    const order = ['implant', 'preservation', 'orthodontics', 'aesthetic', 'general'];
+    filterHtml = `<div role="navigation" class="board-cat-filter" aria-label="진료별 ${cfg.name}"><a href="/${cfg.slug}"${!cat ? ' class="active" aria-current="page"' : ''}>전체</a>`
+      + order.filter(s => catCounts[s]).map(s => `<a href="/${cfg.slug}?cat=${s}"${cat === s ? ' class="active" aria-current="page"' : ''}>${escHtmlServer(treatmentTitle(s))} <span style="opacity:.6">${catCounts[s]}</span></a>`).join('')
+      + '</div>';
   }
 
   // 페이지네이션 (SSR — 실제 href 링크라 크롤러가 2페이지 이후 글도 발견)
   let pagHtml = '';
   if (totalPages > 1) {
-    const pageUrl = (n: number) => n === 1 ? `/${cfg.slug}` : `/${cfg.slug}?page=${n}`;
-    pagHtml = '<div class="board-pagination">';
-    if (page > 1) pagHtml += `<a href="${pageUrl(page - 1)}"><i class="fas fa-chevron-left"></i></a>`;
+    pagHtml = '<div role="navigation" class="board-pagination" aria-label="페이지">';
+    if (page > 1) pagHtml += `<a href="${pageUrl(page - 1)}" rel="prev" aria-label="이전 페이지"><i class="fas fa-chevron-left"></i></a>`;
     for (let i = 1; i <= totalPages; i++) {
-      pagHtml += i === page ? `<span class="active">${i}</span>` : `<a href="${pageUrl(i)}">${i}</a>`;
+      pagHtml += i === page ? `<span class="active" aria-current="page">${i}</span>` : `<a href="${pageUrl(i)}">${i}</a>`;
     }
-    if (page < totalPages) pagHtml += `<a href="${pageUrl(page + 1)}"><i class="fas fa-chevron-right"></i></a>`;
+    if (page < totalPages) pagHtml += `<a href="${pageUrl(page + 1)}" rel="next" aria-label="다음 페이지"><i class="fas fa-chevron-right"></i></a>`;
     pagHtml += '</div>';
   }
 
+  // CollectionPage + ItemList (현재 페이지 글)
+  const listUrl = `${SITE_URL}${selfPath}`;
+  const listName = `${catName ? catName + ' ' : ''}${cfg.name}${page > 1 ? ` ${page}페이지` : ''}`;
+  const listLd = board === 'notice' ? undefined : [{
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${listUrl}#webpage`,
+        "url": listUrl,
+        "name": `${listName} | 행복한예인치과`,
+        "inLanguage": "ko-KR",
+        "isPartOf": { "@id": WEBSITE_ID },
+        "publisher": { "@id": ORG_ID },
+        ...(cat ? { "about": { "@id": `${SITE_URL}/treatments/${cat}#procedure` } } : {}),
+        "mainEntity": { "@id": `${listUrl}#itemlist` },
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${listUrl}#itemlist`,
+        "numberOfItems": posts.length,
+        "itemListElement": posts.map((p, i) => ({ "@type": "ListItem", "position": offset + i + 1, "url": `${SITE_URL}/${cfg.slug}/${p.id}`, "name": p.title })),
+      },
+    ],
+  }];
+
+  const title = `${catName ? catName + ' ' : ''}${cfg.name}${page > 1 ? ` (${page}페이지)` : ''}`;
+  const desc = catName
+    ? `행복한예인치과 ${catName} 관련 ${cfg.name === '블로그' ? '칼럼' : '치료 사례'} 모음${page > 1 ? ` ${page}페이지` : ''} — 시청역·명동 통합치의학과 전문의가 진료 과정과 주의사항을 설명합니다.`
+    : (page > 1 ? `${cfg.metaDesc} (${page}페이지)` : cfg.metaDesc);
+  const noindexFollow = countOk && (total === 0 || page > totalPages);
+
   // 게시물이 하나도 없는 목록은 얇은 페이지 — 글이 생길 때까지 noindex, follow (사이트맵에서도 제외)
-  return `${head({ title: cfg.name, description: cfg.metaDesc, path: `/${cfg.slug}`, noindexFollow: countOk && total === 0 })}
+  return `${head({ title, description: desc, path: selfPath, noindexFollow, jsonLd: listLd,
+    breadcrumbs: [{ name: '홈', url: '/' }, { name: cfg.name, url: `/${cfg.slug}` }, ...(cat ? [{ name: catName, url: basePath }] : [])] })}
 ${nav(cfg.navKey)}
 
 <!-- HERO -->
@@ -537,11 +638,11 @@ ${nav(cfg.navKey)}
   <div class="sub-hero-breadcrumb">
     <a href="/">Home</a>
     <span class="sep"><i class="fas fa-chevron-right"></i></span>
-    <span style="color:var(--gold)">${cfg.nameEn}</span>
+    ${cat ? `<a href="/${cfg.slug}">${cfg.nameEn}</a><span class="sep"><i class="fas fa-chevron-right"></i></span><span style="color:var(--gold)">${escHtmlServer(catName)}</span>` : `<span style="color:var(--gold)">${cfg.nameEn}</span>`}
   </div>
   <div class="sub-hero-content">
     <div class="sub-hero-tag">${cfg.nameEn}</div>
-    <h1><em>${cfg.name}</em></h1>
+    <h1><em>${catName ? escHtmlServer(catName) + ' ' : ''}${cfg.name}</em></h1>
   </div>
 </section>
 
@@ -551,6 +652,8 @@ ${nav(cfg.navKey)}
   <div class="page-inner">
     <div class="sec-label">${cfg.nameEn}</div>
     <h2 class="sec-title rv">${cfg.name === '비포 & 애프터' ? '실제 <em>치료 사례</em>' : cfg.name === '블로그' ? '치과 <em>이야기</em>' : '<em>병원</em> 소식'}</h2>
+    ${filterHtml}
+    ${cat ? `<p style="margin:8px 0 0;color:var(--gray-light);font-size:0.9rem;"><a href="/treatments/${cat}" style="color:var(--gold);">${escHtmlServer(catName)} 진료 안내 보기 →</a></p>` : ''}
 
     ${listHtml}
     ${pagHtml}
@@ -577,334 +680,288 @@ function stripHtml(html: string): string {
 }
 
 interface BoardDetailData {
-  post: { id: number; title: string; content: string; thumbnail: string; view_count: number; created_at: string; } | null;
+  post: { id: number; title: string; content: string; thumbnail_url?: string; view_count: number; created_at: string; updated_at?: string; is_published?: number; seo_keyword?: string; seo_description?: string; seo_tags?: string } | null;
   images: { image_url: string; image_type: string; }[];
 }
 
-export async function boardDetailPage(board: string, db: D1Database, postId: string): Promise<string> {
+// 관련 글 후보(가벼운 컬럼만) — 진료 매핑·관련 칼럼/사례 내부 링크용
+type LitePost = { id: number; board: string; title: string; seo_keyword: string | null; created_at: string; updated_at: string | null };
+
+export async function fetchLitePosts(db: D1Database): Promise<LitePost[]> {
+  try {
+    const rs = await db.prepare(
+      `SELECT id, board, title, seo_keyword, created_at, updated_at FROM posts
+       WHERE is_published = 1 AND board IN ('blog','before-after') ORDER BY created_at DESC LIMIT 500`
+    ).all();
+    return (rs.results || []) as any[];
+  } catch { return []; }
+}
+
+/** 진료 상세에 붙일 관련 칼럼·사례 (진료 매핑이 같은 최신 글) */
+export async function relatedForTreatment(db: D1Database, slug: string): Promise<{ columns: LitePost[]; cases: LitePost[] }> {
+  const all = await fetchLitePosts(db);
+  const match = all.filter(p => treatmentForPost(p.seo_keyword, p.title) === slug);
+  const kst = (p: LitePost) => ({ ...p, created_at: kstYmd(p.created_at) });
+  return {
+    columns: match.filter(p => p.board === 'blog').slice(0, 5).map(kst),
+    cases: match.filter(p => p.board === 'before-after').slice(0, 4).map(kst),
+  };
+}
+
+/**
+ * 상세 페이지. 글이 없으면 null(라우트가 404 처리).
+ * 칼럼·사례 표준(PFWE-COLUMN-CASE-SEO.md): 제목 = "{글 제목} | 행복한예인치과", 핵심 답변 박스,
+ * 작성자 박스(→ /doctors), @graph(BlogPosting + MedicalWebPage, BreadcrumbList, 질문형 H3 FAQPage, speakable),
+ * 관련 진료·칼럼·사례 내부 링크.
+ */
+export async function boardDetailPage(board: string, db: D1Database, postId: string): Promise<string | null> {
   const cfg = BOARD_CONFIG[board]
-  if (!cfg) return ''
+  if (!cfg) return null
+  if (!/^\d+$/.test(postId)) return null
 
-  const SITE_DOMAIN = 'https://happyyein.kr';
+  const SITE_DOMAIN = SITE_URL;
 
-  // SSR: 서버에서 글 데이터 조회 (조회수 증가 포함)
+  // SSR: 서버에서 글 데이터 조회 (조회수 증가 포함 — 기존 동작 유지)
   let postData: BoardDetailData = { post: null, images: [] };
+  let lite: LitePost[] = [];
   try {
     await db.prepare('UPDATE posts SET view_count = view_count + 1 WHERE board = ? AND id = ?').bind(board, postId).run();
     const post = await db.prepare('SELECT * FROM posts WHERE board = ? AND id = ?').bind(board, postId).first() as any;
     if (post) {
       const images = await db.prepare('SELECT image_url, image_type, sort_order FROM post_images WHERE post_id = ? ORDER BY sort_order').bind(post.id).all();
       postData = { post, images: (images.results || []) as any };
-      // [SEO] 관련 글 SSR 내부링크 — 크롤러가 글→글로 탐색하도록 (색인 전파)
-      try {
-        const rel = await db.prepare(
-          `SELECT id, title, created_at FROM posts WHERE board = ? AND id != ? AND is_published = 1 ORDER BY created_at DESC LIMIT 6`
-        ).bind(board, postId).all();
-        (postData as any).related = (rel.results || []) as any[];
-      } catch (e) { (postData as any).related = []; }
+      if (board !== 'notice') lite = await fetchLitePosts(db);
     }
   } catch (e) { /* DB 오류 시 빈 데이터로 진행 */ }
 
-  // 동적 SEO 메타 생성
-  const hasPost = !!postData.post;
-  const postTitle = hasPost ? postData.post!.title : '게시글을 찾을 수 없습니다';
-  const pageTitle = hasPost ? `${postTitle} - ${cfg.name}` : `${cfg.name}`;
+  if (!postData.post) return null
+  const post = postData.post;
+  const images = postData.images;
+  const isPublished = post.is_published === undefined || Number(post.is_published) === 1;
 
-  // [Issue #6] DB의 seo_description 우선 사용 → 없으면 본문에서 추출
-  let pageDesc = cfg.metaDesc;
-  if (hasPost) {
-    const seoDesc = (postData.post as any).seo_description;
-    if (seoDesc && seoDesc.length > 20) {
-      pageDesc = seoDesc;
-    } else if (postData.post!.content) {
-      const plainText = stripHtml(postData.post!.content);
-      pageDesc = plainText.length > 155 ? plainText.substring(0, 155) + '...' : plainText;
-      if (pageDesc.length < 50) pageDesc = `${postTitle} - ${cfg.metaDesc}`;
-    }
+  const postTitle = post.title;
+  const canonicalPath = `/${cfg.slug}/${postId}`;
+  const pageUrl = `${SITE_DOMAIN}${canonicalPath}`;
+  const txSlug = board === 'notice' ? '' : treatmentForPost(post.seo_keyword, postTitle);
+  const txName = txSlug ? treatmentTitle(txSlug) : '';
+
+  // 본문 가공: 이미지 alt/lazy, 칼럼은 핵심 답변 박스
+  let bodyHtml = post.content ? enhanceContentImages(post.content, postTitle) : '';
+  let answerSummary = '';
+  if (board === 'blog' && bodyHtml) {
+    const r = withAnswerSummary(bodyHtml);
+    bodyHtml = r.html; answerSummary = r.summary;
+  }
+  const faqs = board === 'blog' ? faqsFromArticleHtml(post.content || '') : [];
+
+  // 비포애프터: 구조 필드로 자동 요약 (데이터에 있는 값만)
+  const beforeIntra = images.find(i => i.image_type === 'before_intra');
+  const afterIntra = images.find(i => i.image_type === 'after_intra');
+  const beforePano = images.find(i => i.image_type === 'before_pano');
+  const afterPano = images.find(i => i.image_type === 'after_pano');
+  const photoKinds = [beforeIntra || afterIntra ? '구내 사진' : '', beforePano || afterPano ? '파노라마 엑스레이' : ''].filter(Boolean);
+  const caseAuto = board === 'before-after'
+    ? [txName ? `${txName} 관련 치료 전후 사례입니다.` : '치료 전후 사례입니다.',
+       photoKinds.length ? `치료 전후 ${photoKinds.join('·')}을 함께 게시했습니다.` : '',
+       '치료 결과는 개인에 따라 다를 수 있습니다.'].filter(Boolean).join(' ')
+    : '';
+
+  // 메타 설명: seo_description → 핵심 답변/본문 첫 부분 → (사례) 자동 요약
+  let pageDesc = '';
+  const seoDesc = (post.seo_description || '').trim();
+  const plain = stripTags(post.content || '');
+  if (seoDesc.length > 20) pageDesc = seoDesc;
+  else if (answerSummary) pageDesc = answerSummary;
+  else if (plain.length >= 50) pageDesc = plain;
+  else if (board === 'before-after') pageDesc = `${postTitle} — ${caseAuto} 행복한예인치과(시청역·명동).`;
+  else pageDesc = `${postTitle} — 행복한예인치과 ${cfg.name}.`;
+  if (pageDesc.length > 160) pageDesc = pageDesc.substring(0, 157).replace(/\s+\S*$/, '') + '…';
+
+  // keywords 메타 (기존 유지)
+  let pageKeywords = `${postTitle}, 행복한예인치과, ${cfg.name}, 시청역 치과, 명동 치과, 을지로 치과`;
+  if (post.seo_keyword) pageKeywords = `${post.seo_keyword}, ${pageKeywords}`;
+  if (post.seo_tags) {
+    try { const tags = JSON.parse(post.seo_tags); if (Array.isArray(tags)) pageKeywords = `${tags.join(', ')}, ${pageKeywords}`; } catch {}
   }
 
-  // [Issue #6] DB의 seo_keyword 우선 사용 → keywords 메타 강화
-  let pageKeywords = hasPost ? `${escHtmlServer(postTitle)}, 행복한예인치과, ${cfg.name}, 시청역 치과, 명동 치과, 을지로 치과` : undefined;
-  if (hasPost) {
-    const seoKeyword = (postData.post as any).seo_keyword;
-    const seoTags = (postData.post as any).seo_tags;
-    if (seoKeyword) {
-      pageKeywords = `${seoKeyword}, ${pageKeywords}`;
-    }
-    if (seoTags) {
-      try {
-        const tags = JSON.parse(seoTags);
-        if (Array.isArray(tags)) pageKeywords = `${tags.join(', ')}, ${pageKeywords}`;
-      } catch {}
-    }
-  }
+  const shouldIndex = board !== 'notice' && isPublished;
 
-  // 블로그·비포애프터 상세는 index (검색 노출), 공지사항은 noindex
-  const shouldIndex = board !== 'notice' && hasPost;
-  // canonical: 상세 페이지 자체 URL
-  const canonicalPath = hasPost ? `/${cfg.slug}/${postId}` : `/${cfg.slug}`;
+  // 이미지: 썸네일 → (칼럼) 본문 첫 이미지 → (사례) 치료 후 사진 → 사이트 기본
+  const firstContentImg = (post.content || '').match(/<img[^>]+src=["']([^"']+)["']/i)?.[1];
+  const caseImg = (afterIntra || afterPano || beforeIntra || beforePano)?.image_url;
+  const ogImageRaw = post.thumbnail_url || (board === 'before-after' ? caseImg : firstContentImg) || undefined;
+  const absImg = (u?: string) => u ? (u.startsWith('http') ? u : `${SITE_DOMAIN}${u}`) : undefined;
 
-  // OG 이미지: 썸네일 → 기본 이미지
-  const ogImage = (hasPost && postData.post!.thumbnail) ? postData.post!.thumbnail : undefined;
+  const publishedIso = isoKst(post.created_at);
+  const modifiedIso = isoKst(post.updated_at || post.created_at) || publishedIso;
 
-  // article 날짜 정보
-  const publishedTime = hasPost ? postData.post!.created_at : undefined;
-  const modifiedTime = hasPost ? ((postData.post as any).updated_at || postData.post!.created_at) : undefined;
+  // ===== JSON-LD @graph =====
+  const physician = { "@type": "Physician", "@id": DR_HAN_ID, "name": "한승대", "jobTitle": "대표원장 · 통합치의학과 전문의", "url": `${SITE_DOMAIN}/doctors` };
+  const breadcrumbItems = [
+    { name: '홈', url: `${SITE_DOMAIN}/` },
+    { name: cfg.name, url: `${SITE_DOMAIN}/${cfg.slug}` },
+    ...(txSlug && board !== 'notice' ? [{ name: txName, url: `${SITE_DOMAIN}/${cfg.slug}?cat=${txSlug}` }] : []),
+    { name: postTitle, url: pageUrl },
+  ];
+  const graph: any[] = [];
+  graph.push({
+    "@type": "BreadcrumbList",
+    "@id": `${pageUrl}#breadcrumb`,
+    "itemListElement": breadcrumbItems.map((b, i) => ({ "@type": "ListItem", "position": i + 1, "name": b.name, "item": b.url })),
+  });
 
-  // ============================================================
-  // [Issue #2] Article/BlogPosting JSON-LD (블로그)
-  // [Issue #2b] MedicalWebPage + MedicalProcedure (비포애프터)
-  // [Issue #4] FAQ JSON-LD (블로그 — auto-blog가 content에 FAQ 삽입 시)
-  // [Issue #5] ImageObject 구조화 데이터 (비포애프터)
-  // ============================================================
-  const jsonLdSchemas: object[] = [];
-
-  if (hasPost && board === 'blog') {
-    // ▶ BlogPosting / Article 스키마
-    const postContent = postData.post!.content || '';
-    const plainText = stripHtml(postContent);
-    const wordCount = plainText.replace(/\s+/g, ' ').trim().split(' ').length;
-
-    const articleSchema: any = {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "headline": postTitle,
-      "name": postTitle,
-      "description": escHtmlServer(pageDesc),
-      "url": `${SITE_DOMAIN}${canonicalPath}`,
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": `${SITE_DOMAIN}${canonicalPath}`
-      },
-      "datePublished": publishedTime,
-      "dateModified": modifiedTime || publishedTime,
-      "author": {
-        "@type": "Person",
-        "name": "한승대",
-        "jobTitle": "통합치의학과 전문의 · 대표원장",
-        "url": `${SITE_DOMAIN}/doctors`,
-        "affiliation": {
-          "@type": "Dentist",
-          "name": "행복한예인치과",
-          "url": SITE_DOMAIN
-        }
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "행복한예인치과",
-        "url": SITE_DOMAIN,
-        "logo": {
-          "@type": "ImageObject",
-          "url": `${SITE_DOMAIN}/static/img/logo.png`
-        }
-      },
-      "inLanguage": "ko",
-      "wordCount": wordCount,
-      "articleSection": cfg.name,
-      "isPartOf": {
-        "@type": "Blog",
-        "name": "행복한예인치과 블로그",
-        "url": `${SITE_DOMAIN}/blog`
-      }
-    };
-
-    // 이미지 (OG 이미지 또는 본문 내 첫 이미지)
-    if (ogImage) {
-      articleSchema.image = {
-        "@type": "ImageObject",
-        "url": ogImage.startsWith('http') ? ogImage : `${SITE_DOMAIN}${ogImage}`,
-        "caption": postTitle
-      };
-    } else {
-      // 본문에서 첫 번째 img src 추출
-      const imgMatch = postContent.match(/<img[^>]+src=["']([^"']+)["']/i);
-      if (imgMatch) {
-        articleSchema.image = {
-          "@type": "ImageObject",
-          "url": imgMatch[1].startsWith('http') ? imgMatch[1] : `${SITE_DOMAIN}${imgMatch[1]}`,
-          "caption": postTitle
-        };
-      }
-    }
-
-    // SEO 키워드 → keywords
-    const seoKeyword = (postData.post as any).seo_keyword;
-    if (seoKeyword) {
-      articleSchema.keywords = seoKeyword;
-    }
-
-    jsonLdSchemas.push(articleSchema);
-
-    // ▶ [Issue #4] FAQ 스키마 — 본문에서 FAQ 데이터 자동 추출
-    // auto-blog가 <div class="blog-faq" data-faq='[{"q":"...","a":"..."}]'> 형태로 삽입
-    const faqDataMatch = postContent.match(/data-faq='([^']+)'/);
-    if (faqDataMatch) {
-      try {
-        const faqItems = JSON.parse(faqDataMatch[1].replace(/&quot;/g, '"').replace(/&amp;/g, '&'));
-        if (Array.isArray(faqItems) && faqItems.length > 0) {
-          jsonLdSchemas.push({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": faqItems.map((faq: any) => ({
-              "@type": "Question",
-              "name": faq.q,
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": faq.a
-              }
-            }))
-          });
-        }
-      } catch {}
-    }
-
-    // FAQ 대체 패턴: <h3> 기반 Q&A 추출 (blog-callout 내부 등)
-    if (!faqDataMatch) {
-      const faqRegex = /<h3[^>]*>\s*(?:Q[.:]?\s*|질문[.:]?\s*)?(.+?)<\/h3>\s*<p[^>]*>\s*(?:A[.:]?\s*|답변[.:]?\s*)?(.+?)<\/p>/gi;
-      const faqItems: { q: string; a: string }[] = [];
-      let match;
-      while ((match = faqRegex.exec(postContent)) !== null) {
-        const q = stripHtml(match[1]).trim();
-        const a = stripHtml(match[2]).trim();
-        if (q.endsWith('?') || q.endsWith('요') || q.endsWith('까')) {
-          faqItems.push({ q, a });
-        }
-      }
-      if (faqItems.length >= 2) {
-        jsonLdSchemas.push({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": faqItems.slice(0, 10).map(faq => ({
-            "@type": "Question",
-            "name": faq.q,
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": faq.a
-            }
-          }))
-        });
-      }
-    }
-  }
-
-  if (hasPost && board === 'before-after') {
-    // ▶ [Issue #2b] MedicalWebPage 스키마
-    const medicalPageSchema: any = {
-      "@context": "https://schema.org",
+  if (board === 'blog') {
+    const imgUrl = absImg(ogImageRaw);
+    graph.push({
       "@type": "MedicalWebPage",
+      "@id": `${pageUrl}#webpage`,
+      "url": pageUrl,
       "name": postTitle,
-      "headline": postTitle,
-      "description": escHtmlServer(pageDesc),
-      "url": `${SITE_DOMAIN}${canonicalPath}`,
-      "datePublished": publishedTime,
-      "dateModified": modifiedTime || publishedTime,
-      "inLanguage": "ko",
-      "medicalAudience": {
-        "@type": "MedicalAudience",
-        "audienceType": "Patient"
-      },
-      "author": {
-        "@type": "Person",
-        "name": "한승대",
-        "jobTitle": "통합치의학과 전문의 · 대표원장"
-      },
-      "publisher": {
-        "@type": "Dentist",
-        "name": "행복한예인치과",
-        "url": SITE_DOMAIN
-      }
-    };
-
-    // ▶ [Issue #5] ImageObject before/after 구조화 데이터
-    const images = postData.images;
-    const beforeIntra = images.find((i: any) => i.image_type === 'before_intra');
-    const afterIntra = images.find((i: any) => i.image_type === 'after_intra');
-    const beforePano = images.find((i: any) => i.image_type === 'before_pano');
-    const afterPano = images.find((i: any) => i.image_type === 'after_pano');
-
-    const imageObjects: any[] = [];
-    if (beforeIntra) imageObjects.push({
-      "@type": "ImageObject",
-      "url": (beforeIntra as any).image_url.startsWith('http') ? (beforeIntra as any).image_url : `${SITE_DOMAIN}${(beforeIntra as any).image_url}`,
-      "name": `${postTitle} - 치료 전 구내사진`,
-      "description": `${postTitle} 치료 전 구내 사진 (Before)`
+      "description": pageDesc,
+      "inLanguage": "ko-KR",
+      "isPartOf": { "@id": WEBSITE_ID },
+      "breadcrumb": { "@id": `${pageUrl}#breadcrumb` },
+      "datePublished": publishedIso,
+      "dateModified": modifiedIso,
+      "reviewedBy": { "@id": DR_HAN_ID },
+      "medicalAudience": { "@type": "MedicalAudience", "audienceType": "Patient" },
+      ...(txSlug ? { "about": { "@type": "MedicalProcedure", "@id": `${SITE_DOMAIN}/treatments/${txSlug}#procedure`, "name": txName, "url": `${SITE_DOMAIN}/treatments/${txSlug}` } } : {}),
+      "speakable": { "@type": "SpeakableSpecification", "cssSelector": [".board-detail-title", ".answer-summary"] },
+      ...(imgUrl ? { "primaryImageOfPage": { "@type": "ImageObject", "url": imgUrl } } : {}),
     });
-    if (afterIntra) imageObjects.push({
-      "@type": "ImageObject",
-      "url": (afterIntra as any).image_url.startsWith('http') ? (afterIntra as any).image_url : `${SITE_DOMAIN}${(afterIntra as any).image_url}`,
-      "name": `${postTitle} - 치료 후 구내사진`,
-      "description": `${postTitle} 치료 후 구내 사진 (After)`
+    const plainText = stripTags(post.content || '');
+    graph.push({
+      "@type": "BlogPosting",
+      "@id": `${pageUrl}#article`,
+      "headline": postTitle.length > 110 ? postTitle.slice(0, 109) + '…' : postTitle,
+      "description": pageDesc,
+      "url": pageUrl,
+      "mainEntityOfPage": { "@id": `${pageUrl}#webpage` },
+      "isPartOf": { "@id": WEBSITE_ID },
+      "inLanguage": "ko-KR",
+      "datePublished": publishedIso,
+      "dateModified": modifiedIso,
+      "author": physician,
+      "reviewedBy": { "@id": DR_HAN_ID },
+      "publisher": { "@id": ORG_ID },
+      "image": imgUrl
+        ? { "@type": "ImageObject", "url": imgUrl, "caption": postTitle }
+        : { "@type": "ImageObject", "url": `${SITE_DOMAIN}/static/img/dr-han-logo.jpg` },
+      "wordCount": plainText ? plainText.split(' ').length : undefined,
+      "articleSection": txName || cfg.name,
+      ...(post.seo_keyword ? { "keywords": post.seo_keyword } : {}),
+      ...(txSlug ? { "about": { "@id": `${SITE_DOMAIN}/treatments/${txSlug}#procedure` } } : {}),
     });
-    if (beforePano) imageObjects.push({
-      "@type": "ImageObject",
-      "url": (beforePano as any).image_url.startsWith('http') ? (beforePano as any).image_url : `${SITE_DOMAIN}${(beforePano as any).image_url}`,
-      "name": `${postTitle} - 치료 전 파노라마`,
-      "description": `${postTitle} 치료 전 파노라마 엑스레이 (Before)`
-    });
-    if (afterPano) imageObjects.push({
-      "@type": "ImageObject",
-      "url": (afterPano as any).image_url.startsWith('http') ? (afterPano as any).image_url : `${SITE_DOMAIN}${(afterPano as any).image_url}`,
-      "name": `${postTitle} - 치료 후 파노라마`,
-      "description": `${postTitle} 치료 후 파노라마 엑스레이 (After)`
-    });
-
-    if (imageObjects.length > 0) {
-      medicalPageSchema.image = imageObjects;
-      // 대표 이미지 (치료 후 구내사진 우선)
-      medicalPageSchema.primaryImageOfPage = imageObjects.find(i => i.name.includes('치료 후 구내')) || imageObjects[0];
+    if (faqs.length >= 2) {
+      graph.push({
+        "@type": "FAQPage",
+        "@id": `${pageUrl}#faq`,
+        "isPartOf": { "@id": `${pageUrl}#webpage` },
+        "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })),
+      });
     }
+  }
 
-    jsonLdSchemas.push(medicalPageSchema);
-
-    // ▶ MedicalProcedure 스키마 (치과 시술 사례)
-    const procedureSchema: any = {
-      "@context": "https://schema.org",
-      "@type": "MedicalProcedure",
+  if (board === 'before-after') {
+    const photo = (im: any, label: string) => im ? { "@type": "ImageObject", "url": absImg(im.image_url), "name": `${txName || postTitle} ${label}` } : null;
+    const imgs = [photo(beforeIntra, '치료 전'), photo(afterIntra, '치료 후'), photo(beforePano, '치료 전 파노라마'), photo(afterPano, '치료 후 파노라마')].filter(Boolean);
+    graph.push({
+      "@type": "MedicalWebPage",
+      "@id": `${pageUrl}#webpage`,
+      "url": pageUrl,
       "name": postTitle,
-      "description": escHtmlServer(pageDesc),
-      "url": `${SITE_DOMAIN}${canonicalPath}`,
-      "procedureType": "http://schema.org/TherapeuticProcedure",
-      "performedBy": {
-        "@type": "Dentist",
-        "name": "행복한예인치과",
-        "url": SITE_DOMAIN,
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "서울 중구",
-          "addressCountry": "KR"
-        }
-      },
-      "status": "http://schema.org/EventCompleted"
-    };
+      "description": pageDesc,
+      "inLanguage": "ko-KR",
+      "isPartOf": { "@id": WEBSITE_ID },
+      "breadcrumb": { "@id": `${pageUrl}#breadcrumb` },
+      "datePublished": publishedIso,
+      "dateModified": modifiedIso,
+      "lastReviewed": kstYmd(post.updated_at || post.created_at),
+      "reviewedBy": physician,
+      "publisher": { "@id": ORG_ID },
+      "medicalAudience": { "@type": "MedicalAudience", "audienceType": "Patient" },
+      ...(txSlug ? { "about": { "@type": "MedicalProcedure", "@id": `${SITE_DOMAIN}/treatments/${txSlug}#procedure`, "name": txName, "url": `${SITE_DOMAIN}/treatments/${txSlug}` } } : {}),
+      "speakable": { "@type": "SpeakableSpecification", "cssSelector": [".board-detail-title", ".case-summary"] },
+      ...(imgs.length ? { "image": imgs, "primaryImageOfPage": imgs.find((i: any) => /치료 후$/.test(i.name)) || imgs[0] } : {}),
+    });
+  }
 
-    // before/after 이미지가 있으면 결과 이미지 첨부
-    if (afterIntra || afterPano) {
-      procedureSchema.image = (afterIntra || afterPano) ? {
-        "@type": "ImageObject",
-        "url": ((afterIntra || afterPano) as any).image_url.startsWith('http') ? ((afterIntra || afterPano) as any).image_url : `${SITE_DOMAIN}${((afterIntra || afterPano) as any).image_url}`,
-        "name": `${postTitle} - 치료 결과`
-      } : undefined;
+  // ===== 내부 링크 후보 =====
+  const sameTx = (p: LitePost) => txSlug && treatmentForPost(p.seo_keyword, p.title) === txSlug;
+  const others = lite.filter(p => !(p.board === board && String(p.id) === String(postId)));
+  const relColumns = others.filter(p => p.board === 'blog' && sameTx(p)).slice(0, 3);
+  const relCases = others.filter(p => p.board === 'before-after' && sameTx(p)).slice(0, 3);
+  const shownIds = new Set(relColumns.map(p => `blog-${p.id}`));
+  const latest = others.filter(p => p.board === board && !shownIds.has(`${p.board}-${p.id}`)).slice(0, 5);
+
+  const li = (p: LitePost) => `<li><a href="/${p.board}/${p.id}"><span>${escHtml(p.title)}</span><time datetime="${kstYmd(p.created_at)}">${kstYmd(p.created_at)}</time></a></li>`;
+
+  // ===== 본문 HTML =====
+  let html = '';
+  html += `<h1 class="board-detail-title">${escHtml(postTitle)}</h1>`;
+  html += `<div class="board-detail-meta"><span><i class="far fa-calendar-alt"></i> <time datetime="${publishedIso || ''}">${kstYmd(post.created_at)}</time></span>${post.updated_at && kstYmd(post.updated_at) !== kstYmd(post.created_at) ? `<span><i class="fas fa-sync-alt"></i> 수정 <time datetime="${modifiedIso}">${kstYmd(post.updated_at)}</time></span>` : ''}<span><i class="fas fa-eye"></i> ${post.view_count}</span></div>`;
+
+  if (board === 'blog') {
+    html += `<div class="detail-author-card"><a href="/doctors" aria-label="한승대 대표원장 소개"><img src="/static/img/dr-han-profile.webp" alt="한승대 대표원장 프로필" width="60" height="60" decoding="async"></a><div class="detail-author-info"><a href="/doctors" class="author-name">한승대 대표원장</a><span class="author-role">Integrative Dentistry Specialist</span><span class="author-desc">통합치의학과 전문의 · 치의학 박사 · 경희대 치의학전문대학원<br>13년간 한자리에서 쌓아온 신뢰의 치과</span><span class="author-updated">최종 업데이트 <time datetime="${modifiedIso}">${kstYmd(post.updated_at || post.created_at)}</time></span></div></div>`;
+  }
+
+  if (board === 'before-after') {
+    const altBase = escHtml(txName || postTitle);
+    html += '<div class="ba-detail-grid">';
+    if (beforeIntra || afterIntra) {
+      html += '<div><div class="ba-detail-pair-label">구내 사진 (Intraoral)</div><div class="ba-detail-pair">';
+      if (beforeIntra) html += `<div class="ba-detail-img"><img src="${beforeIntra.image_url}" alt="${altBase} 치료 전" decoding="async"><div class="ba-label ba-label-before">Before</div></div>`;
+      if (afterIntra) html += `<div class="ba-detail-img"><img src="${afterIntra.image_url}" alt="${altBase} 치료 후" decoding="async"><div class="ba-label ba-label-after">After</div></div>`;
+      html += '</div></div>';
     }
+    if (beforePano || afterPano) {
+      html += '<div><div class="ba-detail-pair-label">파노라마 (Panoramic X-ray)</div><div class="ba-detail-pair">';
+      if (beforePano) html += `<div class="ba-detail-img"><img src="${beforePano.image_url}" alt="${altBase} 치료 전 파노라마" loading="lazy" decoding="async"><div class="ba-label ba-label-before">Before</div></div>`;
+      if (afterPano) html += `<div class="ba-detail-img"><img src="${afterPano.image_url}" alt="${altBase} 치료 후 파노라마" loading="lazy" decoding="async"><div class="ba-label ba-label-after">After</div></div>`;
+      html += '</div></div>';
+    }
+    html += '</div>';
+    // 공개 텍스트 요약 — 저장된 값(진료 매핑·사진 종류·게시일·담당)만 사용
+    html += `<section class="case-summary" aria-label="사례 요약"><h2>사례 요약</h2><p style="margin:0 0 12px;color:var(--gray-light);">${escHtml(caseAuto)}</p><dl>`
+      + (txName ? `<dt>진료</dt><dd><a href="/treatments/${txSlug}" style="color:var(--gold);">${escHtml(txName)}</a></dd>` : '')
+      + (photoKinds.length ? `<dt>게시 자료</dt><dd>${photoKinds.join(' · ')} (치료 전·후)</dd>` : '')
+      + `<dt>게시일</dt><dd>${kstYmd(post.created_at)}</dd>`
+      + `<dt>감수</dt><dd><a href="/doctors" style="color:inherit;text-decoration:underline;">한승대 대표원장</a></dd></dl></section>`;
+  }
 
-    jsonLdSchemas.push(procedureSchema);
+  if (bodyHtml) html += `<article class="board-detail-content">${bodyHtml}</article>`;
+
+  if (board === 'blog') {
+    html += '<p class="post-disclaimer">이 글은 일반적인 치과 정보를 안내하기 위한 것으로, 정확한 진단과 치료 방법은 내원 검사 후 결정되며 결과는 개인에 따라 다를 수 있습니다.</p>';
+  } else if (board === 'before-after') {
+    html += '<p class="post-disclaimer">치료 전후 사진은 해당 환자의 사례이며, 치료 결과와 기간은 구강 상태에 따라 개인마다 다를 수 있습니다. 치료 후 일시적인 통증·붓기 등 부작용이 나타날 수 있으므로 충분한 상담 후 결정하시기 바랍니다.</p>';
+  }
+
+  // ===== 관련 링크 (SSR 내부링크) =====
+  if (board !== 'notice') {
+    html += '<div class="post-links">';
+    if (txSlug) {
+      html += `<div><h2><i class="fas fa-tooth" style="margin-right:8px;"></i>관련 진료</h2><a class="post-tx-link" href="/treatments/${txSlug}">${escHtml(txName)} 진료 안내 <i class="fas fa-arrow-right"></i></a></div>`;
+    }
+    if (relColumns.length) html += `<div><h2><i class="fas fa-book-open" style="margin-right:8px;"></i>${escHtml(txName)} 관련 칼럼</h2><ul>${relColumns.map(li).join('')}</ul></div>`;
+    if (relCases.length) html += `<div><h2><i class="fas fa-images" style="margin-right:8px;"></i>${escHtml(txName)} 치료 사례</h2><ul>${relCases.map(li).join('')}</ul></div>`;
+    if (latest.length) html += `<div><h2><i class="fas fa-pen-nib" style="margin-right:8px;"></i>${board === 'blog' ? '최신 칼럼' : '다른 치료 사례'}</h2><ul>${latest.map(li).join('')}</ul></div>`;
+    html += '</div>';
   }
 
   return `${head({
-    title: pageTitle,
-    description: escHtmlServer(pageDesc),
+    title: postTitle,
+    description: pageDesc,
     path: canonicalPath,
     noindex: !shouldIndex,
-    ogType: hasPost ? 'article' : 'website',
-    ogImage: ogImage,
-    articlePublishedTime: publishedTime,
-    articleModifiedTime: modifiedTime,
+    ogType: 'article',
+    ogImage: ogImageRaw,
+    articlePublishedTime: publishedIso,
+    articleModifiedTime: modifiedIso,
     keywords: pageKeywords,
-    jsonLd: jsonLdSchemas.length > 0 ? jsonLdSchemas : undefined,
-    breadcrumbs: [
-      { name: '홈', url: '/' },
-      { name: cfg.name, url: `/${cfg.slug}` },
-      ...(hasPost ? [{ name: postTitle, url: canonicalPath }] : [])
-    ]
+    // 공지는 기존처럼 head() 의 BreadcrumbList, 칼럼·사례는 @graph 안에 BreadcrumbList 포함
+    jsonLd: board === 'notice' ? undefined : [{ "@context": "https://schema.org", "@graph": graph }],
+    breadcrumbs: board === 'notice' ? [{ name: '홈', url: '/' }, { name: cfg.name, url: `/${cfg.slug}` }, { name: postTitle, url: canonicalPath }] : undefined,
   })}
 ${nav(cfg.navKey)}
 
@@ -912,60 +969,11 @@ ${nav(cfg.navKey)}
 
 <section class="page-section bg-black" style="padding-top:140px;">
   <div class="page-inner">
-    <a href="/${cfg.slug}" class="board-back"><i class="fas fa-arrow-left"></i> ${cfg.nameEn} 목록으로</a>
+    <div role="navigation" aria-label="breadcrumb" class="board-back" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+      <a href="/">홈</a><span aria-hidden="true">›</span><a href="/${cfg.slug}">${cfg.name}</a>${txSlug && board !== 'notice' ? `<span aria-hidden="true">›</span><a href="/${cfg.slug}?cat=${txSlug}">${escHtml(txName)}</a>` : ''}
+    </div>
     <div class="board-detail" id="detailWrap">
-      ${hasPost ? (() => {
-        const post = postData.post!;
-        const images = postData.images;
-        let html = '';
-        // SSR H1: 글 제목
-        html += `<h1 class="board-detail-title">${escHtmlServer(post.title)}</h1>`;
-        html += `<div class="board-detail-meta"><span><i class="far fa-calendar-alt"></i> ${post.created_at ? post.created_at.substring(0, 10) : ''}</span><span><i class="fas fa-eye"></i> ${post.view_count}</span></div>`;
-
-        // 블로그: 작성자 카드
-        if (board === 'blog') {
-          html += '<div class="detail-author-card"><img src="/static/img/dr-han-profile.webp" alt="한승대 대표원장 프로필"><div class="detail-author-info"><span class="author-name">한승대 대표원장</span><span class="author-role">Integrative Dentistry Specialist</span><span class="author-desc">통합치의학과 전문의 · 치의학 박사 · 경희대 치의학전문대학원<br>13년간 한자리에서 쌓아온 신뢰의 치과</span></div></div>';
-        }
-
-        // 비포애프터: 전후 이미지
-        if (board === 'before-after') {
-          const beforeIntra = images.find((i: any) => i.image_type === 'before_intra');
-          const afterIntra = images.find((i: any) => i.image_type === 'after_intra');
-          const beforePano = images.find((i: any) => i.image_type === 'before_pano');
-          const afterPano = images.find((i: any) => i.image_type === 'after_pano');
-          html += '<div class="ba-detail-grid">';
-          if (beforeIntra || afterIntra) {
-            html += '<div><div class="ba-detail-pair-label">구내 사진 (Intraoral)</div><div class="ba-detail-pair">';
-            if (beforeIntra) html += `<div class="ba-detail-img"><img src="${(beforeIntra as any).image_url}" alt="${escHtmlServer(post.title)} 치료 전 구내사진"><div class="ba-label ba-label-before">Before</div></div>`;
-            if (afterIntra) html += `<div class="ba-detail-img"><img src="${(afterIntra as any).image_url}" alt="${escHtmlServer(post.title)} 치료 후 구내사진"><div class="ba-label ba-label-after">After</div></div>`;
-            html += '</div></div>';
-          }
-          if (beforePano || afterPano) {
-            html += '<div><div class="ba-detail-pair-label">파노라마 (Panoramic X-ray)</div><div class="ba-detail-pair">';
-            if (beforePano) html += `<div class="ba-detail-img"><img src="${(beforePano as any).image_url}" alt="${escHtmlServer(post.title)} 치료 전 파노라마"><div class="ba-label ba-label-before">Before</div></div>`;
-            if (afterPano) html += `<div class="ba-detail-img"><img src="${(afterPano as any).image_url}" alt="${escHtmlServer(post.title)} 치료 후 파노라마"><div class="ba-label ba-label-after">After</div></div>`;
-            html += '</div></div>';
-          }
-          html += '</div>';
-        }
-
-        // 본문
-        if (post.content) {
-          html += `<article class="board-detail-content">${post.content}</article>`;
-        }
-
-        // [SEO] 관련 글 목록 (SSR 내부링크)
-        const related = (postData as any).related || [];
-        if (related.length > 0) {
-          html += '<div class="related-posts" style="margin-top:64px;padding-top:40px;border-top:1px solid rgba(255,255,255,0.08);">';
-          html += '<h2 style="font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:20px;"><i class="fas fa-book-open" style="margin-right:8px;"></i>함께 읽으면 좋은 글</h2><ul style="list-style:none;padding:0;margin:0;">';
-          for (const r of related) {
-            html += `<li style="padding:10px 0;border-bottom:1px dashed rgba(255,255,255,0.06);"><a href="/${cfg.slug}/${r.id}" style="color:var(--gray-light);text-decoration:none;font-size:0.92rem;display:flex;justify-content:space-between;gap:16px;"><span>${escHtmlServer(r.title)}</span><span style="color:var(--gray);font-size:0.78rem;white-space:nowrap;">${String(r.created_at || '').substring(0, 10)}</span></a></li>`;
-          }
-          html += '</ul></div>';
-        }
-        return html;
-      })() : `<div class="board-empty"><i class="fas fa-exclamation-circle"></i><p>게시글을 찾을 수 없습니다.</p></div>`}
+      ${html}
     </div>
   </div>
 </section>

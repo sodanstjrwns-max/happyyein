@@ -336,7 +336,7 @@ const TOPIC_POOL: { category: string; topics: { keyword: string; angle: string; 
 ]
 
 // 전체 토픽 리스트 (평탄화)
-const ALL_TOPICS = TOPIC_POOL.flatMap(cat =>
+export const ALL_TOPICS = TOPIC_POOL.flatMap(cat =>
   cat.topics.map(t => ({ ...t, category: cat.category }))
 )
 
@@ -372,6 +372,7 @@ function buildPrompt(topic: typeof ALL_TOPICS[0]): string {
 
 ### 2-1. 첫 두 줄 직답 (AEO 발췌 최적화 — 필수)
 - 글의 **첫 번째 문단은 반드시 핵심 질문에 대한 직접 답변**으로 시작 (결론 우선)
+- 형식: 본문은 반드시 첫 <h2> **앞에** 오는 <p> 한 개(2~3문장, 첫 문장은 <strong>)로 시작 — 이 문단이 페이지 상단 '핵심 답변' 박스로 그대로 표시됨
 - 금지: "안녕하세요", "~를 알아보실 때는", "~가 중요합니다"로 시작하는 서론
 - 예시: "임플란트 비용은 뼈 상태에 따라 개당 100~200만원대입니다. 65세 이상은 건강보험 적용 시 30~50만원까지 낮아집니다." (첫 문장에 답, 둘째 문장에 조건)
 
@@ -396,6 +397,7 @@ function buildPrompt(topic: typeof ALL_TOPICS[0]): string {
 - H2 태그로 "자주 묻는 질문" 제목 추가
 - 각 질문은 H3 태그, 답변은 P 태그로 작성
 - 질문은 반드시 "?"로 끝나야 함 (예: "임플란트 수명은 얼마나 되나요?")
+- 각 질문 <h3> 바로 다음에 답변 <p> 한 개 (사이에 다른 태그 금지) — 이 구조로 FAQ 구조화 데이터가 자동 생성됨
 - 답변은 2~3문장으로 간결하게
 - 또한 JSON 출력의 faq_data 필드에도 동일한 FAQ를 [{"q":"질문","a":"답변"}] 배열로 포함
 
@@ -422,7 +424,7 @@ function buildPrompt(topic: typeof ALL_TOPICS[0]): string {
 다음 JSON 형식으로만 응답하세요. 다른 텍스트 없이 JSON만:
 {
   "title": "SEO 최적화 제목 (메인 키워드 포함, 40자 이내)",
-  "content": "<h2>...</h2><p>...</p>...(본문 HTML, FAQ 섹션 포함)",
+  "content": "<p><strong>핵심 답변 첫 문장.</strong> 조건·예외 한두 문장.</p><h2>질문형 소제목?</h2><p>...</p>...(본문 HTML, FAQ 섹션 포함)",
   "meta_description": "검색 결과에 표시될 설명 (메인 키워드 포함, 150자 이내)",
   "tags": ["키워드1", "키워드2", "키워드3", "키워드4", "키워드5"],
   "faq_data": [{"q": "질문1?", "a": "답변1"}, {"q": "질문2?", "a": "답변2"}, {"q": "질문3?", "a": "답변3"}]
