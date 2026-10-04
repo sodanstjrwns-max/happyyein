@@ -797,6 +797,7 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
 
   // ===== JSON-LD @graph =====
   const physician = { "@type": "Physician", "@id": DR_HAN_ID, "name": "한승대", "jobTitle": "대표원장 · 통합치의학과 전문의", "url": `${SITE_DOMAIN}/doctors` };
+  const organization = { "@type": "Organization", "@id": ORG_ID, "name": "행복한예인치과", "url": SITE_DOMAIN };
   const breadcrumbItems = [
     { name: '홈', url: `${SITE_DOMAIN}/` },
     { name: cfg.name, url: `${SITE_DOMAIN}/${cfg.slug}` },
@@ -841,8 +842,8 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
       "inLanguage": "ko-KR",
       "datePublished": publishedIso,
       "dateModified": modifiedIso,
-      "author": physician,
-      "reviewedBy": { "@id": DR_HAN_ID },
+      "author": organization,
+      "reviewedBy": physician,
       "publisher": { "@id": ORG_ID },
       "image": imgUrl
         ? { "@type": "ImageObject", "url": imgUrl, "caption": postTitle }
@@ -902,7 +903,7 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
   html += `<div class="board-detail-meta"><span><i class="far fa-calendar-alt"></i> <time datetime="${publishedIso || ''}">${kstYmd(post.created_at)}</time></span>${post.updated_at && kstYmd(post.updated_at) !== kstYmd(post.created_at) ? `<span><i class="fas fa-sync-alt"></i> 수정 <time datetime="${modifiedIso}">${kstYmd(post.updated_at)}</time></span>` : ''}<span><i class="fas fa-eye"></i> ${post.view_count}</span></div>`;
 
   if (board === 'blog') {
-    html += `<div class="detail-author-card"><a href="/doctors" aria-label="한승대 대표원장 소개"><img src="/static/img/dr-han-profile.webp" alt="한승대 대표원장 프로필" width="60" height="60" decoding="async"></a><div class="detail-author-info"><a href="/doctors" class="author-name">한승대 대표원장</a><span class="author-role">Integrative Dentistry Specialist</span><span class="author-desc">통합치의학과 전문의 · 치의학 박사 · 경희대 치의학전문대학원<br>13년간 한자리에서 쌓아온 신뢰의 치과</span><span class="author-updated">최종 업데이트 <time datetime="${modifiedIso}">${kstYmd(post.updated_at || post.created_at)}</time></span></div></div>`;
+    html += `<div class="detail-author-card"><a href="/doctors" aria-label="한승대 대표원장 소개"><img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 로고" width="60" height="60" decoding="async"></a><div class="detail-author-info"><span class="author-name">행복한예인치과 발행</span><span class="author-role">Reviewed by Specialist</span><span class="author-desc"><a href="/doctors" style="color:var(--gold);text-decoration:underline;">한승대 원장</a> 감수 · 통합치의학과 전문의<br>13년간 한자리에서 쌓아온 신뢰의 치과</span><span class="author-updated">최종 업데이트 <time datetime="${modifiedIso}">${kstYmd(post.updated_at || post.created_at)}</time></span></div></div>`;
   }
 
   if (board === 'before-after') {
