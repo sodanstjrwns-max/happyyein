@@ -494,6 +494,9 @@ export function adminDashboardPage(): string {
       <i class="fas fa-bullhorn"></i> 공지사항
       <span class="admin-nav-badge" id="badge-notice">-</span>
     </a>
+    <a href="/admin/guide" class="admin-nav-item">
+      <i class="fas fa-book-open"></i> 포스팅 설명서
+    </a>
     <a href="/admin/fees" class="admin-nav-item">
       <i class="fas fa-won-sign"></i> 비급여 진료비
     </a>

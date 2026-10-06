@@ -24,6 +24,7 @@ import { generateLlmsTxt, generateLlmsFullTxt } from './llms-txt'
 import { renderSearchPage } from './search'
 import feesApi, { getPublishedFees } from './api-fees'
 import { feesPublicPage, feesAdminPage } from './fees-page'
+import { postingGuidePage } from './guide-page'
 
 type Bindings = { DB: D1Database; R2: R2Bucket; OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; AUTO_BLOG_SECRET?: string }
 const app = new Hono<{ Bindings: Bindings }>()
@@ -1888,6 +1889,7 @@ app.get('/admin/login', (c) => c.html(adminLoginPage()))
 app.get('/admin', (c) => c.html(adminDashboardPage()))
 app.get('/admin/indexing', (c) => c.html(indexingDashboardPage()))
 app.get('/admin/fees', (c) => c.html(feesAdminPage()))
+app.get('/admin/guide', (c) => c.html(postingGuidePage()))
 
 // ===== ADMIN STATS (중앙 대시보드 연동 통계) =====
 app.route('/', statsApp)
