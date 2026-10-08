@@ -474,7 +474,7 @@ export function renderForeignSeoPage(slug: string): string | null {
   const callLabel = langCode === 'en' ? 'Call Now' : langCode === 'ja' ? '今すぐ電話' : '立即致电'
   const directionsLabel = langCode === 'en' ? 'Get Directions' : langCode === 'ja' ? '道案内' : '导航'
 
-  const today = '2026-06-11' // CONTENT_REVIEWED — 콘텐츠 실제 검수/갱신 시 수동 업데이트
+  const today = '2026-06-11' // CONTENT_MODIFIED — 콘텐츠 실제 갱신 시 수동 업데이트. 원장 감수일 아님
 
   // JSON-LD: EmergencyService + MedicalClinic + FAQPage
   const emergencyServiceSchema = {
@@ -533,7 +533,7 @@ export function renderForeignSeoPage(slug: string): string | null {
     "dateModified": today,
     "about": { "@type": "MedicalCondition", "name": "Dental Emergency" },
     "audience": { "@type": "MedicalAudience", "audienceType": "Tourist, Expat, Foreigner" },
-    "lastReviewed": today,
+    // lastReviewed 제거 (2026-10-08): 원장 감수 근거 없음(2026-06-02 일괄 생성)
     "mainContentOfPage": { "@type": "WebPageElement", "cssSelector": ".article-content" }
   }
 

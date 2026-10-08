@@ -810,13 +810,8 @@ export function renderSymptomPage(slug: string): string | null {
       "cssSelector": ".symptom-content"
     },
     "specialty": { "@type": "MedicalSpecialty", "name": "Dentistry" },
-    "lastReviewed": "2026-06-11",
-    "reviewedBy": {
-      "@type": "Dentist",
-      "name": "한승대",
-      "jobTitle": "통합치의학과 전문의, 치의학 박사",
-      "worksFor": { "@id": `${SITE_DOMAIN}/#organization` }
-    }
+    "dateModified": "2026-09-02" // 증상 원고 실제 마지막 수정일(33bfd4b, 사이트맵 LM.symptoms 와 동일). 고정값
+    // lastReviewed/reviewedBy 제거 (2026-10-08): 증상 가이드는 2026-05-26 일괄 생성 콘텐츠로 원장 감수 근거 없음
   };
 
   const faqJsonLd = {

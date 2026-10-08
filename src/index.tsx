@@ -2167,7 +2167,7 @@ app.get('/sitemap.xml', async (c) => {
     local: '2026-10-08',       // src/local-seo.ts + 명동 치과 허브
     symptoms: '2026-09-02',    // src/symptom-seo.ts
     cost: '2026-09-02',        // src/cost-seo.ts
-    compare: '2026-08-18',     // src/comparison-seo.ts
+    compare: '2026-10-08',     // src/comparison-seo.ts ('전문의 소견'·'전문의가 비교' 표기 정정)
     encyclopedia: ENC_ENRICH_DATE, // src/encyclopedia.ts + src/data/enc-enrich.ts 보강
     search: '2026-09-02',      // src/search.ts
     en: '2026-09-29',          // src/en-main.ts · foreign-emergency-seo.ts

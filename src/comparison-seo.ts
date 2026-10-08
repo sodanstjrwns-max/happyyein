@@ -21,7 +21,7 @@ export const comparisons: ComparisonPage[] = [
   {
     slug: 'implant-vs-bridge',
     title: '임플란트 vs 브릿지 | 어떤 게 나을까? | 행복한예인치과',
-    metaDesc: '임플란트와 브릿지 장단점 비교. 비용, 수명, 시술기간, 인접치아 영향까지. 시청역·명동 행복한예인치과 전문의가 솔직하게 비교합니다. 02-756-2828',
+    metaDesc: '임플란트와 브릿지 장단점 비교. 비용, 수명, 시술기간, 인접치아 영향까지. 시청역·명동 행복한예인치과가 항목별로 비교했습니다. 02-756-2828',
     keywords: '임플란트 vs 브릿지, 임플란트 브릿지 차이, 임플란트 브릿지 비교, 임플란트 브릿지 장단점',
     optionA: {
       name: '임플란트',
@@ -38,7 +38,7 @@ export const comparisons: ComparisonPage[] = [
       link: '/treatments/implant',
     },
     heroTitle: '임플란트 vs 브릿지<br>어떤 게 나을까요?',
-    heroDesc: '치아를 잃었을 때 가장 많이 고민하는 두 가지. 전문의가 솔직하게 비교합니다.',
+    heroDesc: '치아를 잃었을 때 가장 많이 고민하는 두 가지를 항목별로 비교합니다.',
     verdict: '행복한예인치과에서는 대부분의 경우 임플란트를 권장합니다. 인접 치아를 보존할 수 있고 장기적 수명이 우수하기 때문입니다. 다만 전신 건강 상태, 골량, 예산 등을 종합 고려하여 브릿지가 적합한 경우에는 솔직하게 안내합니다.',
     faq: [
       { q: '임플란트가 브릿지보다 비싼가요?', a: '초기 비용은 임플란트가 높지만, 브릿지는 7~10년 후 교체가 필요하고 인접 치아 손상 위험이 있어 장기적으로는 임플란트가 경제적일 수 있습니다.' },
@@ -97,7 +97,7 @@ export const comparisons: ComparisonPage[] = [
       link: '/treatments/orthodontics',
     },
     heroTitle: '투명교정 vs 메탈교정<br>나에게 맞는 방법은?',
-    heroDesc: '교정 전문의가 두 방법의 장단점을 솔직 비교. 환자 상태에 맞는 최적 추천.',
+    heroDesc: '두 교정 방법의 장단점을 항목별로 비교합니다. 실제 선택은 교정과 전문의 진단 후 결정합니다.',
     verdict: '행복한예인치과 교정 전문의 박현미 원장은 환자의 교합 상태, 생활 패턴, 예산을 종합 고려하여 최적의 방법을 추천합니다. 시청역·명동·을지로 직장인분들에게는 투명교정이 인기지만, 복잡한 케이스에서는 메탈교정이 더 효과적일 수 있습니다.',
     faq: [
       { q: '투명교정으로 못 고치는 경우가 있나요?', a: '심한 골격성 부정교합이나 복잡한 회전·정출이 필요한 경우 메탈교정이 더 적합할 수 있습니다. 교정 전문의 진단 후 가능 여부를 안내합니다.' },
@@ -276,7 +276,7 @@ export function comparisonIndexPage(): string {
 
   return `${head({
     title: '치료 비교 가이드 | 임플란트vs브릿지, 라미네이트vs레진 | 행복한예인치과',
-    description: '치과 치료 방법 비교 가이드. 임플란트 vs 브릿지, 라미네이트 vs 레진, 투명교정 vs 메탈교정 등. 전문의가 장단점을 솔직하게 비교합니다.',
+    description: '치과 치료 방법 비교 가이드. 임플란트 vs 브릿지, 라미네이트 vs 레진, 투명교정 vs 메탈교정 등. 장단점을 항목별로 비교합니다.',
     path: '/compare',
     keywords: '치과 치료 비교, 임플란트 브릿지 비교, 라미네이트 레진 비교, 투명교정 메탈교정 비교',
     breadcrumbs: [{ name: '홈', url: '/' }, { name: '치료 비교', url: '/compare' }],
@@ -289,7 +289,7 @@ ${nav()}
   <div class="sub-hero-content">
     <div class="sub-hero-tag">Treatment Comparison</div>
     <h1>치료 비교 가이드<br><em>솔직한</em> 장단점 비교</h1>
-    <p style="color:var(--gray);margin-top:16px;font-size:0.9rem;font-family:var(--font-kr);line-height:1.8;">어떤 치료가 나에게 맞는지 고민되시나요?<br>전문의가 장단점을 투명하게 비교합니다.</p>
+    <p style="color:var(--gray);margin-top:16px;font-size:0.9rem;font-family:var(--font-kr);line-height:1.8;">어떤 치료가 나에게 맞는지 고민되시나요?<br>장단점을 항목별로 비교했습니다. 최종 선택은 진단 후 상담으로 정합니다.</p>
   </div>
 </section>
 <section class="page-section" style="padding:80px 24px;">
@@ -314,7 +314,7 @@ ${footer()}${scripts()}</body></html>`;
 export function renderComparisonPage(slug: string): string | null {
   const page = comparisons.find(p => p.slug === slug);
   if (!page) return null;
-  const today = '2026-06-11'; // CONTENT_REVIEWED — 콘텐츠 실제 검수/갱신 시 수동 업데이트 (가짜 동적 날짜 금지)
+  const today = '2026-10-08'; // CONTENT_MODIFIED — 콘텐츠 실제 갱신 시 수동 업데이트 (가짜 동적 날짜 금지). 원장 감수일 아님. 10-08: '전문의 소견' 표기 정정
 
   const medicalPageJsonLd = {
     "@context": "https://schema.org", "@type": "MedicalWebPage",
@@ -323,7 +323,7 @@ export function renderComparisonPage(slug: string): string | null {
     "datePublished": "2026-05-26", "dateModified": today, "inLanguage": "ko",
     "medicalAudience": { "@type": "MedicalAudience", "audienceType": "Patient" },
     "speakable": { "@type": "SpeakableSpecification", "cssSelector": [".comp-hero-title", ".comp-verdict"] },
-    "lastReviewed": today,
+    // lastReviewed 제거 (2026-10-08): 원장 감수 근거 없음(2026-05-26 일괄 생성)
   };
   const faqJsonLd = {
     "@context": "https://schema.org", "@type": "FAQPage",
@@ -376,10 +376,10 @@ ${nav()}
       </div>`).join('')}
     </div>
 
-    <!-- 전문의 의견 -->
+    <!-- 정리 + 진료 담당 의료진 -->
     <div class="comp-verdict" style="padding:32px;border-radius:16px;background:rgba(247,186,24,0.06);border:1px solid rgba(247,186,24,0.15);margin-bottom:48px;">
-      <h2 style="font-family:var(--font-kr);font-size:1.1rem;font-weight:800;color:var(--gold);margin-bottom:8px;">🩺 전문의 소견</h2>
-      <p style="font-family:var(--font-kr);font-size:0.85rem;color:var(--gold);margin-bottom:12px;font-weight:500;">${page.doctor}</p>
+      <h2 style="font-family:var(--font-kr);font-size:1.1rem;font-weight:800;color:var(--gold);margin-bottom:8px;">🩺 한눈에 정리</h2>
+      <p style="font-family:var(--font-kr);font-size:0.85rem;color:var(--gold);margin-bottom:12px;font-weight:500;">진료 담당: ${page.doctor}</p>
       <p style="font-family:var(--font-kr);font-size:0.9rem;color:var(--gray-light);line-height:1.9;">${page.verdict}</p>
     </div>
 

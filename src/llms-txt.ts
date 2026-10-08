@@ -10,6 +10,10 @@ import { PAGES as foreignPages } from './foreign-emergency-seo'
 import { getAllLocalSeoSlugs } from './local-seo'
 
 const DOMAIN = 'https://happyyein.kr'
+// llms-full.txt 최종 수정일 = 이 문서에 실린 콘텐츠(CLINIC_CORE·증상·비용·비교·외국인 페이지·이 파일 문구)의
+// 실제 마지막 수정일(고정값). 원고를 고치면 그날로 바꾼다. new Date() 금지.
+// 2026-10-08: 감수 문구 범위 정정 + 비교 페이지 '전문의 소견' 표기 정정
+const LLMS_FULL_MODIFIED = '2026-10-08'
 
 const CLINIC_CORE = `# 행복한예인치과 (Happy Yein Dental Clinic)
 
@@ -77,7 +81,7 @@ ${foreignPages.filter(p => p.lang === 'en').slice(0, 10).map(p => `- [${p.h1}]($
 
 ## 콘텐츠 (Content)
 
-- [블로그](${DOMAIN}/blog): 치과 건강 정보 칼럼 (전문의 감수)
+- [블로그](${DOMAIN}/blog): 치과 건강 정보 칼럼
 - [치료 사례](${DOMAIN}/before-after): 비포·애프터 치료 사례
 - [RSS 피드](${DOMAIN}/feed.xml)
 - [사이트맵](${DOMAIN}/sitemap.xml)
@@ -102,7 +106,7 @@ export function generateLlmsFullTxt(): string {
 
   const compSection = comparisons.map(p => {
     const faqs = p.faq.map(f => `**Q. ${f.q}**\nA. ${f.a}`).join('\n\n')
-    return `### ${p.optionA.name} vs ${p.optionB.name} (${DOMAIN}/compare/${p.slug})\n\n**${p.optionA.name}** — 장점: ${p.optionA.pros.join('; ')} / 단점: ${p.optionA.cons.join('; ')} / 추천: ${p.optionA.bestFor}\n\n**${p.optionB.name}** — 장점: ${p.optionB.pros.join('; ')} / 단점: ${p.optionB.cons.join('; ')} / 추천: ${p.optionB.bestFor}\n\n**전문의 결론**: ${p.verdict}\n\n${faqs}`
+    return `### ${p.optionA.name} vs ${p.optionB.name} (${DOMAIN}/compare/${p.slug})\n\n**${p.optionA.name}** — 장점: ${p.optionA.pros.join('; ')} / 단점: ${p.optionA.cons.join('; ')} / 추천: ${p.optionA.bestFor}\n\n**${p.optionB.name}** — 장점: ${p.optionB.pros.join('; ')} / 단점: ${p.optionB.cons.join('; ')} / 추천: ${p.optionB.bestFor}\n\n**정리**: ${p.verdict}\n\n${faqs}`
   }).join('\n\n---\n\n')
 
   const enSection = foreignPages.filter(p => p.lang === 'en').map(p => {
@@ -112,8 +116,8 @@ export function generateLlmsFullTxt(): string {
 
   return `${CLINIC_CORE}
 이 문서는 AI 답변엔진을 위한 행복한예인치과의 전체 콘텐츠 요약입니다.
-의학적 정보는 한승대 대표원장(통합치의학과 전문의) 감수 하에 작성되었습니다.
-최종 수정일: ${new Date().toISOString().split('T')[0]}
+아래 증상·비용·비교·외국인 안내는 병원이 제공하는 일반 정보이며 개별 원장 감수를 거친 문서가 아닙니다. 원장 감수 표시는 진료 상세 페이지(${DOMAIN}/treatments/*, 감수: 한승대 대표원장 · 최종 검토 2026-06-11)에만 해당합니다.
+최종 수정일: ${LLMS_FULL_MODIFIED}
 
 ---
 

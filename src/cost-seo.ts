@@ -407,7 +407,7 @@ export function getAllCostSlugs(): string[] {
 
 // ===== 비용 허브 페이지 =====
 export function costIndexPage(): string {
-  const today = '2026-06-11'; // CONTENT_REVIEWED — 콘텐츠 실제 검수/갱신 시 수동 업데이트 (가짜 동적 날짜 금지)
+  const today = '2026-06-11'; // CONTENT_MODIFIED — 콘텐츠 실제 갱신 시 수동 업데이트 (가짜 동적 날짜 금지). 원장 감수일 아님
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -492,7 +492,7 @@ export function renderCostPage(slug: string): string | null {
   const page = costPages.find(p => p.slug === slug);
   if (!page) return null;
 
-  const today = '2026-06-11'; // CONTENT_REVIEWED — 콘텐츠 실제 검수/갱신 시 수동 업데이트 (가짜 동적 날짜 금지)
+  const today = '2026-06-11'; // CONTENT_MODIFIED — 콘텐츠 실제 갱신 시 수동 업데이트 (가짜 동적 날짜 금지). 원장 감수일 아님
 
   // JSON-LD: MedicalWebPage + Service + PriceSpecification + FAQPage + BreadcrumbList
   const medicalPageJsonLd = {
@@ -516,7 +516,7 @@ export function renderCostPage(slug: string): string | null {
       "@type": "SpeakableSpecification",
       "cssSelector": [".cost-hero-title", ".cost-hero-desc", ".cost-price-range"]
     },
-    "lastReviewed": today,
+    // lastReviewed 제거 (2026-10-08): 원장 감수 근거 없음(2026-05-26 일괄 생성). dateModified 는 유지
   };
 
   const serviceJsonLd = {
