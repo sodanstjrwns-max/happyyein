@@ -2,6 +2,7 @@
 // 리스트 페이지, 상세 페이지, 관리자 작성/수정 페이지
 import { head, nav, footer, scripts } from './layout'
 import { SITE_URL, ORG_ID, WEBSITE_ID, DR_HAN_ID, isClinicGeneratedPost, CLINIC_GENERAL_INFO_NOTE, treatmentForPost, treatmentTitle, withAnswerSummary, faqsFromArticleHtml, enhanceContentImages, stripTags, escHtml, isoKst, kstYmd } from './column-seo'
+import { blogHubNote } from './hub-link'
 
 // ==========================================
 // 게시판별 설정
@@ -936,6 +937,8 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
   }
 
   if (bodyHtml) html += `<article class="board-detail-content">${bodyHtml}</article>`;
+  // 본문 끝 지역 안내 한 문장 → '명동 치과' 허브 (본문에 이미 허브 링크가 있으면 생략)
+  if (board === 'blog' && !/href="(?:https:\/\/happyyein\.kr)?\/local\/myeongdong"/.test(bodyHtml || '')) html += blogHubNote(String(postId), txName || undefined);
 
   if (board === 'blog') {
     html += '<p class="post-disclaimer">이 글은 일반적인 치과 정보를 안내하기 위한 것으로, 정확한 진단과 치료 방법은 내원 검사 후 결정되며 결과는 개인에 따라 다를 수 있습니다.</p>';

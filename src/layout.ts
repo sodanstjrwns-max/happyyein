@@ -322,7 +322,9 @@ export function nav(activeMenu?: string) {
 </div>`;
 }
 
-export function footer() {
+export function footer(opts: { hubLink?: boolean } = {}) {
+  // 허브(/local/myeongdong) 자신과 허브 링크가 이미 2개인 페이지는 hubLink:false
+  const hubLink = opts.hubLink !== false
   return `
 <section class="cta sec-pad">
   <div class="cta-inner">
@@ -359,6 +361,7 @@ export function footer() {
       <a href="/doctors" style="display:block;color:#999;padding:3px 0;">의료진 소개</a>
       <a href="/philosophy" style="display:block;color:#999;padding:3px 0;">진료 철학</a>
       <a href="/location" style="display:block;color:#999;padding:3px 0;">오시는 길</a>
+      ${hubLink ? '<a href="/local/myeongdong" style="display:block;color:#999;padding:3px 0;">명동 치과</a>' : ''}
       <a href="/local" style="display:block;color:#999;padding:3px 0;">지역별 안내</a>
       <a href="/blog" style="display:block;color:#999;padding:3px 0;">블로그</a>
     </div>

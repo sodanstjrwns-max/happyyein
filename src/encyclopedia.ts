@@ -533,6 +533,7 @@ ${nav('encyclopedia')}
     <div class="enc-detail-treat rv rv-d2">
       <a href="/treatments/${t.treatmentLink}" class="btn btn-outline" style="margin-top:20px;"><i class="fas fa-arrow-right"></i> 관련 진료 페이지 보기</a>
     </div>` : ''}
+    <p style="margin-top:22px;font-family:var(--font-kr);font-size:.9rem;color:var(--gray-dark);">진료 상담·위치 안내: <a href="/local/myeongdong" style="color:var(--gold-deep);font-weight:600;">명동 치과</a> 행복한예인치과</p>
   </div>
 </section>
 

@@ -570,7 +570,7 @@ ${nav()}
       <a href="tel:02-756-2828" style="display:inline-block;padding:14px 32px;background:#fff;color:#1a5276;border-radius:50px;font-weight:700;text-decoration:none;font-size:1rem;box-shadow:0 4px 15px rgba(0,0,0,.15);">📞 전화 상담</a>
       <a href="/location" style="display:inline-block;padding:14px 32px;background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.5);border-radius:50px;font-weight:600;text-decoration:none;font-size:1rem;">📍 오시는 길</a>
     </div>
-    ${HUB_REGIONS.includes(region.id) ? `<p style="margin-top:18px;font-size:.95rem;"><a href="/local/myeongdong" style="color:#fff;text-decoration:underline;">${region.nameShort} 치과 종합 안내 — 위치·진료시간·의료진 →</a></p>` : ''}
+    <p style="margin-top:18px;font-size:.95rem;"><a href="/local/myeongdong" style="color:#fff;text-decoration:underline;">명동 치과</a> 행복한예인치과 종합 안내 — 위치·진료시간·의료진 →</p>
   </div>
 </section>
 

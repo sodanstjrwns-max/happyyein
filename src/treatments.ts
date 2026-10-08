@@ -589,6 +589,7 @@ ${related.columns.length || related.cases.length ? `<section class="tx-related" 
       ].map(r => '<a href="/local/' + r.id + '-' + localTreatmentId + '" style="display:inline-flex;align-items:center;gap:6px;background:#f8faff;border:1px solid #d0dff5;border-radius:24px;padding:8px 18px;font-size:14px;color:#013C88;text-decoration:none;font-weight:600;transition:all 0.2s;" onmouseover="this.style.background=\'#013C88\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'#f8faff\';this.style.color=\'#013C88\'"><i class="fas fa-subway" style="font-size:12px;"></i>' + r.name + ' ' + t.title + ' <span style="opacity:0.7;font-size:12px;">' + r.min + '분</span></a>').join('');
     })()}
   </div>
+  <p style="text-align:center; margin:18px 0 0; font-size:14px; color:#555;">위치·진료시간·의료진을 한 번에 보려면 <a href="/local/myeongdong" style="color:#013C88; font-weight:700; text-decoration:underline;">명동 치과</a> 종합 안내를 확인하세요.</p>
 </section>
 
 <!-- OTHER TREATMENTS -->

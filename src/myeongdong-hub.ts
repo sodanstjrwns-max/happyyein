@@ -145,7 +145,7 @@ ${nav()}
   <p style="margin-top:36px;font-size:.85rem;color:#888;">최종 수정 <time datetime="${MYEONGDONG_HUB_MODIFIED}">${MYEONGDONG_HUB_MODIFIED}</time> · 진료시간·휴진은 <a href="/notice" style="${a}">공지사항</a>에서 먼저 안내합니다.</p>
 </article>
 </main>
-${footer()}
+${footer({ hubLink: false })}
 ${scripts()}
 </body></html>`
 }
