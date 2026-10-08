@@ -1,7 +1,7 @@
 // 게시판 페이지 렌더러 — 비포애프터, 블로그, 공지사항
 // 리스트 페이지, 상세 페이지, 관리자 작성/수정 페이지
 import { head, nav, footer, scripts } from './layout'
-import { SITE_URL, ORG_ID, WEBSITE_ID, DR_HAN_ID, treatmentForPost, treatmentTitle, withAnswerSummary, faqsFromArticleHtml, enhanceContentImages, stripTags, escHtml, isoKst, kstYmd } from './column-seo'
+import { SITE_URL, ORG_ID, WEBSITE_ID, DR_HAN_ID, isClinicGeneratedPost, CLINIC_GENERAL_INFO_NOTE, treatmentForPost, treatmentTitle, withAnswerSummary, faqsFromArticleHtml, enhanceContentImages, stripTags, escHtml, isoKst, kstYmd } from './column-seo'
 
 // ==========================================
 // 게시판별 설정
@@ -506,7 +506,7 @@ export async function boardListPage(board: string, db: D1Database, page: number 
         if (pageIds.length) {
           const ph = pageIds.map(() => '?').join(',');
           const rs = await db.prepare(
-            `SELECT p.id, p.title, p.thumbnail_url, p.view_count, p.created_at, p.updated_at,
+            `SELECT p.id, p.title, p.thumbnail_url, p.view_count, p.created_at, p.updated_at, p.auto_generated,
                     (SELECT COUNT(*) FROM post_images pi WHERE pi.post_id = p.id) as image_count
              FROM posts p WHERE p.id IN (${ph}) ORDER BY p.created_at DESC`
           ).bind(...pageIds).all();
@@ -519,7 +519,7 @@ export async function boardListPage(board: string, db: D1Database, page: number 
       total = cnt?.total || 0;
       countOk = true;
       const rs = await db.prepare(
-        `SELECT p.id, p.title, p.thumbnail_url, p.view_count, p.created_at, p.updated_at,
+        `SELECT p.id, p.title, p.thumbnail_url, p.view_count, p.created_at, p.updated_at, p.auto_generated,
                 (SELECT COUNT(*) FROM post_images pi WHERE pi.post_id = p.id) as image_count
          FROM posts p WHERE p.board = ? AND p.is_published = 1
          ORDER BY p.created_at DESC LIMIT ? OFFSET ?`
@@ -566,7 +566,7 @@ export async function boardListPage(board: string, db: D1Database, page: number 
     listHtml = '<div class="board-grid">' + posts.map(p => {
       const t = escHtmlServer(p.title);
       const thumb = p.thumbnail_url ? `<img src="${p.thumbnail_url}" alt="${t} 대표 이미지" loading="lazy" decoding="async">` : '<div class="no-img"><i class="fas fa-pen-nib"></i></div>';
-      return `<a href="/${cfg.slug}/${p.id}" class="board-card rv"><div class="board-card-img">${thumb}</div><div class="board-card-body"><h3>${t}</h3><div class="board-card-meta"><span><i class="far fa-calendar-alt"></i> ${formatDateServer(p.created_at)}</span><span><i class="fas fa-eye"></i> ${p.view_count}</span>${p.thumbnail_url ? '<span><i class="fas fa-image"></i></span>' : ''}</div><div class="board-card-author"><img src="/static/img/dr-han-profile.webp" alt="한승대 대표원장" width="36" height="36" loading="lazy" decoding="async"><div class="author-text"><span class="author-name">한승대 대표원장</span><span class="author-role">통합치의학과 전문의</span></div></div></div></a>`;
+      return `<a href="/${cfg.slug}/${p.id}" class="board-card rv"><div class="board-card-img">${thumb}</div><div class="board-card-body"><h3>${t}</h3><div class="board-card-meta"><span><i class="far fa-calendar-alt"></i> ${formatDateServer(p.created_at)}</span><span><i class="fas fa-eye"></i> ${p.view_count}</span>${p.thumbnail_url ? '<span><i class="fas fa-image"></i></span>' : ''}</div>${board === 'blog' && isClinicGeneratedPost(p) ? '<div class="board-card-author"><img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 로고" width="36" height="36" loading="lazy" decoding="async"><div class="author-text"><span class="author-name">행복한예인치과</span><span class="author-role">일반 건강정보</span></div></div>' : '<div class="board-card-author"><img src="/static/img/dr-han-profile.webp" alt="한승대 대표원장" width="36" height="36" loading="lazy" decoding="async"><div class="author-text"><span class="author-name">한승대 대표원장</span><span class="author-role">통합치의학과 전문의</span></div></div>'}</div></a>`;
     }).join('') + '</div>';
   }
 
@@ -680,7 +680,7 @@ function stripHtml(html: string): string {
 }
 
 interface BoardDetailData {
-  post: { id: number; title: string; content: string; thumbnail_url?: string; view_count: number; created_at: string; updated_at?: string; is_published?: number; seo_keyword?: string; seo_description?: string; seo_tags?: string } | null;
+  post: { id: number; title: string; auto_generated?: number; content: string; thumbnail_url?: string; view_count: number; created_at: string; updated_at?: string; is_published?: number; seo_keyword?: string; seo_description?: string; seo_tags?: string } | null;
   images: { image_url: string; image_type: string; }[];
 }
 
@@ -795,6 +795,9 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
   const publishedIso = isoKst(post.created_at);
   const modifiedIso = isoKst(post.updated_at || post.created_at) || publishedIso;
 
+  // 자동 생성·대행사 시드 칼럼은 원장 감수 근거 없음 → 병원 발행만 표시 (column-seo.ts isClinicGeneratedPost)
+  const clinicPost = board === 'blog' && isClinicGeneratedPost(post);
+
   // ===== JSON-LD @graph =====
   const physician = { "@type": "Physician", "@id": DR_HAN_ID, "name": "한승대", "jobTitle": "대표원장 · 통합치의학과 전문의", "url": `${SITE_DOMAIN}/doctors` };
   const organization = { "@type": "Organization", "@id": ORG_ID, "name": "행복한예인치과", "url": SITE_DOMAIN };
@@ -824,7 +827,7 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
       "breadcrumb": { "@id": `${pageUrl}#breadcrumb` },
       "datePublished": publishedIso,
       "dateModified": modifiedIso,
-      "reviewedBy": { "@id": DR_HAN_ID },
+      ...(clinicPost ? {} : { "reviewedBy": { "@id": DR_HAN_ID } }),
       "medicalAudience": { "@type": "MedicalAudience", "audienceType": "Patient" },
       ...(txSlug ? { "about": { "@type": "MedicalProcedure", "@id": `${SITE_DOMAIN}/treatments/${txSlug}#procedure`, "name": txName, "url": `${SITE_DOMAIN}/treatments/${txSlug}` } } : {}),
       "speakable": { "@type": "SpeakableSpecification", "cssSelector": [".board-detail-title", ".answer-summary"] },
@@ -843,7 +846,7 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
       "datePublished": publishedIso,
       "dateModified": modifiedIso,
       "author": organization,
-      "reviewedBy": physician,
+      ...(clinicPost ? {} : { "reviewedBy": physician }),
       "publisher": { "@id": ORG_ID },
       "image": imgUrl
         ? { "@type": "ImageObject", "url": imgUrl, "caption": postTitle }
@@ -902,7 +905,9 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
   html += `<h1 class="board-detail-title">${escHtml(postTitle)}</h1>`;
   html += `<div class="board-detail-meta"><span><i class="far fa-calendar-alt"></i> <time datetime="${publishedIso || ''}">${kstYmd(post.created_at)}</time></span>${post.updated_at && kstYmd(post.updated_at) !== kstYmd(post.created_at) ? `<span><i class="fas fa-sync-alt"></i> 수정 <time datetime="${modifiedIso}">${kstYmd(post.updated_at)}</time></span>` : ''}<span><i class="fas fa-eye"></i> ${post.view_count}</span></div>`;
 
-  if (board === 'blog') {
+  if (clinicPost) {
+    html += `<div class="detail-author-card"><a href="/doctors" aria-label="행복한예인치과 의료진 소개"><img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 로고" width="60" height="60" decoding="async"></a><div class="detail-author-info"><span class="author-name">행복한예인치과 발행</span><span class="author-desc">${CLINIC_GENERAL_INFO_NOTE}</span><span class="author-updated">최종 업데이트 <time datetime="${modifiedIso}">${kstYmd(post.updated_at || post.created_at)}</time></span></div></div>`;
+  } else if (board === 'blog') {
     html += `<div class="detail-author-card"><a href="/doctors" aria-label="한승대 대표원장 소개"><img src="/static/img/dr-han-logo.jpg" alt="행복한예인치과 로고" width="60" height="60" decoding="async"></a><div class="detail-author-info"><span class="author-name">행복한예인치과 발행</span><span class="author-role">Reviewed by Specialist</span><span class="author-desc"><a href="/doctors" style="color:var(--gold);text-decoration:underline;">한승대 원장</a> 감수 · 통합치의학과 전문의<br>13년간 한자리에서 쌓아온 신뢰의 치과</span><span class="author-updated">최종 업데이트 <time datetime="${modifiedIso}">${kstYmd(post.updated_at || post.created_at)}</time></span></div></div>`;
   }
 

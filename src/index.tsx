@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { renderTreatmentPage } from './treatments'
 import { philosophyPage, doctorsPage, experiencePage, locationPage } from './pages'
 import { boardListPage, boardDetailPage, boardWritePage, boardEditPage, relatedForTreatment, fetchLitePosts } from './board-pages'
-import { treatmentForPost, kstYmd } from './column-seo'
+import { treatmentForPost, kstYmd, isClinicGeneratedPost } from './column-seo'
 import { uploadApi, imagesApi } from './api-upload'
 import boardsApi from './api-boards'
 import authApi, { requireAdmin } from './api-auth'
@@ -2110,7 +2110,7 @@ const rssFeedHandler = async (c: any) => {
   let lastBuild = new Date().toUTCString();
   try {
     const posts = await c.env.DB.prepare(
-      `SELECT id, title, content, thumbnail_url, created_at, updated_at
+      `SELECT id, title, content, thumbnail_url, created_at, updated_at, auto_generated
        FROM posts WHERE is_published = 1 AND board = 'blog'
        ORDER BY created_at DESC LIMIT 30`
     ).all();
@@ -2128,7 +2128,7 @@ const rssFeedHandler = async (c: any) => {
       <guid isPermaLink="true">${url}</guid>
       <description>${escXmlF(desc)}</description>
       <pubDate>${pubDate}</pubDate>
-      <dc:creator>한승대 (통합치의학과 전문의)</dc:creator>${p.thumbnail_url ? `
+      <dc:creator>${isClinicGeneratedPost(p) ? '행복한예인치과' : '한승대 (통합치의학과 전문의)'}</dc:creator>${p.thumbnail_url ? `
       <enclosure url="${escXmlF(p.thumbnail_url.startsWith('http') ? p.thumbnail_url : domain + p.thumbnail_url)}" type="image/jpeg" length="0"/>` : ''}
     </item>`;
     }).join('\n');

@@ -10,6 +10,17 @@ export const ORG_ID = `${SITE_URL}/#organization`
 export const WEBSITE_ID = `${SITE_URL}/#website`
 export const DR_HAN_ID = `${SITE_URL}/#dr-han` // pages.ts /doctors Physician @id
 
+// ===== 칼럼 작성 주체 (2026-10-08, 사용자 승인) =====
+// 자동 생성 칼럼(auto-blog.ts 파이프라인, posts.auto_generated=1)과 대행사 시드 글(seed-c4-posts.sql,
+// 커밋 988d152 — id 106·107·108, auto_generated=0 이지만 원장 작성 아님)은 원장이 쓰거나 검토한 근거가 없다.
+// → 작성·발행 = 병원(Organization), reviewedBy·'원장 감수' 표시 없음, 화면엔 일반 정보 안내 문구.
+// 관리자 화면에서 병원이 직접 올린 글(auto_generated=0, 시드 제외)만 기존 표시(원장 감수)를 유지한다.
+export const AGENCY_SEED_POST_IDS = new Set([106, 107, 108])
+export const CLINIC_GENERAL_INFO_NOTE = '일반 건강정보입니다. 진료 판단은 내원 상담에서 원장이 직접 합니다.'
+export function isClinicGeneratedPost(p: { id: number | string; auto_generated?: number | string | null }): boolean {
+  return Number(p.auto_generated) === 1 || AGENCY_SEED_POST_IDS.has(Number(p.id))
+}
+
 export function treatmentTitle(slug: string): string {
   return allTreatmentLinks.find(t => t.slug === slug)?.title || ''
 }
