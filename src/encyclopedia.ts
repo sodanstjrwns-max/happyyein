@@ -1,5 +1,8 @@
 // 치과 백과사전 페이지 - 200개+ 용어
 import { head, nav, footer, scripts } from './layout'
+import { ENC_ENRICH, ENC_ENRICH_DATE, ENC_LINK_LABELS } from './data/enc-enrich'
+
+const escH = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 export interface DentalTerm {
   id: string;           // URL slug
@@ -430,10 +433,34 @@ export function encyclopediaDetailPage(id: string): string | null {
   const cat = CATEGORIES.find(c => c.id === t.category);
   const relatedTerms = (t.related || []).map(rid => terms.find(x => x.id === rid)).filter(Boolean) as DentalTerm[];
 
+  // 보강 원고 (src/data/enc-enrich.ts, 2026-10-08) — 용어별 설명 섹션 + FAQ 2~3 + 관련 진료·용어 링크
+  const en = ENC_ENRICH[t.id];
+  const url = `https://happyyein.kr/encyclopedia/${t.id}`;
+  const enrichRel = en ? en.rel.filter(r => !(t.related || []).includes(r)).map(rid => terms.find(x => x.id === rid)).filter(Boolean) as DentalTerm[] : [];
+
   // JSON-LD
+  const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "@id": `${url}#webpage`,
+    "name": `${t.term} — 치과 백과사전`,
+    "url": url,
+    "inLanguage": "ko",
+    "about": { "@id": `${url}#term` },
+    "isPartOf": { "@type": "WebSite", "url": "https://happyyein.kr" },
+    "publisher": { "@id": "https://happyyein.kr/#organization" },
+    ...(en ? { "dateModified": ENC_ENRICH_DATE, "lastReviewed": ENC_ENRICH_DATE } : {}),
+  };
+  const faqSchema = en && en.faqs.length ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${url}#faq`,
+    "mainEntity": en.faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })),
+  } : null;
   const termSchema = {
     "@context": "https://schema.org",
     "@type": "DefinedTerm",
+    "@id": `${url}#term`,
     "name": t.term,
     "alternateName": t.termEn || undefined,
     "description": t.short,
@@ -451,7 +478,7 @@ export function encyclopediaDetailPage(id: string): string | null {
     path: `/encyclopedia/${t.id}`,
     keywords: `${t.term}, ${t.termEn || ''}, ${t.term} 뜻, ${t.term} 의미, 치과 용어, 행복한예인치과`,
     breadcrumbs: [{ name: '홈', url: '/' }, { name: '치과 백과사전', url: '/encyclopedia' }, { name: t.term, url: `/encyclopedia/${t.id}` }],
-    jsonLd: [termSchema]
+    jsonLd: faqSchema ? [termSchema, pageSchema, faqSchema] : [termSchema, pageSchema]
   })}
 ${nav('encyclopedia')}
 
@@ -484,6 +511,24 @@ ${nav('encyclopedia')}
       <h2 style="font-family:var(--font-kr);font-size:1.5rem;font-weight:700;margin-bottom:20px;">상세 설명</h2>
       <p style="font-family:var(--font-kr);font-size:1rem;line-height:2.2;color:var(--gray-dark);font-weight:300;">${t.desc}</p>
     </div>
+    ${en ? `
+    <div class="enc-detail-more" style="margin-top:36px;font-family:var(--font-kr);color:var(--gray-dark);">
+      ${en.sections.map(sec => `<h2 style="font-size:1.3rem;font-weight:700;margin:34px 0 14px;color:var(--black);">${escH(sec.h)}</h2>
+      ${sec.p.map(x => `<p style="font-size:1rem;line-height:2;font-weight:300;margin:0 0 12px;">${escH(x)}</p>`).join('')}
+      ${sec.li && sec.li.length ? `<ul style="margin:6px 0 14px;padding-left:1.2rem;line-height:1.9;font-weight:300;">${sec.li.map(x => `<li>${escH(x)}</li>`).join('')}</ul>` : ''}`).join('')}
+    </div>
+    ${en.faqs.length ? `<section class="enc-detail-faq" style="margin-top:40px;font-family:var(--font-kr);">
+      <h2 style="font-size:1.3rem;font-weight:700;margin-bottom:14px;color:var(--black);">${escH(t.term)} 자주 묻는 질문</h2>
+      ${en.faqs.map(f => `<details style="border:1px solid #e5e0d5;border-radius:10px;margin-bottom:10px;padding:0 16px;background:#faf8f3;">
+        <summary style="cursor:pointer;padding:14px 0;font-weight:600;color:var(--black);">${escH(f.q)}</summary>
+        <p style="margin:0 0 14px;line-height:1.9;color:var(--gray-dark);font-weight:300;">${escH(f.a)}</p>
+      </details>`).join('')}
+    </section>` : ''}
+    ${en.treat.length || enrichRel.length ? `<div style="margin-top:28px;font-family:var(--font-kr);font-size:.95rem;line-height:2;">
+      ${en.treat.length ? `<p style="margin:0;">관련 진료·증상 안내: ${en.treat.map(h => `<a href="${h}" style="color:var(--gold-deep);font-weight:600;">${escH(ENC_LINK_LABELS[h] || h)}</a>`).join(' · ')}</p>` : ''}
+      ${enrichRel.length ? `<p style="margin:0;">함께 보면 좋은 용어: ${enrichRel.map(r => `<a href="/encyclopedia/${r.id}" style="color:var(--gold-deep);font-weight:600;">${escH(r.term)}</a>`).join(' · ')}</p>` : ''}
+    </div>` : ''}
+    <p style="margin-top:24px;font-size:.82rem;color:#999;font-family:var(--font-kr);">최종 수정 <time datetime="${ENC_ENRICH_DATE}">${ENC_ENRICH_DATE}</time> · 일반적인 치과 정보이며 개인의 상태에 따라 진단과 치료가 달라질 수 있습니다.</p>` : ''}
     ${t.treatmentLink ? `
     <div class="enc-detail-treat rv rv-d2">
       <a href="/treatments/${t.treatmentLink}" class="btn btn-outline" style="margin-top:20px;"><i class="fas fa-arrow-right"></i> 관련 진료 페이지 보기</a>

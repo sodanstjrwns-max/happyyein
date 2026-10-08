@@ -4,6 +4,9 @@
 // =====================================================================
 import { head, nav, footer, scripts } from './layout'
 
+// '{지역} 치과' 대표 허브가 있는 지역 — 진료별 랜딩은 허브로 링크하고 '{지역} 치과' 키워드를 쓰지 않는다 (2026-10-08)
+const HUB_REGIONS = ['myeongdong', 'hoehyeon'];
+
 // ===== 타입 정의 =====
 interface Region {
   id: string;             // URL slug: 'sicheong', 'myeongdong', etc.
@@ -114,7 +117,7 @@ const treatments: Treatment[] = [
     treatmentSlug: '/treatments/implant',
     heroImg: '/static/img/treat-1.jpg',
     specialist: '한승대 대표원장',
-    specialistTitle: '서울대 통합치의학 전문의',
+    specialistTitle: '통합치의학과 전문의',
     keywords: ['임플란트', '즉시식립', '발치즉시', '임플란트 비용', '임플란트 가격', '임플란트 후기', '원데이 임플란트'],
   },
   {
@@ -134,7 +137,7 @@ const treatments: Treatment[] = [
     treatmentSlug: '/treatments/aesthetic',
     heroImg: '/static/img/treat-5.jpg',
     specialist: '한승대 대표원장',
-    specialistTitle: '서울대 통합치의학 전문의',
+    specialistTitle: '통합치의학과 전문의',
     keywords: ['라미네이트', '심미치료', '앞니치료', '치아미백', '지르코니아', '앞니성형', '치아성형'],
   },
   {
@@ -144,7 +147,7 @@ const treatments: Treatment[] = [
     treatmentSlug: '/treatments/orthodontics',
     heroImg: '/static/img/treat-4.jpg',
     specialist: '박현미 원장',
-    specialistTitle: '서울대 교정과 전문의',
+    specialistTitle: '교정과 전문의',
     keywords: ['치아교정', '투명교정', '인비절라인', '교정 비용', '성인교정', '부분교정', '교정 가격'],
   },
   {
@@ -154,7 +157,7 @@ const treatments: Treatment[] = [
     treatmentSlug: '/treatments/general',
     heroImg: '/static/img/consult-1.jpg',
     specialist: '한승대 대표원장',
-    specialistTitle: '서울대 통합치의학 전문의',
+    specialistTitle: '통합치의학과 전문의',
     keywords: ['스케일링', '치과검진', '충치치료', '잇몸치료', '예방치료', '정기검진', '치석제거'],
   },
 ];
@@ -173,13 +176,13 @@ function generateFaq(region: Region, treatment: Treatment): { q: string; a: stri
   if (treatment.id === 'implant') {
     base.push(
       { q: `${region.name} 근처 임플란트 잘하는 치과 추천해주세요`,
-        a: `행복한예인치과는 ${region.station}에서 도보 ${region.walkMin}분 거리에 있으며, 한승대 대표원장(서울대 통합치의학 전문의)이 직접 진료합니다. 80% 이상의 케이스에서 발치즉시 임플란트를 시행하여 치료 기간을 획기적으로 단축합니다.` },
+        a: `행복한예인치과는 ${region.station}에서 도보 ${region.walkMin}분 거리에 있으며, 한승대 대표원장(통합치의학과 전문의)이 직접 진료합니다. 80% 이상의 케이스에서 발치즉시 임플란트를 시행하여 치료 기간을 획기적으로 단축합니다.` },
       { q: `${region.nameShort} 임플란트 비용은 얼마인가요?`,
         a: `임플란트 비용은 환자분의 잔존 골량, 식립 부위, 보철 재료에 따라 달라집니다. 행복한예인치과에서는 CT 촬영 후 정확한 진단과 함께 투명한 비용 안내를 드리며, 발치즉시 임플란트로 추가 수술 비용을 절감할 수 있습니다. 02-756-2828로 상담 예약해주세요.` },
       { q: `${region.nameShort}에서 원데이 임플란트 가능한가요?`,
         a: `네, 조건이 충족되면 당일 발치와 동시에 임플란트 식립이 가능합니다. 한승대 원장은 즉시식립 전문으로 80% 이상의 케이스에서 당일 식립을 진행합니다. 정확한 가능 여부는 CT 촬영 후 판단됩니다.` },
       { q: `${region.nameShort} 직장인인데 점심시간에 임플란트 상담 가능한가요?`,
-        a: `물론입니다. 행복한예인치과는 ${region.station}에서 도보 ${region.walkMin}분으로 ${region.nameShort} 직장인분들의 점심시간 방문에 최적화되어 있습니다. 수요일 야간진료(~20:30)도 운영하여 퇴근 후 방문도 가능합니다.` },
+        a: `물론입니다. 행복한예인치과는 ${region.station}에서 도보 ${region.walkMin}분으로 ${region.nameShort} 직장인분들의 점심시간 방문에 최적화되어 있습니다. 수요일 야간진료(~20:00)도 운영하여 퇴근 후 방문도 가능합니다.` },
       { q: `임플란트 수술 후 회복 기간은 어느 정도인가요?`,
         a: `발치즉시 임플란트의 경우 일반 임플란트 대비 회복이 빠르며, 대부분 수술 다음 날부터 일상생활이 가능합니다. 최종 보철까지 약 2~4개월 소요되며, 그 기간 동안 임시 치아를 장착하여 일상에 불편이 없습니다.` },
     );
@@ -199,7 +202,7 @@ function generateFaq(region: Region, treatment: Treatment): { q: string; a: stri
   } else if (treatment.id === 'aesthetic') {
     base.push(
       { q: `${region.name} 근처 라미네이트 잘하는 치과 추천`,
-        a: `행복한예인치과는 ${region.station}에서 도보 ${region.walkMin}분 거리에 위치하며, 한승대 대표원장(서울대 통합치의학 전문의)이 직접 앞니 심미 치료를 진행합니다. 자연치아 삭제를 최소화하는 보존적 라미네이트를 지향합니다.` },
+        a: `행복한예인치과는 ${region.station}에서 도보 ${region.walkMin}분 거리에 위치하며, 한승대 대표원장(통합치의학과 전문의)이 직접 앞니 심미 치료를 진행합니다. 자연치아 삭제를 최소화하는 보존적 라미네이트를 지향합니다.` },
       { q: `${region.nameShort} 라미네이트 비용이 궁금합니다`,
         a: `라미네이트 비용은 치아 상태, 시술 개수, 재료(포세린/지르코니아)에 따라 달라집니다. 행복한예인치과에서는 상담 시 정확한 비용과 예상 결과를 디지털 시뮬레이션으로 미리 보여드립니다. 무료 상담 예약: 02-756-2828.` },
       { q: `라미네이트와 치아미백 중 어떤 것이 좋을까요?`,
@@ -212,7 +215,7 @@ function generateFaq(region: Region, treatment: Treatment): { q: string; a: stri
   } else if (treatment.id === 'orthodontics') {
     base.push(
       { q: `${region.name} 근처 교정 잘하는 치과 추천해주세요`,
-        a: `행복한예인치과는 ${region.station}에서 도보 ${region.walkMin}분 거리에 위치하며, 박현미 원장(서울대 교정과 전문의)이 직접 교정 치료를 진행합니다. 투명교정(인비절라인)과 일반 교정 모두 전문의가 직접 담당합니다.` },
+        a: `행복한예인치과는 ${region.station}에서 도보 ${region.walkMin}분 거리에 위치하며, 박현미 원장(교정과 전문의)이 직접 교정 치료를 진행합니다. 투명교정(인비절라인)과 일반 교정 모두 전문의가 직접 담당합니다.` },
       { q: `${region.nameShort} 투명교정 비용은 얼마인가요?`,
         a: `투명교정(인비절라인) 비용은 치아 상태와 교정 범위에 따라 다릅니다. 행복한예인치과에서는 3D 디지털 스캔으로 정확한 교정 계획과 비용을 상담 시 안내드립니다. 부분교정부터 전체교정까지 맞춤 플랜을 제공합니다.` },
       { q: `성인 교정도 가능한가요? 나이가 걱정됩니다`,
@@ -225,13 +228,13 @@ function generateFaq(region: Region, treatment: Treatment): { q: string; a: stri
   } else { // general
     base.push(
       { q: `${region.name} 근처 스케일링 잘하는 치과 추천`,
-        a: `행복한예인치과는 ${region.station}에서 도보 ${region.walkMin}분 거리에 위치한 서울대 출신 전문의 3인 치과입니다. 스케일링은 건강보험 적용(연 1회)으로 합리적인 비용에 받으실 수 있으며, 치아 상태 정밀 검진도 함께 진행합니다.` },
+        a: `행복한예인치과는 ${region.station}에서 도보 ${region.walkMin}분 거리에 위치하며, 통합치의학과·보존과·교정과 원장 3인이 분야별로 진료하는 치과입니다. 스케일링은 건강보험 적용(연 1회)으로 합리적인 비용에 받으실 수 있으며, 치아 상태 정밀 검진도 함께 진행합니다.` },
       { q: `${region.nameShort} 치과 정기검진 비용은?`,
         a: `기본 검진과 스케일링은 건강보험이 적용되어 부담 없는 비용으로 받으실 수 있습니다. 파노라마 X-ray, 구강 내 사진 촬영을 통한 종합 진단을 제공하며, 치료 필요 시 투명한 비용 안내를 드립니다.` },
       { q: `스케일링은 얼마나 자주 받아야 하나요?`,
         a: `일반적으로 6개월~1년에 한 번 권장되며, 잇몸 상태에 따라 3~4개월 간격이 필요할 수 있습니다. 건강보험으로 연 1회 스케일링이 적용되니 정기적으로 방문해주시면 구강 건강 유지에 큰 도움이 됩니다.` },
       { q: `${region.nameShort} 직장인인데 점심시간에 스케일링 가능한가요?`,
-        a: `물론입니다! ${region.station}에서 도보 ${region.walkMin}분이며, 스케일링은 약 20~30분 소요되므로 점심시간에 충분히 가능합니다. 수요일 야간진료(~20:30)도 운영하니 퇴근 후 방문도 가능합니다.` },
+        a: `물론입니다! ${region.station}에서 도보 ${region.walkMin}분이며, 스케일링은 약 20~30분 소요되므로 점심시간에 충분히 가능합니다. 수요일 야간진료(~20:00)도 운영하니 퇴근 후 방문도 가능합니다.` },
       { q: `아이 충치치료도 가능한가요?`,
         a: `네, 행복한예인치과는 소아 환자분의 충치치료와 예방치료(실란트, 불소도포)도 진행합니다. 아이가 무서워하지 않도록 세심한 케어를 제공하며, 치료 과정을 보호자분께 상세히 설명드립니다.` },
     );
@@ -240,9 +243,9 @@ function generateFaq(region: Region, treatment: Treatment): { q: string; a: stri
   // 공통 마무리 FAQ
   base.push(
     { q: `행복한예인치과 진료시간이 어떻게 되나요?`,
-      a: `평일 10:00~18:30, 수요일 야간진료 10:00~20:30, 토요일 10:00~15:00 운영합니다. 일요일·공휴일은 휴진입니다. ${region.station}에서 도보 ${region.walkMin}분 거리이니 편하게 방문해주세요.` },
+      a: `월·화·목·금 09:30~18:30, 수요일은 야간진료로 09:30~20:00까지 진료합니다. 점심시간은 13:00~14:00이며 토·일·공휴일은 휴진입니다. ${region.station}에서 도보 ${region.walkMin}분 거리이니 편하게 방문해주세요.` },
     { q: `주차가 가능한가요?`,
-      a: `건물 내 주차장 이용이 가능하며, 인근 공영주차장도 이용하실 수 있습니다. 다만 ${region.station}에서 도보 ${region.walkMin}분으로 대중교통 이용이 더 편리합니다.` },
+      a: `효덕빌딩 주변 유료 주차장을 이용하실 수 있지만 주차 공간이 제한적입니다. ${region.station}에서 도보 ${region.walkMin}분이라 대중교통 이용을 권해 드립니다.` },
   );
 
   return base;
@@ -297,9 +300,8 @@ function generateJsonLd(region: Region, treatment: Treatment, faq: { q: string; 
       }],
     },
     openingHoursSpecification: [
-      { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Thursday','Friday'], opens: '10:00', closes: '18:30' },
-      { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Wednesday', opens: '10:00', closes: '20:30' },
-      { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday', opens: '10:00', closes: '15:00' },
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Thursday','Friday'], opens: '09:30', closes: '18:30' },
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Wednesday', opens: '09:30', closes: '20:00' },
     ],
     priceRange: '$$',
     currenciesAccepted: 'KRW',
@@ -334,7 +336,7 @@ function generateJsonLd(region: Region, treatment: Treatment, faq: { q: string; 
     '@type': 'MedicalWebPage',
     name: `${region.name} ${treatment.name} | 행복한예인치과`,
     url: pageUrl,
-    description: `${region.name} ${treatment.name} 전문 치과 행복한예인치과. ${region.station}에서 도보 ${region.walkMin}분. 서울대 전문의 직접 진료.`,
+    description: `${region.name} ${treatment.name} 전문 치과 행복한예인치과. ${region.station}에서 도보 ${region.walkMin}분. 담당 원장 직접 진료.`,
     inLanguage: 'ko',
     isPartOf: { '@type': 'WebSite', url: domain },
     about: {
@@ -368,8 +370,8 @@ export function getAllLocalSeoSlugs(): string[] {
 // ===== 지역별 진료 안내 목록 페이지 =====
 export function localSeoIndexPage(): string {
   const domain = 'https://happyyein.kr';
-  const title = '지역별 진료 안내 | 행복한예인치과 - 시청역·명동·을지로·회현역·광화문·서울역';
-  const desc = '행복한예인치과 지역별 진료 안내. 시청역·명동·을지로·회현역·광화문·서울역에서 가까운 치과. 임플란트, 신경치료, 라미네이트, 교정, 스케일링 전문. 서울대 전문의 3인 직접 진료.';
+  const title = '지역별 진료 안내 — 명동·회현역·시청역·을지로·광화문·서울역';
+  const desc = '행복한예인치과 지역별 진료 안내. 시청역·명동·을지로·회현역·광화문·서울역에서 가까운 치과. 임플란트, 신경치료, 라미네이트, 교정, 스케일링 전문. 담당 원장 3인 직접 진료.';
 
   const jsonLd = [
     {
@@ -430,8 +432,9 @@ ${nav()}
     </h1>
     <p style="font-size:1.15rem;opacity:.9;line-height:1.7;">
       시청역·명동·을지로·회현역·광화문·서울역에서 가까운<br>
-      <strong>서울대 전문의 3인</strong> 치과, 행복한예인치과
+      <strong>원장 3인 협진</strong> 치과, 행복한예인치과
     </p>
+    <p style="margin-top:20px;"><a href="/local/myeongdong" style="display:inline-block;padding:12px 28px;background:#fff;color:#1a5276;border-radius:50px;font-weight:700;text-decoration:none;">명동 치과 · 회현역 치과 종합 안내 →</a></p>
   </div>
 </section>
 
@@ -464,7 +467,7 @@ ${nav()}
 <!-- CTA -->
 <section style="background:#f0f7ff;padding:50px 20px;text-align:center;">
   <h2 style="font-size:1.5rem;font-weight:700;color:#1a5276;margin-bottom:12px;">지금 바로 상담 예약하세요</h2>
-  <p style="color:#555;margin-bottom:24px;">서울대 전문의 3인이 직접 진단하고 치료합니다</p>
+  <p style="color:#555;margin-bottom:24px;">원장 3인이 분야별로 직접 진단하고 치료합니다</p>
   <a href="tel:02-756-2828" style="display:inline-block;padding:16px 40px;background:#2e86c1;color:#fff;border-radius:50px;font-size:1.15rem;font-weight:700;text-decoration:none;box-shadow:0 4px 15px rgba(46,134,193,.4);">📞 02-756-2828</a>
 </section>
 
@@ -501,11 +504,14 @@ export function renderLocalSeoPage(slug: string): string | null {
   const faq = generateFaq(region, treatment);
   const jsonLd = generateJsonLd(region, treatment, faq);
 
-  const pageTitle = `${region.name} ${treatment.name} | 행복한예인치과 - ${region.station} 도보 ${region.walkMin}분`;
+  // head() 가 ' | 행복한예인치과' 를 붙이므로 여기서는 브랜드를 넣지 않는다(이중 브랜드 제거 2026-10-08).
+  // 일반·예방 진료는 '스케일링' 한 단어 대신 구체 진료명으로 — '{지역} 치과' 대표 허브(/local/myeongdong)와 겹치지 않게.
+  const titleTreat = treatment.id === 'general' ? '스케일링·잇몸치료·정기검진' : treatment.name;
+  const pageTitle = `${region.name} ${titleTreat} - ${region.station} 도보 ${region.walkMin}분`;
   const pageDesc = `${region.name} ${treatment.name} 전문 치과 행복한예인치과. ${region.station} ${region.exitInfo}에서 도보 ${region.walkMin}분. ${treatment.specialist}(${treatment.specialistTitle}) 직접 진료. ${treatment.keywords.slice(0, 3).join(', ')}. 수요일 야간진료. 02-756-2828`;
   const keywords = [
     `${region.name} ${treatment.name}`, `${region.nameShort} ${treatment.name}`,
-    `${region.name} 치과`, `${region.nameShort} 치과`,
+    ...(HUB_REGIONS.includes(region.id) ? [] : [`${region.name} 치과`, `${region.nameShort} 치과`]),
     `${region.name} ${treatment.name} 잘하는 치과`, `${region.nameShort} ${treatment.name} 추천`,
     `${region.name} ${treatment.name} 비용`, `${region.name} ${treatment.name} 가격`,
     ...treatment.keywords.map(k => `${region.nameShort} ${k}`),
@@ -564,6 +570,7 @@ ${nav()}
       <a href="tel:02-756-2828" style="display:inline-block;padding:14px 32px;background:#fff;color:#1a5276;border-radius:50px;font-weight:700;text-decoration:none;font-size:1rem;box-shadow:0 4px 15px rgba(0,0,0,.15);">📞 전화 상담</a>
       <a href="/location" style="display:inline-block;padding:14px 32px;background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.5);border-radius:50px;font-weight:600;text-decoration:none;font-size:1rem;">📍 오시는 길</a>
     </div>
+    ${HUB_REGIONS.includes(region.id) ? `<p style="margin-top:18px;font-size:.95rem;"><a href="/local/myeongdong" style="color:#fff;text-decoration:underline;">${region.nameShort} 치과 종합 안내 — 위치·진료시간·의료진 →</a></p>` : ''}
   </div>
 </section>
 
@@ -583,12 +590,12 @@ ${nav()}
     <div style="background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.08);text-align:center;">
       <div style="font-size:2rem;margin-bottom:8px;">🕐</div>
       <p style="font-weight:700;color:#1a5276;font-size:1.05rem;">수요일 야간진료</p>
-      <p style="color:#888;font-size:.9rem;">평일 10-18:30 · 수 ~20:30</p>
+      <p style="color:#888;font-size:.9rem;">평일 09:30-18:30 · 수 ~20:00</p>
     </div>
     <div style="background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.08);text-align:center;">
-      <div style="font-size:2rem;margin-bottom:8px;">⭐</div>
-      <p style="font-weight:700;color:#1a5276;font-size:1.05rem;">환자 만족도 4.9</p>
-      <p style="color:#888;font-size:.9rem;">287건 리뷰 기준</p>
+      <div style="font-size:2rem;margin-bottom:8px;">🏥</div>
+      <p style="font-weight:700;color:#1a5276;font-size:1.05rem;">2013년 개원</p>
+      <p style="color:#888;font-size:.9rem;">남대문로9길 같은 자리 13년</p>
     </div>
   </div>
 </section>
@@ -609,8 +616,7 @@ ${nav()}
       </p>
       <p style="font-size:1.05rem;line-height:1.9;color:#444;margin-top:16px;">
         <strong>${treatment.specialist}(${treatment.specialistTitle})</strong>이 직접 
-        ${treatment.nameDetail}를 진행하며, 서울대학교 치과병원과 동일한 
-        진료 시스템을 갖추고 있습니다.
+        ${treatment.nameDetail}를 진행합니다.
       </p>
     </div>
     <div style="background:#f8fbff;border-radius:16px;padding:24px;">
@@ -648,18 +654,18 @@ ${nav()}
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;">
       <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.05);">
         <div style="font-size:1.5rem;margin-bottom:12px;">🎓</div>
-        <h3 style="font-size:1.1rem;font-weight:700;color:#1a5276;margin-bottom:8px;">서울대 전문의 3인 직접 진료</h3>
+        <h3 style="font-size:1.1rem;font-weight:700;color:#1a5276;margin-bottom:8px;">담당 원장 3인 직접 진료</h3>
         <p style="font-size:.92rem;color:#666;line-height:1.7;">
-          한승대 대표원장(통합치의학), 박미나 원장(보존과), 박현미 원장(교정과) — 
-          서울대 출신 전문의 3인이 각 분야 전문 진료를 직접 담당합니다.
+          한승대 대표원장(통합치의학과 전문의), 박미나 원장(보존과), 박현미 원장(교정과 전문의) — 
+          원장 3인이 각 분야 진료를 직접 담당합니다.
         </p>
       </div>
       <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.05);">
         <div style="font-size:1.5rem;margin-bottom:12px;">🏥</div>
-        <h3 style="font-size:1.1rem;font-weight:700;color:#1a5276;margin-bottom:8px;">서울대 치과병원급 시설</h3>
+        <h3 style="font-size:1.1rem;font-weight:700;color:#1a5276;margin-bottom:8px;">정밀 진단 장비</h3>
         <p style="font-size:.92rem;color:#666;line-height:1.7;">
-          400평 규모, 6개 독립 수술실, 에어샤워 감염관리 시스템을 갖춘 
-          서울대 치과병원 수준의 진료 환경을 제공합니다.
+          CBCT(3차원 CT)로 뼈와 신경관 위치를 확인하고, 
+          미세현미경으로 확대해 보며 신경치료를 진행합니다.
         </p>
       </div>
       <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.05);">
@@ -667,7 +673,7 @@ ${nav()}
         <h3 style="font-size:1.1rem;font-weight:700;color:#1a5276;margin-bottom:8px;">${region.name}에서 도보 ${region.walkMin}분</h3>
         <p style="font-size:.92rem;color:#666;line-height:1.7;">
           ${region.station} ${region.exitInfo}에서 도보 ${region.walkMin}분. 
-          ${region.nameShort} 직장인분들의 점심시간 방문과 수요일 야간진료(~20:30) 활용에 최적입니다.
+          ${region.nameShort} 직장인분들의 점심시간 방문과 수요일 야간진료(~20:00) 활용에 최적입니다.
         </p>
       </div>
     </div>

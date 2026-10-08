@@ -13,6 +13,7 @@ import { registerPage, loginPage } from './auth-pages'
 import { encyclopediaListPage, encyclopediaDetailPage } from './encyclopedia'
 import autoBlogApi, { handleScheduled, notifySearchEngines } from './auto-blog'
 import { renderLocalSeoPage, localSeoIndexPage, getAllLocalSeoSlugs } from './local-seo'
+import { myeongdongHubPage, MYEONGDONG_HUB_PATH, MYEONGDONG_HUB_MODIFIED } from './myeongdong-hub'
 import { renderSymptomPage, symptomIndexPage, getAllSymptomSlugs } from './symptom-seo'
 import { renderCostPage, costIndexPage, getAllCostSlugs } from './cost-seo'
 import { renderComparisonPage, comparisonIndexPage, getAllComparisonSlugs } from './comparison-seo'
@@ -25,6 +26,10 @@ import { renderSearchPage } from './search'
 import feesApi, { getPublishedFees } from './api-fees'
 import { feesPublicPage, feesAdminPage } from './fees-page'
 import { postingGuidePage } from './guide-page'
+import { EXPANSION_EN_PAGES } from './foreign-seo-expansion-en'
+import { EXPANSION_JA_PAGES } from './foreign-seo-expansion-ja'
+import { EXPANSION_ZH_PAGES } from './foreign-seo-expansion-zh'
+import { ENC_ENRICH_DATE } from './data/enc-enrich'
 
 type Bindings = { DB: D1Database; R2: R2Bucket; OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; AUTO_BLOG_SECRET?: string }
 const app = new Hono<{ Bindings: Bindings }>()
@@ -32,7 +37,8 @@ const app = new Hono<{ Bindings: Bindings }>()
 // ===== A4: www → 비www 301 통일 (canonical 정합성) =====
 app.use('*', async (c, next) => {
   const url = new URL(c.req.url)
-  if (url.hostname === 'www.happyyein.kr') {
+  // www·pages.dev 프로덕션 별칭 → 본 도메인 301 (배포별 미리보기 <hash>.happyyein.pages.dev 는 검증용으로 유지, 2026-10-08)
+  if (url.hostname === 'www.happyyein.kr' || url.hostname === 'happyyein.pages.dev') {
     url.hostname = 'happyyein.kr'
     url.protocol = 'https:'
     return c.redirect(url.toString(), 301)
@@ -85,10 +91,10 @@ app.use('*', async (c, next) => {
 
 app.get('/', (c) => {
   const SITE_DOMAIN = 'https://happyyein.kr';
-  const mainDesc = '서울 시청역·명동·을지로·광화문에서 도보 5~10분. 13년간 한자리에서 쌓아온 신뢰의 치과. 발치즉시 임플란트 80%+, 보존과·교정과 원장 3인 협진. 수요일 야간진료. 행복한예인치과 02-756-2828.';
-  const mainTitle = '행복한예인치과 | 시청역·명동·을지로 치과 - 임플란트·보존·심미·교정 전문의 협진';
+  const mainDesc = '명동 치과 행복한예인치과 — 서울 시청역·명동·을지로·광화문에서 도보 5~10분. 13년간 한자리에서 쌓아온 신뢰의 치과. 발치즉시 임플란트 80%+, 보존과·교정과 원장 3인 협진. 수요일 야간진료. 행복한예인치과 02-756-2828.';
+  const mainTitle = '명동 치과 | 행복한예인치과 — 시청역·을지로·회현역 도보 5~8분, 임플란트·보존·심미·교정 원장 3인 협진';
   const ogImage = `${SITE_DOMAIN}/static/img/dr-han-logo.jpg`;
-  const today = '2026-06-11'; // CONTENT_REVIEWED — 메인페이지 dateModified용 고정 검수일
+  const today = '2026-10-08'; // CONTENT_REVIEWED — 메인페이지 dateModified용 고정 검수일 (title·명동 치과 앵커 수정일)
 
   // 1) Dentist + LocalBusiness 통합 스키마
   const orgJsonLd = JSON.stringify({
@@ -1044,6 +1050,7 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
     </h1>
     <div class="hero-bottom">
       <p class="hero-desc">
+        <a href="/local/myeongdong" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">명동 치과</a> 행복한예인치과입니다.<br>
         명동·을지로·광화문 직장인 여러분,<br>
         미뤄두셨던 치료, 이제 시작해보세요.<br>
         시청역 5분 · 명동역 8분 · 수요일 야간진료
@@ -1504,6 +1511,7 @@ ${mainFaqData.map(f => `      <div class="faq-item rv" data-cat="${f.cat}">
     <div style="margin-top:40px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.06);">
       <h3 class="rv" style="font-family:var(--font-kr);font-size:0.95rem;color:var(--gold);margin-bottom:16px;font-weight:600;">📍 지역별 전문 진료 바로가기</h3>
       <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:900px;margin:0 auto;">
+        <a href="/local/myeongdong" style="padding:8px 16px;border-radius:20px;background:rgba(247,186,24,0.15);border:1px solid rgba(247,186,24,0.3);color:var(--gold);font-size:0.78rem;font-family:var(--font-kr);text-decoration:none;font-weight:600;transition:all 0.2s;">명동 치과</a>
         <a href="/local/sicheong-implant" style="padding:8px 16px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.78rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">시청역 임플란트</a>
         <a href="/local/myeongdong-implant" style="padding:8px 16px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.78rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">명동 임플란트</a>
         <a href="/local/euljiro-preservation" style="padding:8px 16px;border-radius:20px;background:rgba(247,186,24,0.08);border:1px solid rgba(247,186,24,0.15);color:var(--gold);font-size:0.78rem;font-family:var(--font-kr);text-decoration:none;transition:all 0.2s;">을지로 신경치료</a>
@@ -1805,6 +1813,8 @@ app.get('/treatments/:slug', async (c) => {
 
 // ===== LOCAL SEO: 지역×진료 전용 랜딩페이지 (30개+) =====
 app.get('/local', (c) => c.html(localSeoIndexPage()))
+// '명동 치과' 대표 키워드 허브 (2026-10-08)
+app.get(MYEONGDONG_HUB_PATH, (c) => c.html(myeongdongHubPage()))
 app.get('/local/:slug', (c) => {
   const slug = c.req.param('slug')
   const html = renderLocalSeoPage(slug)
@@ -2147,83 +2157,100 @@ app.get('/sitemap.xml', async (c) => {
   const domain = 'https://happyyein.kr';
   // [SEO] lastmod에 매일 바뀌는 today를 쓰면 Google이 lastmod 신호 자체를 무시함.
   // 정적 페이지는 실제 콘텐츠 갱신 시에만 이 상수를 업데이트할 것.
-  const today = '2026-06-11'; // STATIC_CONTENT_LASTMOD — 콘텐츠 대규모 변경 시 수동 갱신
+  // lastmod = 각 페이지 묶음의 원본 소스 파일이 실제로 마지막 수정된 날짜 (git 커밋일, 고정값).
+  // 예전에는 모든 정적 URL 이 '2026-06-11' 한 값이었음 → 실제 수정일로 분리 (2026-10-08).
+  // 해당 소스를 고치면 그날 날짜로 이 표를 갱신한다. new Date()/오늘 날짜 금지.
+  const LM = {
+    home: '2026-10-08',        // src/index.tsx 홈 (title·명동 치과 앵커)
+    pages: '2026-09-02',       // src/pages.ts 진료 철학·의료진·체험·오시는 길
+    treatments: '2026-10-03',  // src/treatments.ts
+    local: '2026-10-08',       // src/local-seo.ts + 명동 치과 허브
+    symptoms: '2026-09-02',    // src/symptom-seo.ts
+    cost: '2026-09-02',        // src/cost-seo.ts
+    compare: '2026-08-18',     // src/comparison-seo.ts
+    encyclopedia: ENC_ENRICH_DATE, // src/encyclopedia.ts + src/data/enc-enrich.ts 보강
+    search: '2026-09-02',      // src/search.ts
+    en: '2026-09-29',          // src/en-main.ts · foreign-emergency-seo.ts
+    enExpansion: '2026-06-02', // src/foreign-seo-expansion-{en,ja,zh}.ts
+  };
+  const expansionSlugs = new Set([...EXPANSION_EN_PAGES, ...EXPANSION_JA_PAGES, ...EXPANSION_ZH_PAGES].map(p => p.slug));
   const db = c.env.DB;
 
   // 정적 페이지
   const staticUrls = [
-    { loc: '/', priority: '1.0', changefreq: 'weekly', lastmod: today, images: [
+    { loc: '/', priority: '1.0', changefreq: 'weekly', lastmod: LM.home, images: [
       { url: '/static/img/dr-han-smile.jpg', title: '한승대 대표원장 - 행복한예인치과' },
       { url: '/static/img/dr-han-profile.jpg', title: '한승대 원장 프로필' },
       { url: '/static/img/logo.png', title: '행복한예인치과 로고' }
     ]},
-    { loc: '/philosophy', priority: '0.8', changefreq: 'monthly', lastmod: today, images: [
+    { loc: '/philosophy', priority: '0.8', changefreq: 'monthly', lastmod: LM.pages, images: [
       { url: '/static/img/dr-han-logo.jpg', title: '행복한예인치과 진료 철학' }
     ]},
-    { loc: '/doctors', priority: '0.8', changefreq: 'monthly', lastmod: today, images: [
+    { loc: '/doctors', priority: '0.8', changefreq: 'monthly', lastmod: LM.pages, images: [
       { url: '/static/img/dr-han-front.jpg', title: '행복한예인치과 의료진' },
       { url: '/static/img/dr-han-profile.jpg', title: '한승대 대표원장' }
     ]},
-    { loc: '/experience', priority: '0.7', changefreq: 'monthly', lastmod: today, images: [
+    { loc: '/experience', priority: '0.7', changefreq: 'monthly', lastmod: LM.pages, images: [
       { url: '/static/img/consult-2.jpg', title: '행복한예인치과 환자 경험' }
     ]},
-    { loc: '/location', priority: '0.8', changefreq: 'monthly', lastmod: today, images: [
+    { loc: '/location', priority: '0.8', changefreq: 'monthly', lastmod: LM.pages, images: [
       { url: '/static/img/dr-han-logo.jpg', title: '행복한예인치과 오시는 길' }
     ]},
-    { loc: '/treatments/implant', priority: '0.9', changefreq: 'monthly', lastmod: today, images: [
+    { loc: '/treatments/implant', priority: '0.9', changefreq: 'monthly', lastmod: LM.treatments, images: [
       { url: '/static/img/treat-1.jpg', title: '발치즉시 임플란트 시술' }
     ]},
-    { loc: '/treatments/preservation', priority: '0.8', changefreq: 'monthly', lastmod: today, images: [
+    { loc: '/treatments/preservation', priority: '0.8', changefreq: 'monthly', lastmod: LM.treatments, images: [
       { url: '/static/img/treat-2.jpg', title: '치아보존치료 신경치료' }
     ]},
-    { loc: '/treatments/aesthetic', priority: '0.8', changefreq: 'monthly', lastmod: today, images: [
+    { loc: '/treatments/aesthetic', priority: '0.8', changefreq: 'monthly', lastmod: LM.treatments, images: [
       { url: '/static/img/treat-3.jpg', title: '앞니 심미치료 라미네이트' }
     ]},
-    { loc: '/treatments/orthodontics', priority: '0.8', changefreq: 'monthly', lastmod: today, images: [
+    { loc: '/treatments/orthodontics', priority: '0.8', changefreq: 'monthly', lastmod: LM.treatments, images: [
       { url: '/static/img/treat-4.jpg', title: '치아교정 투명교정' }
     ]},
-    { loc: '/treatments/general', priority: '0.7', changefreq: 'monthly', lastmod: today, images: [
+    { loc: '/treatments/general', priority: '0.7', changefreq: 'monthly', lastmod: LM.treatments, images: [
       { url: '/static/img/treat-5.jpg', title: '일반 예방 치료' }
     ]},
-    { loc: '/before-after', priority: '0.7', changefreq: 'daily', lastmod: today, images: [] },
-    { loc: '/blog', priority: '0.8', changefreq: 'daily', lastmod: today, images: [] },
-    { loc: '/notice', priority: '0.5', changefreq: 'weekly', lastmod: today, images: [] },
-    { loc: '/encyclopedia', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
-    { loc: '/search', priority: '0.6', changefreq: 'monthly', lastmod: today, images: [] },
+    { loc: '/before-after', priority: '0.7', changefreq: 'daily', lastmod: '', images: [] },
+    { loc: '/blog', priority: '0.8', changefreq: 'daily', lastmod: '', images: [] },
+    { loc: '/notice', priority: '0.5', changefreq: 'weekly', lastmod: '', images: [] },
+    { loc: '/encyclopedia', priority: '0.8', changefreq: 'weekly', lastmod: LM.encyclopedia, images: [] },
+    { loc: '/search', priority: '0.6', changefreq: 'monthly', lastmod: LM.search, images: [] },
     // Local SEO: 지역×진료 전용 랜딩페이지 (30개+)
-    { loc: '/local', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
+    { loc: '/local', priority: '0.8', changefreq: 'weekly', lastmod: LM.local, images: [] },
+    { loc: MYEONGDONG_HUB_PATH, priority: '0.95', changefreq: 'monthly', lastmod: MYEONGDONG_HUB_MODIFIED, images: [] },
     ...getAllLocalSeoSlugs().map(s => ({
       loc: `/local/${s}`,
       priority: '0.9',
       changefreq: 'weekly' as const,
-      lastmod: today,
+      lastmod: LM.local,
       images: [] as { url: string; title: string }[],
     })),
     // Symptom SEO: 증상별 전용 랜딩페이지 (20개)
-    { loc: '/symptoms', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
+    { loc: '/symptoms', priority: '0.8', changefreq: 'weekly', lastmod: LM.symptoms, images: [] },
     ...getAllSymptomSlugs().map(s => ({
       loc: `/symptoms/${s}`,
       priority: '0.9',
       changefreq: 'weekly' as const,
-      lastmod: today,
+      lastmod: LM.symptoms,
       images: [] as { url: string; title: string }[],
     })),
     // Cost SEO: 치료비용 전용 랜딩페이지 (10개)
-    { loc: '/cost', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
+    { loc: '/cost', priority: '0.8', changefreq: 'weekly', lastmod: LM.cost, images: [] },
     ...getAllCostSlugs().map(s => ({
       loc: `/cost/${s}`,
       priority: '0.9',
       changefreq: 'weekly' as const,
-      lastmod: today,
+      lastmod: LM.cost,
       images: [] as { url: string; title: string }[],
     })),
     // Comparison SEO: 치료 비교 콘텐츠 (8개)
-    { loc: '/compare', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
+    { loc: '/compare', priority: '0.8', changefreq: 'weekly', lastmod: LM.compare, images: [] },
     ...getAllComparisonSlugs().map(s => ({
       loc: `/compare/${s}`,
       priority: '0.85',
       changefreq: 'weekly' as const,
-      lastmod: today,
+      lastmod: LM.compare,
       images: [] as { url: string; title: string }[],
     })),
     // Encyclopedia: 치과 백과사전 개별 용어 (215개)
@@ -2231,17 +2258,17 @@ app.get('/sitemap.xml', async (c) => {
       loc: `/encyclopedia/${t.id}`,
       priority: '0.6',
       changefreq: 'monthly' as const,
-      lastmod: today,
+      lastmod: LM.encyclopedia,
       images: [] as { url: string; title: string }[],
     })),
     // Foreign Emergency SEO: 외국인 응급치과 다국어 페이지 (EN/JA/ZH)
-    { loc: '/en', priority: '0.9', changefreq: 'weekly', lastmod: today, images: [] },
-    { loc: '/en/guides', priority: '0.8', changefreq: 'weekly', lastmod: today, images: [] },
+    { loc: '/en', priority: '0.9', changefreq: 'weekly', lastmod: LM.en, images: [] },
+    { loc: '/en/guides', priority: '0.8', changefreq: 'weekly', lastmod: LM.en, images: [] },
     ...getAllForeignSeoSlugs().map(s => ({
       loc: `/en/${s}`,
       priority: '0.9',
       changefreq: 'weekly' as const,
-      lastmod: today,
+      lastmod: (expansionSlugs.has(s) ? LM.enExpansion : LM.en),
       images: [] as { url: string; title: string }[],
     })),
   ];
@@ -2273,7 +2300,7 @@ app.get('/sitemap.xml', async (c) => {
 
     for (const post of (posts.results || []) as any[]) {
       const slug = post.board === 'before-after' ? 'before-after' : 'blog';
-      const postDate = kstYmd(post.updated_at || post.created_at) || today; // D1 UTC → KST 날짜 (스키마 dateModified 와 일치)
+      const postDate = kstYmd(post.updated_at || post.created_at) || ''; // D1 UTC → KST 날짜 (스키마 dateModified 와 일치)
       const images: { url: string; title: string }[] = [];
 
       // 썸네일 이미지
@@ -2311,7 +2338,7 @@ app.get('/sitemap.xml', async (c) => {
     for (const board of ['blog', 'before-after']) {
       const rows = lite.filter(p => p.board === board);
       if (!rows.length) continue;
-      const latestOf = (rs: typeof rows) => rs.map(p => kstYmd(p.updated_at || p.created_at)).sort().pop() || today;
+      const latestOf = (rs: typeof rows) => rs.map(p => kstYmd(p.updated_at || p.created_at)).filter(Boolean).sort().pop() || '';
       const listEntry = staticUrls.find(u => u.loc === `/${board}`);
       if (listEntry) listEntry.lastmod = latestOf(rows);
       const byCat: Record<string, typeof rows> = {};
@@ -2321,6 +2348,13 @@ app.get('/sitemap.xml', async (c) => {
       }
     }
   } catch (e) { /* 목록 lastmod 기존값 유지 */ }
+
+  // 공지 목록 lastmod = 최신 공지 날짜
+  try {
+    const r: any = await db.prepare(`SELECT MAX(COALESCE(updated_at, created_at)) AS m FROM posts WHERE is_published = 1 AND board = 'notice'`).first();
+    const e = staticUrls.find(u => u.loc === '/notice');
+    if (e && r?.m) e.lastmod = kstYmd(r.m) || '';
+  } catch (e) { /* lastmod 생략 */ }
 
   const allUrls = [...staticUrls, ...postUrls];
 
@@ -2332,8 +2366,7 @@ app.get('/sitemap.xml', async (c) => {
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${allUrls.map(u => `  <url>
     <loc>${domain}${escXml(u.loc)}</loc>
-    <lastmod>${u.lastmod}</lastmod>
-    <changefreq>${u.changefreq}</changefreq>
+${u.lastmod ? `    <lastmod>${u.lastmod}</lastmod>\n` : ''}    <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>${u.images.map(img => `
     <image:image>
       <image:loc>${img.url.startsWith('http') ? escXml(img.url) : domain + escXml(img.url)}</image:loc>
