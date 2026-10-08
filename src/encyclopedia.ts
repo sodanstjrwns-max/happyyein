@@ -313,7 +313,7 @@ export function encyclopediaListPage(): string {
   };
 
   const faqData = [
-    { q: '치과 백과사전은 누가 작성했나요?', a: '행복한예인치과의 보건복지부 인증 전문의 3명(통합치의학, 보존과, 교정과)이 감수한 내용입니다. 정확하고 이해하기 쉬운 용어 설명을 제공합니다.' },
+    { q: '치과 백과사전은 누가 작성했나요?', a: '행복한예인치과가 일반적인 치과 지식을 바탕으로 정리한 일반 건강정보입니다. 진료 판단은 내원 상담에서 원장이 직접 합니다.' },
     { q: '용어를 검색할 수 있나요?', a: '네, 페이지 상단의 검색창에서 한글 또는 영문으로 검색하실 수 있습니다. 카테고리별 필터도 제공합니다.' },
     { q: '진료 상담 시 이 용어들을 참고할 수 있나요?', a: '물론입니다. 진료 전에 관련 용어를 미리 확인하시면 상담이 더 원활해집니다. 각 용어에서 관련 진료 페이지로 바로 이동할 수도 있습니다.' },
   ];
@@ -342,7 +342,7 @@ ${nav('encyclopedia')}
   <div class="sub-hero-content">
     <div class="sub-hero-tag">Dental Encyclopedia</div>
     <h1>치과 <em>백과사전</em></h1>
-    <p class="sub-hero-desc">${TOTAL_TERMS}개 이상의 치과 용어를 전문의가 쉽게 설명합니다.</p>
+    <p class="sub-hero-desc">${TOTAL_TERMS}개 이상의 치과 용어를 쉽게 설명합니다.</p>
   </div>
 </section>
 
@@ -449,7 +449,7 @@ export function encyclopediaDetailPage(id: string): string | null {
     "about": { "@id": `${url}#term` },
     "isPartOf": { "@type": "WebSite", "url": "https://happyyein.kr" },
     "publisher": { "@id": "https://happyyein.kr/#organization" },
-    ...(en ? { "dateModified": ENC_ENRICH_DATE, "lastReviewed": ENC_ENRICH_DATE } : {}),
+    ...(en ? { "dateModified": ENC_ENRICH_DATE } : {}),
   };
   const faqSchema = en && en.faqs.length ? {
     "@context": "https://schema.org",
@@ -474,7 +474,7 @@ export function encyclopediaDetailPage(id: string): string | null {
 
   return `${head({
     title: `${t.term} (${t.termEn || ''})`,
-    description: `${t.term} - ${t.short}. 행복한예인치과 치과 백과사전. 시청역·명동·을지로 치과 전문의가 쉽게 설명합니다.`,
+    description: `${t.term} - ${t.short}. 행복한예인치과 치과 백과사전. 시청역·명동·을지로 치과가 쉽게 설명합니다.`,
     path: `/encyclopedia/${t.id}`,
     keywords: `${t.term}, ${t.termEn || ''}, ${t.term} 뜻, ${t.term} 의미, 치과 용어, 행복한예인치과`,
     breadcrumbs: [{ name: '홈', url: '/' }, { name: '치과 백과사전', url: '/encyclopedia' }, { name: t.term, url: `/encyclopedia/${t.id}` }],

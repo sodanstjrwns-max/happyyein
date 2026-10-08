@@ -42,8 +42,8 @@ export function myeongdongHubPage(): string {
         { '@type': 'Place', name: '시청역·소공동' },
         { '@type': 'AdministrativeArea', name: '서울특별시 중구' },
       ],
+      publisher: { '@id': `${domain}/#organization` },
       dateModified: MYEONGDONG_HUB_MODIFIED,
-      lastReviewed: MYEONGDONG_HUB_MODIFIED,
       speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hub-answer'] },
     },
     {
