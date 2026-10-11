@@ -14,10 +14,10 @@ export const EXPANSION_ZH_PAGES: ForeignPage[] = [
     slug: 'zh/wisdom-tooth-extraction-seoul',
     lang: 'zh', heroEmoji: '🦷',
     title: '首尔智齿拔除｜当天处理·中文服务｜幸福艺人牙科 明洞',
-    metaDesc: '在首尔旅行时智齿疼痛？幸福艺人牙科位于明洞会贤站步行2分钟。当天CT拍摄·诊断·拔牙。首尔大学专业医生。比中国便宜50%。',
+    metaDesc: '在首尔旅行时智齿疼痛？幸福艺人牙科位于明洞会贤站步行2分钟。当天CT拍摄·诊断·拔牙。认证专科医生。比中国便宜50%。',
     h1: '首尔智齿拔除 — 当天可处理',
     keywords: '智齿拔除 首尔, 智齿疼 韩国旅行, 韩国 牙科 智齿, 明洞 牙医 拔牙, 首尔 牙科 外国人 智齿',
-    introParagraph: `旅行途中<strong>智齿突然疼痛</strong>？幸福艺人牙科位于明洞中心、会贤站1号出口步行2分钟。<strong>当天CT拍摄、诊断、拔牙</strong>均可处理。首尔大学口腔外科专业医生安全操作。费用仅为<strong>中国的一半左右</strong>。`,
+    introParagraph: `旅行途中<strong>智齿突然疼痛</strong>？幸福艺人牙科位于明洞中心、会贤站1号出口步行2分钟。<strong>当天CT拍摄、诊断、拔牙</strong>均可处理。由庆熙大学·延世大学背景的认证专科医生安全操作。费用仅为<strong>中国的一半左右</strong>。`,
     sections: [
       { heading: '🔍 这些症状需要就诊', content: `<ul>
 <li><strong>后牙疼痛·肿胀</strong> — 可能是智齿发炎</li>
@@ -169,11 +169,11 @@ LED照射专业美白，效果最佳。<br>
   {
     slug: 'zh/dental-implant-seoul',
     lang: 'zh', heroEmoji: '🔩',
-    title: '首尔种植牙｜比国内便宜一半·首尔大学专家｜幸福艺人牙科',
-    metaDesc: '在首尔做种植牙。Osstem·Straumann·Nobel Biocare可选。每颗₩1,200,000起。比国内便宜约50%。首尔大学种植牙专家。明洞 会贤站步行2分钟。',
+    title: '首尔种植牙｜比国内便宜一半·认证专科医生｜幸福艺人牙科',
+    metaDesc: '在首尔做种植牙。Osstem·Straumann·Nobel Biocare可选。每颗₩1,200,000起。比国内便宜约50%。认证专科医生（牙医学博士）。明洞 会贤站步行2分钟。',
     h1: '首尔种植牙 — 世界级品质，一半的价格',
     keywords: '种植牙 首尔, 韩国 种植牙 费用, 种植牙 韩国 便宜, 明洞 种植牙, 韩国 牙科 种植旅游',
-    introParagraph: `韩国是<strong>全球种植牙手术量第一的国家</strong>——人均种植牙数量世界之最，专业医生经验极其丰富。幸福艺人牙科的种植牙专家毕业于<strong>首尔大学</strong>，已完成数千例种植手术。使用Osstem、Straumann、Nobel Biocare等全球顶级系统，价格仅为<strong>国内的50%左右</strong>。`,
+    introParagraph: `韩国是<strong>全球种植牙手术量第一的国家</strong>——人均种植牙数量世界之最，专业医生经验极其丰富。幸福艺人牙科的种植牙医生为<strong>庆熙大学牙医学博士·认证综合牙科专科医生</strong>，已完成数千例种植手术。使用Osstem、Straumann、Nobel Biocare等全球顶级系统，价格仅为<strong>国内的50%左右</strong>。`,
     sections: [
       { heading: '💎 种植牙费用', content: `<table style="width:100%;border-collapse:collapse;margin:16px 0;">
 <tr style="background:rgba(247,186,24,0.08);"><th style="padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);">系统</th><th style="padding:10px 12px;text-align:left;">每颗费用（韩元）</th><th style="padding:10px 12px;text-align:left;">人民币（约）</th></tr>
@@ -187,7 +187,7 @@ LED照射专业美白，效果最佳。<br>
 <li><strong>全球第一</strong> — 韩国人均种植牙数量世界之最</li>
 <li><strong>Osstem是韩国品牌</strong> — 全球第三大种植牙制造商</li>
 <li><strong>最新技术</strong> — CT导航手术、数字化方案设计</li>
-<li><strong>首尔大学专家</strong> — 韩国最高学府的医学精英</li>
+<li><strong>认证专科医生</strong> — 庆熙大学·延世大学背景</li>
 <li><strong>节省约50%</strong> — 加上机票酒店也比国内便宜</li>
 </ul>` },
       { heading: '📅 游客治疗时间表', content: `<div style="display:grid;gap:12px;">
@@ -244,7 +244,7 @@ LED照射专业美白，效果最佳。<br>
 <p style="font-size:1.1rem;font-weight:700;color:#F7BA18;margin-top:12px;">💰 节省约6,500元 — 包含旅费还更便宜！</p>
 </div>` },
       { heading: '🏥 为什么选幸福艺人牙科？', content: `<ul>
-<li>✅ <strong>首尔大学毕业的专业医生团队</strong></li>
+<li>✅ <strong>庆熙大学·延世大学背景的认证专科医生团队</strong></li>
 <li>✅ <strong>CT·数字X光·手术显微镜</strong>等先进设备</li>
 <li>✅ <strong>明洞黄金位置</strong> — 游玩购物两不误</li>
 <li>✅ <strong>外语服务</strong> — 清晰的治疗和费用说明</li>
@@ -255,7 +255,7 @@ LED照射专业美白，效果最佳。<br>
     ],
     faq: [
       { q: '韩国牙科为什么这么便宜？', a: '运营成本较低、政府对基本治疗的价格管控、牙科诊所竞争激烈，以及韩国是Osstem等全球牙科材料大厂的所在地。品质并未因价格低而打折。' },
-      { q: '质量和国内一样好吗？', a: '韩国医疗质量常年位居全球前5。我们的医生来自首尔大学，使用与全球顶级诊所相同的材料和设备。' },
+      { q: '质量和国内一样好吗？', a: '韩国医疗质量常年位居全球前5。我们的医生是庆熙大学·延世大学背景的认证专科医生，使用与全球顶级诊所相同的材料和设备。' },
       { q: '有中文服务吗？', a: '治疗说明和费用沟通有外语支持。详细文件以英文出具。' },
       { q: '可以用旅行保险吗？', a: '我们提供英文收据和诊断证明，回国后可向保险公司申请理赔。具体保障范围取决于您的保单。' }
     ],

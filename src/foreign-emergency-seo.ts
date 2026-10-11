@@ -86,7 +86,7 @@ const BASE_PAGES: ForeignPage[] = [
       { heading: '🏥 Why Choose Happy Yein Dental Clinic?', content: `<ul>
 <li>✅ <strong>English-speaking assistance</strong> available</li>
 <li>✅ <strong>Same-day emergency care</strong> — walk-ins welcome</li>
-<li>✅ <strong>Seoul National University-trained doctors</strong> — specialists in implants, restorative, and orthodontics</li>
+<li>✅ <strong>Board-certified specialists</strong> — trained at Kyung Hee University and Yonsei University; integrated dentistry, conservative dentistry, and orthodontics</li>
 <li>✅ <strong>Advanced equipment</strong> — CT scanner, digital X-ray, surgical microscope (25× magnification)</li>
 <li>✅ <strong>Air shower infection control</strong> — hospital-grade sterilization system</li>
 <li>✅ <strong>Transparent pricing</strong> — cost explained before treatment, no surprise charges</li>
@@ -189,15 +189,15 @@ const BASE_PAGES: ForeignPage[] = [
     slug: 'english-speaking-dentist-myeongdong',
     lang: 'en', heroEmoji: '🌍',
     title: 'English-Speaking Dentist in Myeongdong Seoul — Happy Yein Dental',
-    metaDesc: 'Looking for an English-speaking dentist near Myeongdong, Seoul? Happy Yein Dental offers complete dental care with English assistance. Walk-in welcome, affordable prices, Seoul National University-trained doctors.',
+    metaDesc: 'Looking for an English-speaking dentist near Myeongdong, Seoul? Happy Yein Dental offers complete dental care with English assistance. Walk-in welcome, affordable prices, board-certified specialists.',
     h1: 'English-Speaking Dentist Near Myeongdong Station',
     keywords: 'english speaking dentist myeongdong, dentist near myeongdong english, english dental clinic seoul, foreigner dentist korea, expat dentist seoul',
-    introParagraph: `Finding a <strong>reliable English-speaking dentist</strong> in Seoul can be stressful — especially when you're in pain. Happy Yein Dental Clinic is located in the Myeongdong/Hoehyeon area, one of Seoul's most foreigner-friendly neighborhoods. Our doctors graduated from <strong>Seoul National University</strong> (Korea's #1 university) and have years of experience treating international patients.`,
+    introParagraph: `Finding a <strong>reliable English-speaking dentist</strong> in Seoul can be stressful — especially when you're in pain. Happy Yein Dental Clinic is located in the Myeongdong/Hoehyeon area, one of Seoul's most foreigner-friendly neighborhoods. Our doctors are board-certified specialists trained at <strong>Kyung Hee University and Yonsei University</strong> and have years of experience treating international patients.`,
     sections: [
       { heading: '👨‍⚕️ Our Doctors', content: `<div style="display:grid;gap:16px;">
 <div style="background:rgba(255,255,255,0.03);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
 <strong>Dr. Han Seungdae</strong> — Director<br>
-Seoul National University (DDS & MS) · Integrated Dentistry Specialist<br>
+Korea University · Kyung Hee University School of Dentistry · PhD in Dentistry (Kyung Hee Univ.) · Board-certified Integrated Dentistry Specialist<br>
 Specialties: Implants, Full-mouth rehabilitation, Complex restorations
 </div>
 <div style="background:rgba(255,255,255,0.03);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
@@ -207,7 +207,7 @@ Specialties: Root canal, Retreatment, Tooth-colored fillings
 </div>
 <div style="background:rgba(255,255,255,0.03);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
 <strong>Dr. Park Hyunmi</strong> — Orthodontics<br>
-Seoul National University · Orthodontics Specialist<br>
+Yonsei University · Orthodontics, Yonsei University Graduate School of Dentistry · Orthodontics Specialist · Columbia University CE<br>
 Specialties: Clear aligners, Braces, Bite correction
 </div>
 </div>` },
@@ -312,7 +312,7 @@ Specialties: Clear aligners, Braces, Bite correction
 <p>🚇 <strong>明洞駅</strong> 5番出口 徒歩5分</p>
 <p>📞 <a href="tel:${CLINIC.intlTel}" style="color:#F7BA18;font-weight:700;">${CLINIC.intlTel}</a></p>` },
       { heading: '🏥 当院の特徴', content: `<ul>
-<li>✅ ソウル大学校出身の専門医チーム</li>
+<li>✅ 慶熙大学校・延世大学校で研鑽を積んだ専門医チーム</li>
 <li>✅ 予約不要・当日対応</li>
 <li>✅ CT・デジタルレントゲン完備</li>
 <li>✅ エアシャワー感染管理システム</li>
@@ -394,7 +394,7 @@ Specialties: Clear aligners, Braces, Bite correction
 <p>🚇 <strong>明洞站</strong> 5号出口 步行5分钟</p>
 <p>📞 <a href="tel:${CLINIC.intlTel}" style="color:#F7BA18;font-weight:700;">${CLINIC.intlTel}</a></p>` },
       { heading: '🏥 为什么选择我们？', content: `<ul>
-<li>✅ 首尔大学毕业的专业医疗团队</li>
+<li>✅ 庆熙大学·延世大学背景的专科医生团队</li>
 <li>✅ 无需预约，当天治疗</li>
 <li>✅ CT扫描、数字X光等先进设备</li>
 <li>✅ 空气淋浴感染控制系统</li>

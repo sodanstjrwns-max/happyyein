@@ -15,10 +15,10 @@ export const EXPANSION_EN_PAGES: ForeignPage[] = [
     slug: 'wisdom-tooth-extraction-seoul',
     lang: 'en', heroEmoji: '🦷',
     title: 'Wisdom Tooth Extraction in Seoul — Same-Day for Tourists & Expats',
-    metaDesc: 'Wisdom tooth pain in Seoul? Happy Yein Dental offers same-day wisdom tooth extraction near Myeongdong. Impacted, infected, or painful wisdom teeth treated by Seoul National University-trained surgeons.',
+    metaDesc: 'Wisdom tooth pain in Seoul? Happy Yein Dental offers same-day wisdom tooth extraction near Myeongdong. Impacted, infected, or painful wisdom teeth treated by board-certified specialist dentists.',
     h1: 'Wisdom Tooth Extraction in Seoul',
     keywords: 'wisdom tooth extraction seoul, wisdom tooth removal korea, impacted wisdom tooth myeongdong, wisdom teeth pain seoul tourist, oral surgery korea foreigner',
-    introParagraph: `A <strong>painful wisdom tooth</strong> can turn your Seoul trip into a nightmare. Whether it's suddenly flaring up or you've been putting off extraction back home, <strong>Happy Yein Dental Clinic</strong> offers same-day wisdom tooth assessment and extraction. Our surgeons trained at <strong>Seoul National University</strong> perform hundreds of extractions yearly — including difficult <strong>impacted wisdom teeth</strong>. Located 2 minutes from Hoehyeon Station in Myeongdong.`,
+    introParagraph: `A <strong>painful wisdom tooth</strong> can turn your Seoul trip into a nightmare. Whether it's suddenly flaring up or you've been putting off extraction back home, <strong>Happy Yein Dental Clinic</strong> offers same-day wisdom tooth assessment and extraction. Our board-certified specialists, trained at <strong>Kyung Hee University and Yonsei University</strong>, perform hundreds of extractions yearly — including difficult <strong>impacted wisdom teeth</strong>. Located 2 minutes from Hoehyeon Station in Myeongdong.`,
     sections: [
       { heading: '🔍 Do You Need Wisdom Tooth Extraction?', content: `<ul>
 <li><strong>Pain or swelling</strong> at the back of your jaw</li>
@@ -181,10 +181,10 @@ Gradual whitening over 2 weeks. Great add-on to in-office treatment.<br>
     slug: 'dental-implant-seoul-korea',
     lang: 'en', heroEmoji: '🔩',
     title: 'Dental Implants in Seoul Korea — World-Class, 50% Cheaper Than US',
-    metaDesc: 'Dental implants in Seoul, Korea from ₩1,200,000 ($900). Seoul National University-trained implant specialists. Osstem, Straumann, Nobel Biocare available. Happy Yein Dental Myeongdong.',
+    metaDesc: 'Dental implants in Seoul, Korea from ₩1,200,000 ($900). Board-certified Integrated Dentistry specialist (PhD). Osstem, Straumann, Nobel Biocare available. Happy Yein Dental Myeongdong.',
     h1: 'Dental Implants in Seoul — World-Class at Half the Price',
     keywords: 'dental implant seoul, dental implant korea cost, tooth implant myeongdong, osstem implant korea, dental implant tourism korea, best implant dentist seoul',
-    introParagraph: `Korea is the <strong>world's #1 dental implant market</strong> — and for good reason. Korean dentists place more implants per capita than any other country, meaning unmatched expertise. At <strong>Happy Yein Dental Clinic</strong>, our implant specialists trained at <strong>Seoul National University</strong> have placed thousands of implants. We use premium systems (Osstem, Straumann, Nobel Biocare) at prices <strong>50-70% lower than the US or Europe</strong>.`,
+    introParagraph: `Korea is the <strong>world's #1 dental implant market</strong> — and for good reason. Korean dentists place more implants per capita than any other country, meaning unmatched expertise. At <strong>Happy Yein Dental Clinic</strong>, our implant dentist, a board-certified specialist trained at <strong>Kyung Hee University</strong>, has placed thousands of implants. We use premium systems (Osstem, Straumann, Nobel Biocare) at prices <strong>50-70% lower than the US or Europe</strong>.`,
     sections: [
       { heading: '💎 Implant Options & Pricing', content: `<table style="width:100%;border-collapse:collapse;margin:16px 0;">
 <tr style="background:rgba(247,186,24,0.08);"><th style="padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);">Implant System</th><th style="padding:10px 12px;text-align:left;">Cost per Tooth (KRW)</th><th style="padding:10px 12px;text-align:left;">Approx. USD</th></tr>
@@ -198,7 +198,7 @@ Gradual whitening over 2 weeks. Great add-on to in-office treatment.<br>
 <li><strong>#1 in the world</strong> for implant volume — Korean dentists have unmatched experience</li>
 <li><strong>Osstem is Korean</strong> — the world's 3rd largest implant manufacturer, born here</li>
 <li><strong>Latest technology</strong> — CT-guided surgery, digital planning, immediate loading available</li>
-<li><strong>Seoul National University doctors</strong> — Korea's top medical school graduates</li>
+<li><strong>Board-certified specialists</strong> — trained at Kyung Hee University and Yonsei University</li>
 <li><strong>50-70% cost savings</strong> — even including flights and hotel, you save thousands</li>
 </ul>` },
       { heading: '📅 Treatment Timeline for Tourists', content: `<p>Implant treatment typically requires <strong>2 visits to Seoul</strong>:</p>
@@ -233,7 +233,7 @@ Gradual whitening over 2 weeks. Great add-on to in-office treatment.<br>
     slug: 'dental-veneers-seoul-korea',
     lang: 'en', heroEmoji: '😁',
     title: 'Dental Veneers in Seoul Korea — Celebrity Smile from ₩500,000',
-    metaDesc: 'Get porcelain veneers in Seoul, Korea at 50-70% less than US prices. Natural-looking, custom-made veneers by Seoul National University specialists. Perfect for dental tourists. Happy Yein Dental.',
+    metaDesc: 'Get porcelain veneers in Seoul, Korea at 50-70% less than US prices. Natural-looking, custom-made veneers by board-certified specialists. Perfect for dental tourists. Happy Yein Dental.',
     h1: 'Dental Veneers in Seoul — Your Celebrity Smile Awaits',
     keywords: 'dental veneers seoul, porcelain veneers korea, laminate veneers myeongdong, smile makeover korea, cosmetic dentistry seoul tourist, veneer cost korea',
     introParagraph: `K-pop stars, K-drama actors, and now YOU — get the <strong>perfect Korean celebrity smile</strong> with porcelain veneers at <strong>Happy Yein Dental Clinic</strong>. Veneers in Korea cost <strong>50-70% less than in the US or UK</strong>, with the same premium materials and craftsmanship. Our cosmetic dentists design natural-looking, beautiful smiles customized to your face shape and preferences.`,
@@ -249,7 +249,7 @@ Gradual whitening over 2 weeks. Great add-on to in-office treatment.<br>
 <li>🎬 <strong>K-beauty standard</strong> — Korean labs create the most natural-looking veneers in Asia</li>
 <li>💰 <strong>Huge savings</strong> — 8 veneers in Korea = cost of 2-3 veneers in the US</li>
 <li>🔬 <strong>Advanced technology</strong> — digital smile design, shade matching, same-day temporaries</li>
-<li>👨‍⚕️ <strong>Expert cosmetic dentists</strong> — Seoul National University trained</li>
+<li>👨‍⚕️ <strong>Expert cosmetic dentists</strong> — board-certified, trained at Kyung Hee and Yonsei Universities</li>
 <li>📸 <strong>Instagram-worthy results</strong> — perfect for before/after photos!</li>
 </ul>` },
       { heading: '📅 Timeline for Tourists', content: `<p><strong>Option A — Composite Veneers (1 visit):</strong></p>
@@ -305,7 +305,7 @@ Gradual whitening over 2 weeks. Great add-on to in-office treatment.<br>
 </div>
 <p>For bigger treatments (multiple implants, full-mouth rehab, smile makeover), the savings are even more dramatic.</p>` },
       { heading: '🏥 Why Happy Yein Dental?', content: `<ul>
-<li>✅ <strong>Seoul National University-trained doctors</strong> — Korea's #1 dental school</li>
+<li>✅ <strong>Board-certified specialist doctors</strong> — trained at Kyung Hee University and Yonsei University</li>
 <li>✅ <strong>CT scanner, surgical microscope, digital X-ray</strong> — advanced diagnostics</li>
 <li>✅ <strong>Myeongdong location</strong> — easy access from any Seoul hotel</li>
 <li>✅ <strong>English-speaking assistance</strong> — clear communication about treatment and costs</li>
@@ -317,7 +317,7 @@ Gradual whitening over 2 weeks. Great add-on to in-office treatment.<br>
     ],
     faq: [
       { q: 'Why is dental care so cheap in Korea?', a: 'Lower operating costs, government-regulated pricing for basic treatments, high competition among clinics, and a large dental materials manufacturing industry (Osstem, etc.) all contribute to lower prices — without sacrificing quality.' },
-      { q: 'Is the quality as good as in Western countries?', a: 'Korea consistently ranks among the top 5 countries globally for healthcare quality. Our doctors trained at Seoul National University, and we use the same materials and equipment as top clinics worldwide.' },
+      { q: 'Is the quality as good as in Western countries?', a: 'Korea consistently ranks among the top 5 countries globally for healthcare quality. Our doctors are board-certified specialists trained at Kyung Hee University and Yonsei University, and we use the same materials and equipment as top clinics worldwide.' },
       { q: 'Do I need to speak Korean to visit a dentist?', a: 'No! At Happy Yein Dental, we provide English-language assistance for consultations, treatment explanations, cost estimates, and aftercare instructions.' },
       { q: 'Can I use my travel insurance for dental treatment in Korea?', a: 'We provide detailed English receipts and documentation for insurance claims. Coverage depends on your specific policy — contact your insurer before treatment.' }
     ],
@@ -417,7 +417,7 @@ Gradual whitening over 2 weeks. Great add-on to in-office treatment.<br>
     ],
     faq: [
       { q: 'Do I need an appointment for Saturday?', a: 'Walk-ins are welcome, especially for emergencies. For non-urgent care, calling ahead is helpful since Saturday hours are shorter (09:30-14:00).' },
-      { q: 'Is the Saturday dentist the same quality?', a: 'Absolutely — the same Seoul National University-trained doctors work on Saturdays. Same equipment, same quality.' },
+      { q: 'Is the Saturday dentist the same quality?', a: 'Absolutely — the same board-certified specialist doctors work on Saturdays. Same equipment, same quality.' },
       { q: 'What if I have an emergency on Sunday?', a: 'We are closed on Sundays. For Sunday dental emergencies, Seoul has 24-hour emergency dental clinics. Call us on Monday or visit Saturday morning instead if possible.' }
     ],
     ctaText: 'Visit Us This Saturday',
@@ -626,7 +626,7 @@ Gradual whitening over 2 weeks. Great add-on to in-office treatment.<br>
 <li>🗣️ <strong>English-speaking communication</strong> — no confusion about treatment plans</li>
 <li>🏥 <strong>NHI (National Health Insurance) accepted</strong> — covered treatments at covered prices</li>
 <li>📋 <strong>English documentation</strong> — for your employer, insurance, or home dentist</li>
-<li>🏫 <strong>Seoul National University-trained doctors</strong> — Korea's top medical school</li>
+<li>🏫 <strong>Board-certified specialists</strong> — trained at Kyung Hee University and Yonsei University</li>
 <li>📍 <strong>Central location</strong> — easy to reach from any Seoul neighborhood</li>
 <li>🔬 <strong>Full-service clinic</strong> — general, cosmetic, implants, orthodontics, root canals</li>
 </ul>` },

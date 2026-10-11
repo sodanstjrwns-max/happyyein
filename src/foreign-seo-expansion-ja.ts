@@ -14,10 +14,10 @@ export const EXPANSION_JA_PAGES: ForeignPage[] = [
     slug: 'ja/wisdom-tooth-extraction-seoul',
     lang: 'ja', heroEmoji: '🦷',
     title: 'ソウルで親知らず抜歯｜当日対応・日本語案内｜ハッピーイェイン歯科 明洞',
-    metaDesc: 'ソウル旅行中に親知らずが痛む？ハッピーイェイン歯科は明洞・会賢駅徒歩2分。当日CT撮影・診断・抜歯対応。ソウル大学出身の専門医。日本より50-70%お得。',
+    metaDesc: 'ソウル旅行中に親知らずが痛む？ハッピーイェイン歯科は明洞・会賢駅徒歩2分。当日CT撮影・診断・抜歯対応。認定専門医が診療。日本より50-70%お得。',
     h1: 'ソウルで親知らず抜歯 — 当日対応可能',
     keywords: '親知らず 抜歯 ソウル, 親知らず 痛い 韓国旅行, 韓国 歯科 親知らず, 明洞 歯医者 抜歯, ソウル 歯科 外国人 親知らず',
-    introParagraph: `旅行中に<strong>親知らずが急に痛み出した</strong>方へ。ハッピーイェイン歯科は明洞の中心、会賢駅1番出口から徒歩2分。<strong>当日CT撮影・診断・抜歯</strong>に対応しています。ソウル大学校出身の口腔外科専門医が安全に施術します。韓国での親知らず抜歯は<strong>日本の約半額</strong>。`,
+    introParagraph: `旅行中に<strong>親知らずが急に痛み出した</strong>方へ。ハッピーイェイン歯科は明洞の中心、会賢駅1番出口から徒歩2分。<strong>当日CT撮影・診断・抜歯</strong>に対応しています。慶熙大学校・延世大学校で研鑽を積んだ認定専門医が安全に施術します。韓国での親知らず抜歯は<strong>日本の約半額</strong>。`,
     sections: [
       { heading: '🔍 こんな症状がある方', content: `<ul>
 <li><strong>奥歯の痛み・腫れ</strong> — 親知らずの炎症の可能性</li>
@@ -166,11 +166,11 @@ LED照射による本格的ホワイトニング。最大効果。<br>
   {
     slug: 'ja/dental-implant-seoul',
     lang: 'ja', heroEmoji: '🔩',
-    title: 'ソウルでインプラント｜日本の半額・ソウル大出身専門医｜ハッピーイェイン歯科',
-    metaDesc: 'ソウルでインプラント治療。Osstem・Straumann・Nobel Biocare対応。1本₩1,200,000〜。日本の約半額。ソウル大学校出身のインプラント専門医。明洞 会賢駅徒歩2分。',
+    title: 'ソウルでインプラント｜日本の半額・認定専門医｜ハッピーイェイン歯科',
+    metaDesc: 'ソウルでインプラント治療。Osstem・Straumann・Nobel Biocare対応。1本₩1,200,000〜。日本の約半額。歯学博士・認定専門医が担当。明洞 会賢駅徒歩2分。',
     h1: 'ソウルでインプラント — 日本の半額で世界水準の治療',
     keywords: 'インプラント ソウル, 韓国 インプラント 費用, インプラント 韓国 安い, 明洞 インプラント, 韓国 歯科 インプラント ツーリズム',
-    introParagraph: `韓国は<strong>世界で最もインプラントが普及している国</strong>。人口あたりのインプラント埋入数は世界一で、豊富な経験を持つ専門医が揃っています。ハッピーイェイン歯科では、<strong>ソウル大学校出身の専門医</strong>がOsstem・Straumann・Nobel Biocareなどの世界的システムを使用。日本の<strong>約半額〜3分の1</strong>の費用で同等以上の治療を受けられます。`,
+    introParagraph: `韓国は<strong>世界で最もインプラントが普及している国</strong>。人口あたりのインプラント埋入数は世界一で、豊富な経験を持つ専門医が揃っています。ハッピーイェイン歯科では、<strong>慶熙大学校歯学博士・統合歯科認定専門医</strong>がOsstem・Straumann・Nobel Biocareなどの世界的システムを使用。日本の<strong>約半額〜3分の1</strong>の費用で同等以上の治療を受けられます。`,
     sections: [
       { heading: '💎 インプラント費用', content: `<table style="width:100%;border-collapse:collapse;margin:16px 0;">
 <tr style="background:rgba(247,186,24,0.08);"><th style="padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);">システム</th><th style="padding:10px 12px;text-align:left;">費用（1本）</th><th style="padding:10px 12px;text-align:left;">日本円目安</th></tr>
@@ -184,7 +184,7 @@ LED照射による本格的ホワイトニング。最大効果。<br>
 <li><strong>世界一の実績</strong> — 韓国は人口あたりインプラント数が世界最多</li>
 <li><strong>Osstemは韓国生まれ</strong> — 世界第3位のインプラントメーカー</li>
 <li><strong>最新技術</strong> — CTガイド手術、デジタルプランニング</li>
-<li><strong>ソウル大学出身の専門医</strong> — 韓国最高の医学教育</li>
+<li><strong>認定専門医</strong> — 慶熙大学校・延世大学校で研鑽</li>
 <li><strong>約半額の費用</strong> — 航空券・ホテル代を含めても大幅節約</li>
 </ul>` },
       { heading: '📅 旅行者向けスケジュール', content: `<div style="display:grid;gap:12px;">
@@ -241,7 +241,7 @@ LED照射による本格的ホワイトニング。最大効果。<br>
 <p style="font-size:1.1rem;font-weight:700;color:#F7BA18;margin-top:12px;">💰 約440,000円の節約 — 旅費込みでも半額以下！</p>
 </div>` },
       { heading: '🏥 ハッピーイェイン歯科の強み', content: `<ul>
-<li>✅ <strong>ソウル大学校出身の専門医チーム</strong></li>
+<li>✅ <strong>慶熙大学校・延世大学校出身の認定専門医チーム</strong></li>
 <li>✅ <strong>CT・デジタルX線・手術用マイクロスコープ</strong>完備</li>
 <li>✅ <strong>明洞の好立地</strong> — 観光のついでに通院</li>
 <li>✅ <strong>日本語サポート</strong> — 治療説明・費用説明</li>
@@ -253,7 +253,7 @@ LED照射による本格的ホワイトニング。最大効果。<br>
     ],
     faq: [
       { q: 'なぜ韓国の歯科はこんなに安いのですか？', a: '運営コストの低さ、政府による基本治療の価格規制、歯科クリニックの激しい競争、そしてOsstemなど世界的歯科メーカーが国内にあることが要因です。品質は世界トップクラスです。' },
-      { q: '品質は日本と同等ですか？', a: '韓国は医療品質で世界トップ5に常にランクインしています。当院の医師はソウル大学校出身で、世界と同じ材料・機器を使用しています。' },
+      { q: '品質は日本と同等ですか？', a: '韓国は医療品質で世界トップ5に常にランクインしています。当院の医師は慶熙大学校・延世大学校出身の認定専門医で、世界と同じ材料・機器を使用しています。' },
       { q: '日本語は通じますか？', a: '治療説明、費用説明の際に日本語サポートがあります。詳細な書類は英文で発行します。' },
       { q: '海外旅行保険は使えますか？', a: '英文の領収書・診断書を発行しますので、帰国後に保険会社に請求できます。補償範囲はご加入の保険によります。' }
     ],
