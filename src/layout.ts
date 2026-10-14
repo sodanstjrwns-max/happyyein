@@ -27,6 +27,9 @@ interface HeadOptions {
   path: string;           // canonical 경로 (예: '/', '/philosophy')
   ogType?: string;        // 'website' | 'article' 등
   ogImage?: string;       // 커스텀 OG 이미지 (없으면 기본 사용)
+  ogImageWidth?: number;  // og:image:width (없으면 /static/img/ 원본 사진 기준 1024×683, 외부 URL은 생략)
+  ogImageHeight?: number;
+  ogImageAlt?: string;
   noindex?: boolean;      // true면 noindex
   noindexFollow?: boolean; // true면 noindex, follow (빈 목록 등 — 링크는 따라가도록)
   jsonLd?: object | object[];  // 추가 JSON-LD 구조화 데이터 (단일 또는 배열)
@@ -60,6 +63,12 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
     ? (o.ogImage.startsWith('http') ? o.ogImage : `${SITE.domain}${o.ogImage}`)
     : `${SITE.domain}${SITE.ogImage}`;
   const ogType = o.ogType || 'website';
+  // og:image 크기 — 레포 /static/img/*.jpg 원본은 모두 1024×683, 카드용 /static/img/cards/local-*.jpg 는 1200×630 (2026-10-14)
+  const ogPath = ogImage.replace(SITE.domain, '');
+  const ogSize: [number, number] | null = o.ogImageWidth && o.ogImageHeight ? [o.ogImageWidth, o.ogImageHeight]
+    : /^\/static\/img\/cards\/local-[a-z]+\.jpg$/.test(ogPath) ? [1200, 630]
+    : /^\/static\/img\/[a-z0-9-]+\.jpg$/.test(ogPath) ? [1024, 683]
+    : null;
   const robots = o.noindex ? 'noindex, nofollow' : o.noindexFollow ? 'noindex, follow' : 'index, follow';
 
   // JSON-LD: 기본 DentalClinic + 페이지별 추가
@@ -176,7 +185,10 @@ export function head(opts: HeadOptions | string, descriptionLegacy?: string, pat
 <meta property="og:title" content="${fullTitle}">
 <meta property="og:description" content="${safeDesc}">
 <meta property="og:url" content="${canonicalUrl}">
-<meta property="og:image" content="${ogImage}">
+<meta property="og:image" content="${ogImage}">${ogSize ? `
+<meta property="og:image:width" content="${ogSize[0]}">
+<meta property="og:image:height" content="${ogSize[1]}">` : ''}${o.ogImageAlt ? `
+<meta property="og:image:alt" content="${escAttr(o.ogImageAlt)}">` : ''}
 <meta property="og:locale" content="${SITE.locale}">
 
 <!-- Twitter Card -->
@@ -463,6 +475,8 @@ const commonCSS = `
 *{margin:0;padding:0;box-sizing:border-box;}
 html{font-size:16px;scroll-behavior:smooth;overflow-x:hidden;}
 body{font-family:var(--font-body);color:var(--white);background:var(--black);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+/* 지역 안내 페이지(/local·/local/*)는 밝은 배경 전제의 인라인 색 — 검은 바탕 위 #444 글자 대비 문제 해소 (2026-10-14) */
+main.local-seo-content,main.local-seo-index{background:#fff;color:#333;}
 ::selection{background:var(--gold);color:var(--black);}
 img{max-width:100%;display:block;}
 a{text-decoration:none;color:inherit;}

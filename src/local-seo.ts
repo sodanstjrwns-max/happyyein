@@ -3,6 +3,7 @@
 // 구글 "시청역 임플란트", "명동 교정" 등 검색 시 상위 노출 목적
 // =====================================================================
 import { head, nav, footer, scripts } from './layout'
+import { myeongdongCardGrid, MYEONGDONG_CARD_CSS } from './myeongdong-cards'
 
 // '{지역} 치과' 대표 허브가 있는 지역 — 진료별 랜딩은 허브로 링크하고 '{지역} 치과' 키워드를 쓰지 않는다 (2026-10-08)
 const HUB_REGIONS = ['myeongdong', 'hoehyeon'];
@@ -27,6 +28,7 @@ interface Treatment {
   nameDetail: string;     // 발치즉시 임플란트, 치아 보존 치료, etc.
   treatmentSlug: string;  // /treatments/implant 등 링크용
   heroImg: string;
+  // 대표 사진(2026-10-14): og:image·본문 첫 사진·MedicalWebPage.image·사이트맵 image:image 공통 1200×630 jpg
   specialist: string;     // 담당 전문의
   specialistTitle: string;
   keywords: string[];     // 추가 관련 키워드
@@ -337,6 +339,8 @@ function generateJsonLd(region: Region, treatment: Treatment, faq: { q: string; 
     name: `${region.name} ${treatment.name} | 행복한예인치과`,
     url: pageUrl,
     description: `${region.name} ${treatment.name} 전문 치과 행복한예인치과. ${region.station}에서 도보 ${region.walkMin}분. 담당 원장 직접 진료.`,
+    image: { '@type': 'ImageObject', url: `${domain}${localCardImage(treatment.id)}`, width: 1200, height: 630, caption: `${region.name} ${treatment.name}` },
+    primaryImageOfPage: { '@type': 'ImageObject', url: `${domain}${localCardImage(treatment.id)}` },
     inLanguage: 'ko',
     isPartOf: { '@type': 'WebSite', url: domain },
     about: {
@@ -354,6 +358,18 @@ function generateJsonLd(region: Region, treatment: Treatment, faq: { q: string; 
   };
 
   return [medicalService, faqSchema, breadcrumb, webPage];
+}
+
+// ===== 진료별 대표 사진 (og·본문 첫 사진·스키마·사이트맵 공통, 2026-10-14) =====
+export function localCardImage(treatmentId: string): string {
+  return `/static/img/cards/local-${treatmentId}.jpg`;
+}
+/** 사이트맵 image:image 용 — slug → { url, title } */
+export function localSeoImage(slug: string): { url: string; title: string } | null {
+  const t = treatments.find(t => slug.endsWith(`-${t.id}`));
+  const r = regions.find(r => slug === `${r.id}-${t?.id}`);
+  if (!t || !r) return null;
+  return { url: localCardImage(t.id), title: `${r.name} ${t.name} - 행복한예인치과` };
 }
 
 // ===== 모든 slug 목록 (사이트맵용) =====
@@ -458,7 +474,11 @@ ${nav()}
          onmouseout="this.style.transform='none';this.style.boxShadow='0 2px 8px rgba(0,0,0,.04)';this.style.borderColor='#d6e9f8'">
         <p style="font-size:1.05rem;font-weight:700;color:#1a5276;margin-bottom:4px;">${r.nameShort} ${t.name}</p>
         <p style="font-size:.82rem;color:#888;">${t.specialist}</p>
-      </a>`).join('')}
+      </a>`).join('')}${r.id === 'myeongdong' ? `
+      <a href="/local/myeongdong-wisdom" style="display:block;padding:20px;background:#f8fbff;border:1px solid #d6e9f8;border-radius:12px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.04);">
+        <p style="font-size:1.05rem;font-weight:700;color:#1a5276;margin-bottom:4px;">명동 사랑니 발치</p>
+        <p style="font-size:.82rem;color:#888;">한승대 대표원장</p>
+      </a>` : ''}
     </div>
   </div>`).join('')}
 
@@ -523,7 +543,10 @@ export function renderLocalSeoPage(slug: string): string | null {
     description: pageDesc,
     path: `/local/${slug}`,
     ogType: 'article',
-    ogImage: treatment.heroImg,
+    ogImage: localCardImage(treatment.id),
+    ogImageWidth: 1200,
+    ogImageHeight: 630,
+    ogImageAlt: `${region.name} ${treatment.name}`,
     keywords,
     jsonLd,
     breadcrumbs: [
@@ -602,6 +625,10 @@ ${nav()}
 
 <!-- Intro Section -->
 <section class="intro-section" style="max-width:900px;margin:0 auto;padding:60px 20px;">
+  <figure style="margin:0 0 36px;">
+    <img src="${localCardImage(treatment.id)}" width="1200" height="630" fetchpriority="high" decoding="async" alt="${region.name} ${treatment.name}" style="display:block;width:100%;height:auto;border-radius:18px;box-shadow:0 6px 24px rgba(26,82,118,.12);">
+    <figcaption style="margin-top:10px;font-size:.85rem;color:#888;">행복한예인치과 진료실 (서울 중구 남대문로9길 51, 효덕빌딩 3층)</figcaption>
+  </figure>
   <h2 style="font-size:1.6rem;font-weight:700;color:#1a5276;margin-bottom:24px;line-height:1.4;">
     ${region.name}에서 가장 가까운<br>${treatment.name} 전문 치과
   </h2>
@@ -734,7 +761,12 @@ ${nav()}
 </section>
 
 <!-- Internal Links — Other Treatments in Same Region -->
-<section style="max-width:900px;margin:0 auto;padding:0 20px 60px;">
+${region.id === 'myeongdong' ? `<section style="max-width:1000px;margin:0 auto;padding:0 20px 60px;">
+  <h2 style="font-size:1.3rem;font-weight:700;color:#1a5276;margin-bottom:20px;">명동 근처 다른 진료 안내</h2>
+  ${myeongdongCardGrid('light', 'sib', treatment.id)}
+  <p style="margin-top:18px;font-size:.95rem;"><a href="/local/myeongdong" style="color:#2e86c1;font-weight:600;text-decoration:none;">명동 치과 종합 안내 — 위치·진료시간·의료진 →</a></p>
+</section>
+${MYEONGDONG_CARD_CSS}` : `<section style="max-width:900px;margin:0 auto;padding:0 20px 60px;">
   <h2 style="font-size:1.3rem;font-weight:700;color:#1a5276;margin-bottom:20px;">
     ${region.name} 근처 다른 진료 안내
   </h2>
@@ -746,7 +778,7 @@ ${nav()}
       ${region.nameShort} ${t.name}
     </a>`).join('')}
   </div>
-</section>
+</section>`}
 
 <!-- Final CTA -->
 <section style="background:linear-gradient(135deg,#1a5276,#2e86c1);padding:60px 20px;text-align:center;color:#fff;">

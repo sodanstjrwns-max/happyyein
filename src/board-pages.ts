@@ -790,7 +790,10 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
   // 이미지: 썸네일 → (칼럼) 본문 첫 이미지 → (사례) 치료 후 사진 → 사이트 기본
   const firstContentImg = (post.content || '').match(/<img[^>]+src=["']([^"']+)["']/i)?.[1];
   const caseImg = (afterIntra || afterPano || beforeIntra || beforePano)?.image_url;
-  const ogImageRaw = post.thumbnail_url || (board === 'before-after' ? caseImg : firstContentImg) || undefined;
+  // 칼럼에 사진이 하나도 없으면 진료 분류별 실제 진료실 사진(1200×630)으로 — 161편 og가 모두 로고 사진이던 문제 (2026-10-14)
+  const TX_OG: Record<string, string> = { implant: 'implant', preservation: 'preservation', aesthetic: 'aesthetic', orthodontics: 'orthodontics', general: 'general' };
+  const txOg = board === 'blog' && txSlug && TX_OG[txSlug] ? `/static/img/cards/local-${TX_OG[txSlug]}.jpg` : undefined;
+  const ogImageRaw = post.thumbnail_url || (board === 'before-after' ? caseImg : firstContentImg) || txOg || undefined;
   const absImg = (u?: string) => u ? (u.startsWith('http') ? u : `${SITE_DOMAIN}${u}`) : undefined;
 
   const publishedIso = isoKst(post.created_at);

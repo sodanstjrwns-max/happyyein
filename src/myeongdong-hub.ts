@@ -5,9 +5,10 @@
 // 의료진 학력(/doctors), 주차·영어 소통·준비물(홈 FAQ), 네이버 플레이스·예약 링크(홈 스키마).
 // =====================================================================
 import { head, nav, footer, scripts } from './layout'
+import { myeongdongCardGrid, myeongdongCardItemList, MYEONGDONG_CARD_CSS } from './myeongdong-cards'
 
 export const MYEONGDONG_HUB_PATH = '/local/myeongdong'
-export const MYEONGDONG_HUB_MODIFIED = '2026-10-08'
+export const MYEONGDONG_HUB_MODIFIED = '2026-10-14'
 
 const FAQ: { q: string; a: string }[] = [
   { q: '명동역에서 행복한예인치과까지 얼마나 걸리나요?', a: '4호선 명동역 3번 출구에서 시청 방향으로 걸어서 약 8분입니다. 주소는 서울 중구 남대문로9길 51 효덕빌딩 3층 301호입니다.' },
@@ -52,6 +53,7 @@ export function myeongdongHubPage(): string {
       '@id': `${url}#faq`,
       mainEntity: FAQ.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
     },
+    myeongdongCardItemList(MYEONGDONG_HUB_PATH),
   ]
 
   const h2 = 'font-size:1.45rem;font-weight:700;color:#1a5276;margin:44px 0 16px;line-height:1.4;'
@@ -90,6 +92,13 @@ ${nav()}
   </div>
 </section>
 
+<section style="max-width:1000px;margin:0 auto;padding:44px 20px 0;" aria-labelledby="md-cards-h">
+  <h2 id="md-cards-h" style="font-size:1.45rem;font-weight:700;color:#1a5276;margin:0 0 6px;line-height:1.4;">명동 진료 안내</h2>
+  <p style="font-size:.98rem;color:#666;margin:0 0 20px;">명동에서 많이 찾으시는 진료 여섯 가지를 진료실 사진과 함께 정리했습니다.</p>
+  ${myeongdongCardGrid('light', 'hub')}
+</section>
+${MYEONGDONG_CARD_CSS}
+
 <article style="max-width:900px;margin:0 auto;padding:20px 20px 60px;">
   <h2 style="${h2}">명동에서 행복한예인치과까지 찾아오는 길</h2>
   <p style="${p}">명동 쇼핑거리나 명동성당 쪽에서 오신다면 명동역을 지나 시청 방향으로 내려오시면 됩니다. 남대문로9길 안쪽 효덕빌딩 3층 301호이며, 큰길에서 한 블록 들어온 골목이라 처음에는 지도를 함께 보시면 편합니다.</p>
@@ -124,10 +133,11 @@ ${nav()}
   <h2 style="${h2}">명동 치과에서 주로 찾는 진료</h2>
   <ul style="list-style:none;padding:0;margin:0 0 12px;">
     <li style="${li}"><a href="/treatments/implant" style="${a}">임플란트</a> — 조건이 맞으면 발치와 같은 날 심는 발치즉시 임플란트 (<a href="/local/myeongdong-implant" style="${a}">명동 임플란트 안내</a>)</li>
-    <li style="${li}"><a href="/treatments/preservation" style="${a}">신경치료·보존치료</a> — 충치·금 간 치아를 살리는 치료 (<a href="/local/hoehyeon-preservation" style="${a}">회현역 신경치료 안내</a>)</li>
+    <li style="${li}"><a href="/treatments/preservation" style="${a}">신경치료·보존치료</a> — 충치·금 간 치아를 살리는 치료 (<a href="/local/myeongdong-preservation" style="${a}">명동 신경치료 안내</a>)</li>
     <li style="${li}"><a href="/treatments/aesthetic" style="${a}">앞니 심미치료</a> — 라미네이트·레진·미백 (<a href="/local/myeongdong-aesthetic" style="${a}">명동 라미네이트 안내</a>)</li>
     <li style="${li}"><a href="/treatments/orthodontics" style="${a}">치아교정</a> — 투명교정·설측교정 (<a href="/local/myeongdong-orthodontics" style="${a}">명동 교정 안내</a>)</li>
     <li style="${li}"><a href="/treatments/general" style="${a}">스케일링·잇몸치료·정기검진</a> — 만 19세 이상 연 1회 스케일링 건강보험 적용 (<a href="/local/myeongdong-general" style="${a}">명동 스케일링·잇몸치료 안내</a>)</li>
+    <li style="${li}"><a href="/local/myeongdong-wisdom" style="${a}">사랑니 발치</a> — 엑스레이·CT로 신경 위치를 확인한 뒤 매복 사랑니까지, 건강보험 적용 (<a href="/local/myeongdong-wisdom" style="${a}">명동 사랑니 발치 안내</a>)</li>
   </ul>
   <p style="${p}">비급여 진료비는 <a href="/fees" style="${a}">비급여 진료비 안내</a>에 공개해 두었고, 치료 전에 엑스레이를 함께 보며 꼭 필요한 치료와 지켜봐도 되는 부분을 나눠 설명드립니다. 증상별로 먼저 알아보고 싶다면 <a href="/symptoms" style="${a}">증상별 안내</a>와 <a href="/encyclopedia" style="${a}">치과 백과사전</a>도 참고해 주세요.</p>
 

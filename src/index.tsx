@@ -12,8 +12,10 @@ import statsApp from './stats-page'
 import { registerPage, loginPage } from './auth-pages'
 import { encyclopediaListPage, encyclopediaDetailPage } from './encyclopedia'
 import autoBlogApi, { handleScheduled, notifySearchEngines } from './auto-blog'
-import { renderLocalSeoPage, localSeoIndexPage, getAllLocalSeoSlugs } from './local-seo'
+import { renderLocalSeoPage, localSeoIndexPage, getAllLocalSeoSlugs, localSeoImage } from './local-seo'
 import { myeongdongHubPage, MYEONGDONG_HUB_PATH, MYEONGDONG_HUB_MODIFIED } from './myeongdong-hub'
+import { myeongdongWisdomPage, MYEONGDONG_WISDOM_PATH, MYEONGDONG_WISDOM_MODIFIED } from './myeongdong-wisdom'
+import { MYEONGDONG_CARDS, myeongdongCardGrid, myeongdongCardItemList, MYEONGDONG_CARD_CSS } from './myeongdong-cards'
 import { renderSymptomPage, symptomIndexPage, getAllSymptomSlugs } from './symptom-seo'
 import { renderCostPage, costIndexPage, getAllCostSlugs } from './cost-seo'
 import { renderComparisonPage, comparisonIndexPage, getAllComparisonSlugs } from './comparison-seo'
@@ -94,7 +96,7 @@ app.get('/', (c) => {
   const mainDesc = '명동 치과 행복한예인치과 — 서울 시청역·명동·을지로·광화문에서 도보 5~10분. 13년간 한자리에서 쌓아온 신뢰의 치과. 발치즉시 임플란트 80%+, 보존과·교정과 원장 3인 협진. 수요일 야간진료. 행복한예인치과 02-756-2828.';
   const mainTitle = '명동 치과 | 행복한예인치과 — 시청역·을지로·회현역 도보 5~8분, 임플란트·보존·심미·교정 원장 3인 협진';
   const ogImage = `${SITE_DOMAIN}/static/img/dr-han-logo.jpg`;
-  const today = '2026-10-08'; // CONTENT_REVIEWED — 메인페이지 dateModified용 고정 검수일 (title·명동 치과 앵커 수정일)
+  const today = '2026-10-14'; // CONTENT_REVIEWED — 메인페이지 dateModified용 고정 검수일 (명동 진료 안내 사진 카드)
 
   // 1) Dentist + LocalBusiness 통합 스키마
   const orgJsonLd = JSON.stringify({
@@ -415,8 +417,8 @@ app.get('/', (c) => {
 <meta property="og:description" content="${mainDesc}">
 <meta property="og:url" content="${SITE_DOMAIN}/">
 <meta property="og:image" content="${ogImage}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="683">
 <meta property="og:locale" content="ko_KR">
 
 <!-- Twitter Card -->
@@ -476,6 +478,7 @@ app.get('/', (c) => {
 <script type="application/ld+json">${medicalClinicJsonLd}</script>
 <script type="application/ld+json">${breadcrumbJsonLd}</script>
 <script type="application/ld+json">${servicesJsonLd}</script>
+<script type="application/ld+json">${JSON.stringify(myeongdongCardItemList('/'))}</script>
 
 <!-- 폰트 & 아이콘 -->
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -1262,6 +1265,17 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   </div>
 </section>
 
+<!-- ===== 명동 진료 안내 사진 카드 (2026-10-14) — /local/myeongdong-* 6개, ItemList와 1:1 ===== -->
+<section class="sec-pad" id="myeongdong-guide" style="background:var(--dark);border-top:1px solid rgba(255,255,255,0.03);" aria-labelledby="md-home-h">
+  <div class="sec-inner">
+    <div class="sec-label">Myeongdong Guide</div>
+    <h2 class="sec-title" id="md-home-h">명동 진료 안내</h2>
+    <p style="color:rgba(255,255,255,.6);font-size:.95rem;line-height:1.7;margin:-8px 0 28px;">명동역 3번 출구 도보 8분 · 회현역 6분 · 시청역 5분. 많이 찾으시는 진료 여섯 가지를 진료실 사진과 함께 정리했습니다. <a href="/local/myeongdong" style="color:var(--gold);text-decoration:underline;text-underline-offset:3px;">명동 치과 종합 안내 →</a></p>
+    ${myeongdongCardGrid('dark', 'home')}
+  </div>
+</section>
+${MYEONGDONG_CARD_CSS}
+
 <!-- ===== TEAM ===== -->
 <section class="team sec-pad" id="team">
   <div class="sec-inner">
@@ -1819,6 +1833,8 @@ app.get('/treatments/:slug', async (c) => {
 app.get('/local', (c) => c.html(localSeoIndexPage()))
 // '명동 치과' 대표 키워드 허브 (2026-10-08)
 app.get(MYEONGDONG_HUB_PATH, (c) => c.html(myeongdongHubPage()))
+// 명동 진료 안내 6번째 하위 페이지 (2026-10-14) — /local/:slug 보다 먼저
+app.get(MYEONGDONG_WISDOM_PATH, (c) => c.html(myeongdongWisdomPage()))
 app.get('/local/:slug', (c) => {
   const slug = c.req.param('slug')
   const html = renderLocalSeoPage(slug)
@@ -2165,10 +2181,10 @@ app.get('/sitemap.xml', async (c) => {
   // 예전에는 모든 정적 URL 이 '2026-06-11' 한 값이었음 → 실제 수정일로 분리 (2026-10-08).
   // 해당 소스를 고치면 그날 날짜로 이 표를 갱신한다. new Date()/오늘 날짜 금지.
   const LM = {
-    home: '2026-10-08',        // src/index.tsx 홈 (title·명동 치과 앵커)
+    home: '2026-10-14',        // src/index.tsx 홈 (명동 진료 안내 사진 카드 6장)
     pages: '2026-09-02',       // src/pages.ts 진료 철학·의료진·체험·오시는 길
     treatments: '2026-10-03',  // src/treatments.ts
-    local: '2026-10-08',       // src/local-seo.ts + 명동 치과 허브
+    local: '2026-10-14',       // src/local-seo.ts (진료별 대표 사진·명동 형제 카드)
     symptoms: '2026-09-02',    // src/symptom-seo.ts
     cost: '2026-09-02',        // src/cost-seo.ts
     compare: '2026-10-08',     // src/comparison-seo.ts ('전문의 소견'·'전문의가 비교' 표기 정정)
@@ -2222,13 +2238,16 @@ app.get('/sitemap.xml', async (c) => {
     { loc: '/search', priority: '0.6', changefreq: 'monthly', lastmod: LM.search, images: [] },
     // Local SEO: 지역×진료 전용 랜딩페이지 (30개+)
     { loc: '/local', priority: '0.8', changefreq: 'weekly', lastmod: LM.local, images: [] },
-    { loc: MYEONGDONG_HUB_PATH, priority: '0.95', changefreq: 'monthly', lastmod: MYEONGDONG_HUB_MODIFIED, images: [] },
+    { loc: MYEONGDONG_HUB_PATH, priority: '0.95', changefreq: 'monthly', lastmod: MYEONGDONG_HUB_MODIFIED, images: MYEONGDONG_CARDS.map(c => ({ url: c.card, title: `${c.name} - 행복한예인치과` })) },
+    { loc: MYEONGDONG_WISDOM_PATH, priority: '0.9', changefreq: 'monthly', lastmod: MYEONGDONG_WISDOM_MODIFIED, images: [
+      { url: '/static/img/cards/local-wisdom.jpg', title: '명동 사랑니 발치 - 행복한예인치과' }
+    ]},
     ...getAllLocalSeoSlugs().map(s => ({
       loc: `/local/${s}`,
       priority: '0.9',
       changefreq: 'weekly' as const,
       lastmod: LM.local,
-      images: [] as { url: string; title: string }[],
+      images: [localSeoImage(s)].filter(Boolean) as { url: string; title: string }[],
     })),
     // Symptom SEO: 증상별 전용 랜딩페이지 (20개)
     { loc: '/symptoms', priority: '0.8', changefreq: 'weekly', lastmod: LM.symptoms, images: [] },
