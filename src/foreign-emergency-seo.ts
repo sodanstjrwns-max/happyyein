@@ -579,6 +579,11 @@ export function renderForeignSeoPage(slug: string): string | null {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.ico?v=fav20261014" sizes="any">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=fav20261014">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png?v=fav20261014">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=fav20261014">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=fav20261014">
 <title>${page.title}</title>
 <meta name="description" content="${page.metaDesc}">
 <meta name="keywords" content="${page.keywords}">
@@ -807,6 +812,11 @@ export function foreignEmergencyIndexPage(): string {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.ico?v=fav20261014" sizes="any">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=fav20261014">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png?v=fav20261014">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=fav20261014">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=fav20261014">
 <title>Dental Care for Tourists & Expats in Seoul — ${totalPages} Pages in EN/JA/ZH — Happy Yein Dental</title>
 <meta name="description" content="Complete dental care guide for foreigners in Seoul: ${enCount} English, ${jaCount} Japanese, ${zhCount} Chinese pages covering emergencies, cosmetic dentistry, implants, cost guides, and more. Walk-in welcome, Myeongdong.">
 <meta name="robots" content="index, follow">

@@ -448,7 +448,11 @@ app.get('/', (c) => {
 <meta name="geo.placename" content="서울특별시 중구">
 <meta name="geo.position" content="37.566;126.978">
 <meta name="ICBM" content="37.566, 126.978">
-<link rel="icon" type="image/png" href="/static/img/logo.png">
+<link rel="icon" href="/favicon.ico?v=fav20261014" sizes="any">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=fav20261014">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png?v=fav20261014">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=fav20261014">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=fav20261014">
 
 <!-- DNS Prefetch & Preconnect (성능 최적화) -->
 <link rel="dns-prefetch" href="https://fonts.googleapis.com">

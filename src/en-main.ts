@@ -64,6 +64,11 @@ export function englishMainPage(): string {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.ico?v=fav20261014" sizes="any">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=fav20261014">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png?v=fav20261014">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=fav20261014">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=fav20261014">
 <title>Happy Yein Dental Clinic Seoul | English-Speaking Dentist near Myeongdong & City Hall</title>
 <meta name="description" content="English-speaking dental clinic in central Seoul — 5 min from City Hall Station, 8 min from Myeongdong. Implants, root canals, orthodontics by board-certified specialists. Wednesday night clinic. Call +82-2-756-2828.">
 <meta name="robots" content="index, follow">

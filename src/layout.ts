@@ -202,7 +202,11 @@ ${o.keywords ? `<meta name="keywords" content="${escAttr(o.keywords)}">` : ''}
 <meta name="geo.placename" content="서울특별시 중구">
 <meta name="geo.position" content="${SITE.geo.lat};${SITE.geo.lng}">
 <meta name="ICBM" content="${SITE.geo.lat}, ${SITE.geo.lng}">
-<link rel="icon" type="image/png" href="/static/img/logo.png">
+<link rel="icon" href="/favicon.ico?v=fav20261014" sizes="any">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=fav20261014">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png?v=fav20261014">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=fav20261014">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=fav20261014">
 
 <!-- RSS 피드 자동발견 (검색엔진·AI 크롤러) -->
 <link rel="alternate" type="application/rss+xml" title="행복한예인치과 블로그 RSS" href="${SITE.domain}/rss.xml">
