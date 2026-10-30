@@ -1,0 +1,19 @@
+/* 행복한예인치과 메인 스크롤 몰입 연출 — static/immersive.js 가 html.mx 를 붙였을 때만 작동 */
+html.mx { scroll-behavior: auto !important; }
+html.mx.lenis, html.mx.lenis body { height: auto; }
+html.mx .lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+/* 철학 문장 3D 플립 낱말 */
+.mx-flipwrap { perspective: 900px; }
+.mx-flip { display: inline-block; will-change: transform, opacity; backface-visibility: hidden; }
+
+/* 상담 제목 낱말 마스크 */
+.mx-m { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .1em; margin-bottom: -.1em; }
+.mx-up { display: inline-block; will-change: transform; transform-origin: 0% 100%; }
+
+/* 사진 시차 */
+.mx-par { overflow: hidden; }
+.mx-par img { will-change: transform; }
+
+/* 옆에서 들어오는 숫자·카드가 가로 스크롤을 만들지 않도록 */
+html.mx .key-nums, html.mx #myeongdong-guide, html.mx #experience, html.mx #location, html.mx .values { overflow-x: clip; }
