@@ -7,7 +7,16 @@
 - **클리닉**: 행복한예인치과 (경기도 수원)
 - **대표원장**: 한승대 (고려대·경희대 치전원 박사, 통합치의학과 전문의)
 - **기술스택**: Hono (TypeScript) + Cloudflare Pages/Workers + D1 (SQLite) + R2 (이미지)
-- **프론트엔드**: Tailwind CSS (CDN) + Vanilla JS + SSR (서버사이드 렌더링)
+- **프론트엔드**: 자체 CSS(layout.ts) + Tailwind 빌드 CSS(/search·404) + Vanilla JS + SSR (서버사이드 렌더링)
+
+## Tailwind 빌드 CSS 규칙 (2026-11-01)
+
+`/search`(통합 검색)와 404 페이지만 Tailwind 를 쓴다. CDN 실행(`cdn.tailwindcss.com`)을 빌드 CSS로 바꿨다(Tailwind 3.4.17 = CDN과 같은 버전, 기본 테마).
+- 설정 `tailwind.config.cjs`(content: `src/search.ts`·`src/layout.ts`·`src/index.tsx` — 두 화면에 함께 그려지는 공통 레이아웃 class 포함), 입력 `src/styles/tailwind.css`, 출력 `public/static/tailwind.css`.
+- `npm run css:build`가 CSS를 만들고 `scripts/tailwind-version.mjs`가 내용 해시를 `src/tailwind-version.ts`에 기록한다. `?v=`는 이 값(고정 `?v=` 금지). `npm run build`가 `css:build`를 먼저 실행한다.
+- `--minify` 금지(cssnano가 색을 반올림해 바꿀 수 있음). `package.json`의 browserslist(defaults·safari/ios_saf>=12)로 CDN과 같은 `-webkit-` 접두사.
+- 스타일시트는 CDN이 넣던 위치와 같은 head 마지막(`head({ tailwind: true })`, 404는 `TAILWIND_LINK`). 다른 페이지에서 Tailwind 클래스를 새로 쓰면 그 페이지에도 `tailwind: true`를 주고 content 에 파일을 추가한다.
+- 클래스 이름을 문자열 조합으로 만들지 않는다. 새 페이지에 `cdn.tailwindcss.com`을 넣지 않는다(CSP script-src 에서도 제거됨).
 
 ## 주요 기능
 

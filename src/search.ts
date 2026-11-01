@@ -209,10 +209,10 @@ export async function renderSearchPage(query: string, db: D1Database): Promise<s
     description: hasQuery ? `행복한예인치과에서 "${q}" 검색 결과 ${total}건` : '행복한예인치과 통합 검색. 증상별 가이드, 치료비용, 치료 비교, 치과 용어 백과사전을 한 번에 검색하세요.',
     path: hasQuery ? `/search` : '/search',
     noindex: hasQuery,
-    breadcrumbs: [{ name: '홈', url: '/' }, { name: '검색', url: '/search' }]
+    breadcrumbs: [{ name: '홈', url: '/' }, { name: '검색', url: '/search' }],
+    tailwind: true
   })}
 ${nav()}
-<script src="https://cdn.tailwindcss.com"></script>
 ${body}
 ${footer()}
 ${scripts()}

@@ -1,3 +1,4 @@
+import { TAILWIND_CSS_VERSION } from './tailwind-version'
 // 공통 레이아웃: head, nav, footer, scripts
 
 // HTML 특수문자 이스케이프 (XSS 방어)
@@ -21,6 +22,9 @@ const SITE = {
   geo: { lat: '37.566', lng: '126.978' },
 };
 
+// Tailwind 빌드 CSS(scripts/tailwind-version.mjs 가 ?v= 내용 해시 갱신). 옛 CDN 이 head 마지막에 넣던 것과 같은 우선순위로 head 끝에 둔다.
+export const TAILWIND_LINK = `<link rel="stylesheet" href="/static/tailwind.css?v=${TAILWIND_CSS_VERSION}">\n`
+
 interface HeadOptions {
   title: string;
   description: string;
@@ -36,6 +40,7 @@ interface HeadOptions {
   keywords?: string;      // 페이지별 키워드
   articlePublishedTime?: string; // 게시일 (article 타입)
   articleModifiedTime?: string;  // 수정일
+  tailwind?: boolean;     // true면 Tailwind 빌드 CSS(/static/tailwind.css)를 head 끝에 로드 — /search 전용(옛 CDN 실행 대체, 2026-11-01)
   breadcrumbs?: { name: string; url: string }[]; // 브레드크럼 경로
 }
 
@@ -241,7 +246,7 @@ ${jsonLdScripts.join('\n')}
 ${commonCSS}
 ${subpageCSS}
 </style>
-</head>
+${o.tailwind ? TAILWIND_LINK : ''}</head>
 <body>`;
 }
 

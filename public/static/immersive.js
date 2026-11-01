@@ -62,10 +62,29 @@
     claim(target);
     return gsap.fromTo(target, from, Object.assign({ ease: 'none', scrollTrigger: Object.assign({ scrub: true }, st) }, to));
   }
+  // 그라데이션 글씨(background-clip:text) 안을 낱말로 쪼개면 낱말 레이어(inline-block·will-change)가 투명해진다(대구 2026-11-01)
+  // → 그 요소 자체를 낱말 하나처럼 통째로 감싸 움직인다(요소 자신의 clip:text 는 transform 이 있어도 정상).
+  function clipTextHost(node) {
+    for (var e = node.parentElement; e; e = e.parentElement) {
+      var cs = getComputedStyle(e);
+      if (cs.webkitBackgroundClip === 'text' || cs.backgroundClip === 'text') return e;
+    }
+    return null;
+  }
   function splitWords(el, cls) {
     var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
     var nodes = [];
-    while (walker.nextNode()) nodes.push(walker.currentNode);
+    var hosts = [];
+    while (walker.nextNode()) {
+      var host = clipTextHost(walker.currentNode);
+      if (host) { if (hosts.indexOf(host) < 0) hosts.push(host); continue; }
+      nodes.push(walker.currentNode);
+    }
+    hosts.forEach(function (h) {
+      if (h === el || h.contains(el)) return; // 제목 전체가 그라데이션(또는 그 안)이면 쪼개지 않음
+      h.classList.add(cls);
+      if (cls === 'mx-up') { var m = document.createElement('span'); m.className = 'mx-m'; h.parentNode.insertBefore(m, h); m.appendChild(h); }
+    });
     nodes.forEach(function (node) {
       var parts = node.textContent.split(/(\s+)/);
       if (parts.join('').trim() === '') return;
