@@ -279,12 +279,12 @@ function generateJsonLd(region: Region, treatment: Treatment, faq: { q: string; 
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 37.566,
-      longitude: 126.978,
+      latitude: 37.566849,
+      longitude: 126.979398,
     },
     areaServed: {
       '@type': 'GeoCircle',
-      geoMidpoint: { '@type': 'GeoCoordinates', latitude: 37.566, longitude: 126.978 },
+      geoMidpoint: { '@type': 'GeoCoordinates', latitude: 37.566849, longitude: 126.979398 },
       geoRadius: '3000',
     },
     hasOfferCatalog: {

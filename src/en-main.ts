@@ -27,7 +27,7 @@ export function englishMainPage(): string {
       "postalCode": "04530",
       "addressCountry": "KR"
     },
-    "geo": { "@type": "GeoCoordinates", "latitude": 37.5596, "longitude": 126.9784 },
+    "geo": { "@type": "GeoCoordinates", "latitude": 37.566849, "longitude": 126.979398 },
     "openingHoursSpecification": [
       { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Thursday","Friday"], "opens": "09:30", "closes": "18:30" },
       { "@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "09:30", "closes": "20:00" }

@@ -19,7 +19,7 @@ const SITE = {
   locale: 'ko_KR',
   phone: '02-756-2828',
   address: '서울 중구 남대문로9길 51 효덕빌딩 3층 301호',
-  geo: { lat: '37.566', lng: '126.978' },
+  geo: { lat: '37.566849', lng: '126.979398' }, // 네이버 플레이스 값과 일치
 };
 
 // Tailwind 빌드 CSS(scripts/tailwind-version.mjs 가 ?v= 내용 해시 갱신). 옛 CDN 이 head 마지막에 넣던 것과 같은 우선순위로 head 끝에 둔다.

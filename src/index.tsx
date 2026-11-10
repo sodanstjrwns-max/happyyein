@@ -123,7 +123,7 @@ app.get('/', (c) => {
       "postalCode": "04530",
       "addressCountry": "KR"
     },
-    "geo": { "@type": "GeoCoordinates", "latitude": 37.566, "longitude": 126.978 },
+    "geo": { "@type": "GeoCoordinates", "latitude": 37.566849, "longitude": 126.979398 },
     "hasMap": "https://map.naver.com/p/entry/place/13148712", // 레포의 네이버 예약 링크(naver.me/G0DXGZbi)가 가리키는 실제 플레이스 (2026-09-29)
     "openingHoursSpecification": [
       { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Thursday","Friday"], "opens": "09:30", "closes": "18:30" },
@@ -450,8 +450,8 @@ app.get('/', (c) => {
 <meta name="keywords" content="행복한예인치과, 시청역 치과, 명동 치과, 을지로 치과, 광화문 치과, 종로 치과, 서울역 치과, 회현역 치과, 충무로 치과, 남대문 치과, 서울 중구 치과, 발치즉시 임플란트, 즉시식립 임플란트, 명동 임플란트, 시청역 임플란트, 을지로 임플란트, 보존치료, 신경치료, 치과보존과 담당 원장, 명동 신경치료, 앞니 심미치료, 라미네이트, 치아교정, 투명교정, 인비절라인, 명동 교정, 을지로 교정, 야간진료 치과, 수요일 야간, 직장인 치과, 통합치의학 전문의, 서울 직장인 치과, 남산 치과, 북창동 치과, 다동 치과, 무교동 치과">
 <meta name="geo.region" content="KR-11">
 <meta name="geo.placename" content="서울특별시 중구">
-<meta name="geo.position" content="37.566;126.978">
-<meta name="ICBM" content="37.566, 126.978">
+<meta name="geo.position" content="37.566849;126.979398">
+<meta name="ICBM" content="37.566849, 126.979398">
 <link rel="icon" href="/favicon.ico?v=fav20261014" sizes="any">
 <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=fav20261014">
 <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png?v=fav20261014">
@@ -1421,7 +1421,7 @@ ${MYEONGDONG_CARD_CSS}
     <h2 class="sec-title rv">시청역·명동·을지로에서 <em>도보 5~10분</em></h2>
     <div class="location-grid">
       <div class="location-map rv-scale">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d790.6!2d126.978!3d37.566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca2eb1a2f4b7d%3A0x!2z7ISc7Jq4IOykkSDrgqjrjIDrrLjroZw56ri4IDUx!5e0!3m2!1sko!2skr!4v1700000000000!5m2!1sko!2skr" allowfullscreen="" loading="lazy" title="행복한예인치과 위치 - 서울 중구 남대문로9길 51"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d790.6!2d126.979398!3d37.566849!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca2eb1a2f4b7d%3A0x!2z7ISc7Jq4IOykkSDrgqjrjIDrrLjroZw56ri4IDUx!5e0!3m2!1sko!2skr!4v1700000000000!5m2!1sko!2skr" allowfullscreen="" loading="lazy" title="행복한예인치과 위치 - 서울 중구 남대문로9길 51"></iframe>
       </div>
       <div class="loc-info">
         <div class="loc-block rv">

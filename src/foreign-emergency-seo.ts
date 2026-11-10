@@ -12,7 +12,7 @@ const CLINIC = {
   intlTel: '+82-2-756-2828',
   hours: { weekday: '09:30–18:30', wed: '09:30–20:00 (Night)', sat: '09:30–14:00', sunHoliday: 'Closed' },
   directions: { en: '2-min walk from Hoehyeon Station Exit 1 (Line 4), 5-min walk from Myeongdong Station', ja: '会賢駅1番出口 徒歩2分(4号線), 明洞駅 徒歩5分', zh: '会贤站1号出口步行2分钟(4号线), 明洞站步行5分钟' },
-  coords: { lat: 37.5596, lng: 126.9784 },
+  coords: { lat: 37.566849, lng: 126.979398 },
   nearbyLandmarks: { en: 'Myeongdong, Seoul Station, Namdaemun Market, Euljiro', ja: '明洞, ソウル駅, 南大門市場, 乙支路', zh: '明洞, 首尔站, 南大门市场, 乙支路' }
 }
 
@@ -841,7 +841,7 @@ export function foreignEmergencyIndexPage(): string {
     "url": `${SITE_DOMAIN}/en/guides`,
     "telephone": CLINIC.intlTel,
     "address": { "@type": "PostalAddress", "streetAddress": "51 Namdaemun-ro 9-gil, Hyodeok Bldg 3F", "addressLocality": "Jung-gu", "addressRegion": "Seoul", "addressCountry": "KR" },
-    "geo": { "@type": "GeoCoordinates", "latitude": 37.5596, "longitude": 126.9784 },
+    "geo": { "@type": "GeoCoordinates", "latitude": 37.566849, "longitude": 126.979398 },
     "openingHoursSpecification": [
       { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Thursday","Friday"], "opens": "09:30", "closes": "18:30" },
       { "@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "09:30", "closes": "20:00" },
