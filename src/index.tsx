@@ -34,9 +34,16 @@ import { EXPANSION_EN_PAGES } from './foreign-seo-expansion-en'
 import { EXPANSION_JA_PAGES } from './foreign-seo-expansion-ja'
 import { EXPANSION_ZH_PAGES } from './foreign-seo-expansion-zh'
 import { ENC_ENRICH_DATE } from './data/enc-enrich'
+import { applyGoogleHide } from './google-hide'
 
 type Bindings = { DB: D1Database; R2: R2Bucket; OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; AUTO_BLOG_SECRET?: string }
 const app = new Hono<{ Bindings: Bindings }>()
+
+// ===== 구글 전용 검색 제외 — 기준·범위·되돌리는 법은 src/google-hide.ts (2026-11-10) =====
+app.use('*', async (c, next) => {
+  await next()
+  applyGoogleHide(c)
+})
 
 // ===== A4: www → 비www 301 통일 (canonical 정합성) =====
 app.use('*', async (c, next) => {
