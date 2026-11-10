@@ -252,7 +252,7 @@ export function doctorsPage(): string {
         { "@type": "Organization", "name": "대한악안면임플란트학회" },
         { "@type": "Organization", "name": "서울특별시 치과의사회" }
       ],
-      "worksFor": { "@type": "Dentist", "@id": "https://happyyein.kr/#organization", "name": "행복한예인치과" },
+      "worksFor": { "@id": "https://happyyein.kr/#organization" },
       "knowsAbout": ["발치즉시 임플란트", "상악동(위턱 공간) 거상술", "골이식(잇몸뼈 이식)", "전악 임플란트 재건", "앞니 심미 치료", "라미네이트", "레진"],
       "availableService": [
         { "@type": "MedicalProcedure", "name": "발치즉시 임플란트" },
@@ -278,7 +278,7 @@ export function doctorsPage(): string {
       "alumniOf": [
         { "@type": "CollegeOrUniversity", "name": "연세대학교 치과대학" }
       ],
-      "worksFor": { "@type": "Dentist", "@id": "https://happyyein.kr/#organization", "name": "행복한예인치과" },
+      "worksFor": { "@id": "https://happyyein.kr/#organization" },
       "memberOf": [
         { "@type": "Organization", "name": "대한치과근관치료학회" },
         { "@type": "Organization", "name": "대한치과보존학회" }
@@ -298,7 +298,6 @@ export function doctorsPage(): string {
       "alternateName": "Park Hyunmi",
       "jobTitle": "원장",
       "description": "교정과 전문의. 인비절라인 투명교정, 설측교정, 세라믹 교정, 성인 교정 전문. Columbia University CE 수료.",
-      "image": "https://happyyein.kr/static/img/dr-park-profile.jpg",
       "url": "https://happyyein.kr/doctors",
       "telephone": "+82-2-756-2828",
       "medicalSpecialty": { "@type": "MedicalSpecialty", "name": "치과교정과" },
@@ -311,7 +310,7 @@ export function doctorsPage(): string {
         { "@type": "CollegeOrUniversity", "name": "연세대학교 치의학대학원 교정과" },
         { "@type": "CollegeOrUniversity", "name": "Columbia University (CE)" }
       ],
-      "worksFor": { "@type": "Dentist", "@id": "https://happyyein.kr/#organization", "name": "행복한예인치과" },
+      "worksFor": { "@id": "https://happyyein.kr/#organization" },
       "knowsAbout": ["인비절라인 투명교정", "설측교정", "세라믹 교정", "성인 교정"],
       "availableService": [
         { "@type": "MedicalProcedure", "name": "인비절라인 투명교정" },

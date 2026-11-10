@@ -422,11 +422,7 @@ export function renderTreatmentPage(slug: string, related: { columns: RelatedPos
     "description": t.metaDesc,
     "url": `https://happyyein.kr/treatments/${t.slug}`,
     "serviceType": "Dental Treatment",
-    "provider": {
-      "@type": "Dentist",
-      "name": "행복한예인치과",
-      "@id": "https://happyyein.kr/#organization"
-    },
+    "provider": { "@id": "https://happyyein.kr/#organization" },
     "areaServed": { "@type": "City", "name": "서울특별시" },
     "offers": {
       "@type": "Offer",

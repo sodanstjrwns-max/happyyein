@@ -624,6 +624,10 @@ footer{padding:56px clamp(24px,4vw,60px);background:var(--black);color:var(--gra
   .btn{padding:14px 24px;font-size:0.68rem;letter-spacing:2px;}
   .mob-link{font-size:clamp(1.1rem,4vw,1.6rem);}
 }
+/* 글 끝 예약 버튼(증상 상세): 모바일에서 10.88px 로 줄던 글자를 12px 로 (2026-11-10) */
+@media(max-width:768px){
+  .btn[data-cta="article-end"]{font-size:0.75rem;}
+}
 @media(min-width:769px){
   .mob-bottom-bar{display:none;}
 }
