@@ -722,7 +722,7 @@ a{color:#F7BA18;text-decoration:none;}a:hover{text-decoration:underline;}
     <div class="cta-box">
       <h3>${page.ctaText}</h3>
       <p>${page.ctaSubtext}</p>
-      <a href="tel:${CLINIC.intlTel}" class="cta-call"><i class="fas fa-phone-alt"></i> ${callLabel}</a>
+      <a href="tel:${CLINIC.intlTel}" class="cta-call" data-cta="article-end"><i class="fas fa-phone-alt"></i> ${callLabel}</a>
       <div class="cta-tel">${CLINIC.intlTel}</div>
     </div>
   </div>

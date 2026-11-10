@@ -3,6 +3,7 @@
 import { head, nav, footer, scripts } from './layout'
 import { SITE_URL, ORG_ID, WEBSITE_ID, DR_HAN_ID, isClinicGeneratedPost, CLINIC_GENERAL_INFO_NOTE, treatmentForPost, treatmentTitle, withAnswerSummary, faqsFromArticleHtml, enhanceContentImages, stripTags, escHtml, isoKst, kstYmd } from './column-seo'
 import { blogHubNote } from './hub-link'
+import { articleEndCta } from './article-end-cta'
 
 // ==========================================
 // 게시판별 설정
@@ -945,6 +946,8 @@ export async function boardDetailPage(board: string, db: D1Database, postId: str
 
   if (board === 'blog') {
     html += '<p class="post-disclaimer">이 글은 일반적인 치과 정보를 안내하기 위한 것으로, 정확한 진단과 치료 방법은 내원 검사 후 결정되며 결과는 개인에 따라 다를 수 있습니다.</p>';
+    // 글 끝 상담 블록 — 바로 위 고지 문장이 '일반 정보'임을 이미 말하므로 설명은 짧은 형태
+    html += articleEndCta({ generalNote: false });
   } else if (board === 'before-after') {
     html += '<p class="post-disclaimer">치료 전후 사진은 해당 환자의 사례이며, 치료 결과와 기간은 구강 상태에 따라 개인마다 다를 수 있습니다. 치료 후 일시적인 통증·붓기 등 부작용이 나타날 수 있으므로 충분한 상담 후 결정하시기 바랍니다.</p>';
   }

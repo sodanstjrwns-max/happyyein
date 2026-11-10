@@ -398,8 +398,8 @@ ${nav()}
       <h3 style="font-family:var(--font-kr);font-size:1.2rem;font-weight:800;color:var(--white);margin-bottom:12px;">어떤 치료가 맞는지 직접 상담 받으세요</h3>
       <p style="font-family:var(--font-kr);font-size:0.85rem;color:var(--gray);line-height:1.8;margin-bottom:24px;">CT 촬영 기반 정밀 진단 후, 환자 상태에 맞는 최적의 치료법을 안내합니다.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-        <a href="tel:02-756-2828" style="padding:14px 28px;border-radius:50px;background:var(--gold);color:var(--black);font-weight:700;font-size:0.85rem;font-family:var(--font-kr);text-decoration:none;"><i class="fas fa-phone-alt"></i> 02-756-2828</a>
-        <a href="https://naver.me/G0DXGZbi" target="_blank" style="padding:14px 28px;border-radius:50px;background:#03C75A;color:#fff;font-weight:700;font-size:0.85rem;font-family:var(--font-kr);text-decoration:none;"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
+        <a href="tel:02-756-2828" data-cta="article-end" style="padding:14px 28px;border-radius:50px;background:var(--gold);color:var(--black);font-weight:700;font-size:0.85rem;font-family:var(--font-kr);text-decoration:none;"><i class="fas fa-phone-alt"></i> 02-756-2828</a>
+        <a href="https://naver.me/G0DXGZbi" target="_blank" data-cta="article-end" style="padding:14px 28px;border-radius:50px;background:#03C75A;color:#fff;font-weight:700;font-size:0.85rem;font-family:var(--font-kr);text-decoration:none;"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
       </div>
     </div>
   </div>

@@ -971,8 +971,8 @@ ${relatedSymptomData.length > 0 ? `
       전문의 3인 협진 · 수요일 야간진료(20시)
     </p>
     <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:24px;" class="rv rv-d2">
-      <a href="tel:02-756-2828" class="btn btn-gold"><i class="fas fa-phone-alt"></i> 전화예약</a>
-      <a href="https://naver.me/G0DXGZbi" target="_blank" class="btn btn-naver"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
+      <a href="tel:02-756-2828" class="btn btn-gold" data-cta="article-end"><i class="fas fa-phone-alt"></i> 전화예약</a>
+      <a href="https://naver.me/G0DXGZbi" target="_blank" class="btn btn-naver" data-cta="article-end"><i class="fas fa-calendar-check"></i> 네이버 예약</a>
     </div>
     <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;" class="rv rv-d3">
       <a href="/treatments/implant" style="font-family:var(--font-kr);font-size:0.82rem;color:var(--gold);border-bottom:1px solid rgba(247,186,24,0.3);padding-bottom:2px;">임플란트</a>
